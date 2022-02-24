@@ -1,0 +1,51 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+}
+.modal-content {
+    position: fixed;
+    background: white;
+    width: 306px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.double {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+.modal-content p {
+    text-align: center;
+}
+.display-block {
+    display: block;
+}
+.display-none {
+    display: none;
+}
+.single-button,
+.double-button,
+.triple-button {
+    height: 40px;
+    width: 306px;
+    background-color: #03045e;
+    transition: 0.3s;
+    color: white;
+    font-size: 1em;
+}
+.double-button {
+    width: 153px;
+}
+.triple-button {
+    width: 102px;
+}
+.single-button:hover,
+.double-button:hover,
+.triple-button:hover {
+    background-color: #00b4d8a4;
+    color: #03045e;
+}

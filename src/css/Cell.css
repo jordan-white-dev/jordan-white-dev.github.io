@@ -1,0 +1,25 @@
+.cell {
+    width: 85px;
+    border: 1px solid rgb(0, 0, 0);
+}
+.digit-container {
+    width: 85px;
+    border: none;
+    color: blue;
+    font-size: 4em;
+    text-align: center;
+    caret-color: transparent;
+    cursor: pointer;
+}
+.selected div {
+    background-color: rgba(247, 247, 56, 0.466);
+}
+.starting div {
+    color: black;
+}
+.incorrect div {
+    background-color: #ee7d79;
+}
+::selection {
+    background-color: transparent;
+}

@@ -1,0 +1,75 @@
+.tools {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 783px;
+    padding-top: 25px;
+    padding-left: 15%;
+    padding-right: 15%;
+    padding-bottom: 5%;
+}
+.tools-container {
+    display: grid;
+    margin-left: 5%;
+    margin-right: 5%;
+    align-items: center;
+}
+.tools-center-container-inner {
+    margin-left: 5px;
+}
+.number-button {
+    width: 75px;
+    height: 88px;
+    background-color: #03045e;
+    transition: 0.3s;
+    color: white;
+}
+.number-button:hover {
+    background-color: #00b4d8a4;
+    color: #03045e;
+}
+.number-icon {
+    font-size: 3.5em;
+}
+.other-button {
+    height: 40px;
+    width: 120px;
+    background-color: #00b4d8a4;
+    transition: 0.3s;
+    color: #03045e;
+    font-size: 1em;
+}
+.other-button:hover,
+.active {
+    background-color: #03045e;
+    color: white;
+}
+.tools-left {
+    display: grid;
+    gap: 8px;
+    justify-items: right;
+}
+.tools-right {
+    display: grid;
+    gap: 8px;
+    justify-items: left;
+}
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+.tooltip-text {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+}

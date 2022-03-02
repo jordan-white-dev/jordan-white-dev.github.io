@@ -215,16 +215,16 @@ class Puzzle extends React.Component {
                         puzzle.columns[cell.column - 1][cell.row - 1] = input;
                     } else {
                         let value;
-
-                        if (cell.value === 0) {
+                        if (input === 0) {
+                            value = '';
+                        } else if (cell.value === 0) {
                             value = input.toString();
                         } else if (cell.value.toString().includes(input)) {
                             value = cell.value.replace(input, '');
                         } else {
                             value = cell.value.toString() + input.toString();
                         }
-
-                        let markupValues = Array.from(new Set(value.split('')));
+                        let markupValues = Array.from(value.split(''));
                         markupValues = markupValues.sort().join('');
                         cell.value = markupValues === '' ? 0 : markupValues;
                         cell.isMarkup = true;

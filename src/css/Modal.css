@@ -19,7 +19,8 @@
     grid-template-columns: repeat(2, 1fr);
 }
 .modal-content p {
-    text-align: center;
+    display: flex;
+    padding-left: 3%;
 }
 .display-block {
     display: block;
@@ -48,4 +49,7 @@
 .triple-button:hover {
     background-color: #00b4d8a4;
     color: #03045e;
+}
+p.left-text {
+    text-align: left;
 }

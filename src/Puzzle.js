@@ -8,8 +8,11 @@ class Puzzle extends React.Component {
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
+        this.handleDoubleClick = this.handleDoubleClick.bind(this);
         this.handleNew = this.handleNew.bind(this);
+        this.handleShortcuts = this.handleShortcuts.bind(this);
         this.handleMultiselect = this.handleMultiselect.bind(this);
+        this.handleMarkup = this.handleMarkup.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInput = this.handleInput.bind(this);
         this.handleUndo = this.handleUndo.bind(this);
@@ -20,15 +23,13 @@ class Puzzle extends React.Component {
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleKeyUp = this.handleKeyUp.bind(this);
 
-        this.lodash = require('lodash');
         // Open source sudoku generator courtesy of Blagovest Dachev
         // https://github.com/dachev
         this.sudoku = require('sudoku');
 
-        const newPuzzle = this.generateNewPuzzle('easy');
+        const newPuzzle = this.generateNewPuzzle();
         this.state = {
             puzzle: newPuzzle,
-            difficulty: 'easy',
             history: [{
                 moveNumber: 0,
                 puzzle: newPuzzle
@@ -36,6 +37,8 @@ class Puzzle extends React.Component {
             lastMove: 0,
             isUsingCtrlMultiselect: false,
             isUsingButtonMultiselect: false,
+            isUsingShiftMarkup: false,
+            isUsingButtonMarkup: false,
             showModal: false,
             currentDialog: undefined
         };
@@ -91,9 +94,78 @@ class Puzzle extends React.Component {
         this.setState({ puzzle: puzzle });
     }
 
+    handleDoubleClick(highlightValue) {
+        let puzzle = JSON.parse(JSON.stringify(this.state.puzzle));
+        puzzle.boxes = puzzle.boxes.map(box => {
+            box.cells = box.cells.map(cell => {
+                if (cell.value === highlightValue) {
+                    cell.isSelected = true;
+                } else {
+                    cell.isSelected = false;
+                }
+                return cell;
+            });
+            return box;
+        });
+        this.setState({ puzzle: puzzle });
+    }
+
+    handleArrowKey(key) {
+        let puzzle = JSON.parse(JSON.stringify(this.state.puzzle));
+        let newRow;
+        let newColumn;
+        puzzle.boxes.map(box => {
+            box.cells.map(cell => {
+                if (cell.isSelected) {
+                    if (key === 'ArrowUp') {
+                        if (cell.row > 1) {
+                            newRow = cell.row - 1;
+                            newColumn = cell.column;
+                        }
+                    } else if (key === 'ArrowDown') {
+                        if (cell.row < 9) {
+                            newRow = cell.row + 1;
+                            newColumn = cell.column;
+                        }
+                    } else if (key === 'ArrowLeft') {
+                        if (cell.column > 1) {
+                            newRow = cell.row;
+                            newColumn = cell.column - 1;
+                        }
+                    } else if (key === 'ArrowRight') {
+                        if (cell.column < 9) {
+                            newRow = cell.row;
+                            newColumn = cell.column + 1;
+                        }
+                    }
+                }
+            });
+        });
+
+        if (newRow && newColumn) {
+            puzzle.boxes = puzzle.boxes.map(box => {
+                box.cells = box.cells.map(cell => {
+                    if (cell.row === newRow && cell.column === newColumn) {
+                        cell.isSelected = true;
+                    } else {
+                        cell.isSelected = false;
+                    }
+                    return cell;
+                });
+                return box;
+            });
+            this.setState({ puzzle: puzzle });
+        }
+    }
+
     handleNew() {
         this.setState({ showModal: true });
         this.setState({ currentDialog: 'new' });
+    }
+
+    handleShortcuts() {
+        this.setState({ showModal: true });
+        this.setState({ currentDialog: 'shortcuts' });
     }
 
     handleMultiselect() {
@@ -101,33 +173,20 @@ class Puzzle extends React.Component {
         this.setState({ isUsingButtonMultiselect: newMultiselectState });
     }
 
+    handleMarkup() {
+        const newMarkupState = !this.state.isUsingButtonMarkup;
+        this.setState({ isUsingButtonMarkup: newMarkupState });
+    }
+
     handleSubmit() {
         let puzzleUpdated = JSON.parse(JSON.stringify(this.state.puzzle));
         let isPuzzleSolved = true;
         puzzleUpdated.boxes = puzzleUpdated.boxes.map(box => {
-            const uniqueCellsBox = new Set(box.cells.map(cell => {
-                return parseInt(cell.value);
-            }));
             box.cells = box.cells.map(cell => {
-                if (cell.isStartingValue) {
+                if (cell.isStarting) {
                     return cell;
                 }
-                if (cell.value === 0) {
-                    cell.isSelected = false;
-                    cell.isIncorrect = true;
-                    isPuzzleSolved = false;
-                    return cell;
-                }
-                const uniqueCellsRow = new Set(puzzleUpdated.rows[cell.row - 1].map(digit => {
-                    return parseInt(digit);
-                }));
-                const uniqueCellsColumn = new Set(puzzleUpdated.columns[cell.column - 1].map(digit => {
-                    return parseInt(digit);
-                }));
-                if (
-                    this.lodash.sum(Array.from(uniqueCellsBox)) !== 45 ||
-                    this.lodash.sum(Array.from(uniqueCellsRow)) !== 45 ||
-                    this.lodash.sum(Array.from(uniqueCellsColumn)) !== 45) {
+                if (cell.value === 0 || cell.isMarkup || cell.value !== cell.solutionValue) {
                     cell.isSelected = false;
                     cell.isIncorrect = true;
                     isPuzzleSolved = false;
@@ -149,17 +208,35 @@ class Puzzle extends React.Component {
         let puzzle = JSON.parse(JSON.stringify(this.state.puzzle));
         puzzle.boxes = puzzle.boxes.map(box => {
             box.cells = box.cells.map(cell => {
-                if (cell.isSelected && !cell.isStartingValue) {
-                    cell.value = parseInt(input);
-                    puzzle.rows[cell.row - 1][cell.column - 1] = input;
-                    puzzle.columns[cell.column - 1][cell.row - 1] = input;
+                if (cell.isSelected && !cell.isStarting) {
+                    if (!this.state.isUsingShiftMarkup && !this.state.isUsingButtonMarkup) {
+                        cell.value = parseInt(input);
+                        puzzle.rows[cell.row - 1][cell.column - 1] = input;
+                        puzzle.columns[cell.column - 1][cell.row - 1] = input;
+                    } else {
+                        let value;
+
+                        if (cell.value === 0) {
+                            value = input.toString();
+                        } else if (cell.value.toString().includes(input)) {
+                            value = cell.value.replace(input, '');
+                        } else {
+                            value = cell.value.toString() + input.toString();
+                        }
+
+                        let markupValues = Array.from(new Set(value.split('')));
+                        markupValues = markupValues.sort().join('');
+                        cell.value = markupValues === '' ? 0 : markupValues;
+                        cell.isMarkup = true;
+                        puzzle.rows[cell.row - 1][cell.column - 1] = 0;
+                        puzzle.columns[cell.column - 1][cell.row - 1] = 0;
+                    }
                 }
                 cell.isIncorrect = false;
                 return cell;
             });
             return box;
         });
-
         let historyUpdated = JSON.parse(JSON.stringify(this.state.history));
         if (this.state.lastMove < this.state.history.length - 1) {
             historyUpdated.slice(0, historyUpdated.length - this.state.lastMove);
@@ -216,11 +293,8 @@ class Puzzle extends React.Component {
         this.setState({ currentDialog: 'restart' });
     }
 
-    handleOK(newDifficulty) {
+    handleOK() {
         this.setState({ showModal: false });
-        if (newDifficulty !== 'none') {
-            this.setState({ difficulty: newDifficulty });
-        }
         if (this.state.currentDialog === 'new' || this.state.currentDialog === 'restart') {
             this.resetPuzzle(this.state.currentDialog);
         }
@@ -233,16 +307,22 @@ class Puzzle extends React.Component {
     handleKeyDown(event) {
         if (event.ctrlKey && !this.state.isUsingCtrlMultiselect) {
             this.setState({ isUsingCtrlMultiselect: true });
+        } else if (event.shiftKey && !this.state.isUsingShiftMarkup) {
+            this.setState({ isUsingShiftMarkup: true });
         } else if (event.key > 0 && event.key < 10) {
             this.handleInput(event.key);
         } else if (event.key === 'Escape' || event.key === 'Delete' || event.key === 'Backspace') {
             this.handleInput(0);
+        } else if (!this.hasExistingSelections() && event.key.includes('Arrow')) {
+            this.handleArrowKey(event.key);
         }
     }
 
     handleKeyUp(event) {
         if (event.key === 'Control' && this.state.isUsingCtrlMultiselect) {
             this.setState({ isUsingCtrlMultiselect: false });
+        } else if (event.key === 'Shift' && this.state.isUsingShiftMarkup) {
+            this.setState({ isUsingShiftMarkup: false });
         }
     }
 
@@ -259,7 +339,7 @@ class Puzzle extends React.Component {
         return count > 1;
     }
 
-    generateNewPuzzle(targetDifficulty) {
+    generateNewPuzzle() {
         let puzzle = {
             boxes: [],
             rows: [[], [], [], [], [], [], [], [], []],
@@ -271,11 +351,13 @@ class Puzzle extends React.Component {
                 cells[j - 1] = {
                     key: 'box' + i + '-cell' + j,
                     cellNumber: j,
+                    value: 0,
+                    solutionValue: 0,
                     row: 0,
                     column: 0,
-                    value: 0,
-                    isStartingValue: false,
+                    isStarting: false,
                     isSelected: false,
+                    isMarkup: false,
                     isIncorrect: false
                 }
             }
@@ -285,25 +367,25 @@ class Puzzle extends React.Component {
                 cells: cells
             }
         }
-        let targetMin = 0;
-        let targetMax = 2;
-        if (targetDifficulty === 'medium') {
-            targetMin = 2;
-            targetMax = 3;
-        } else if (targetDifficulty === 'hard') {
-            targetMin = 3
-            targetMax = 5;
-        }
         let generated = this.sudoku.makepuzzle();
-        while (!(this.sudoku.ratepuzzle(generated, 5) >= targetMin && this.sudoku.ratepuzzle(generated, 5) < targetMax)) {
+        while (!this.isDifficultyCorrect(generated)) {
             generated = this.sudoku.makepuzzle();
         }
-        console.log(this.sudoku.solvepuzzle(generated).map(digit => {
-            return digit === null ? 0 : digit + 1;
-        }));
         let digits = generated.map(digit => {
             return digit === null ? 0 : digit + 1;
         });
+        let solvedDigits = this.sudoku.solvepuzzle(generated).map(digit => {
+            return digit === null ? 0 : digit + 1;
+        });
+        console.log('Solution:\n');
+        for (let i = 0; i < 9; i++) {
+            let solutionRow = '';
+            for (let j = 0; j < 9; j++) {
+                solutionRow += '   ';
+                solutionRow += solvedDigits[(i * 9) + j];
+            }
+            console.log(solutionRow + '\n');
+        }
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 9; j++) {
                 puzzle.rows[i].push(digits[(i * 9) + j]);
@@ -324,11 +406,12 @@ class Puzzle extends React.Component {
                         digitsIndex += 36;
                         rowNumber += 6;
                     }
+                    puzzle.boxes[i].cells[cellsIndex].value = digits[digitsIndex];
+                    puzzle.boxes[i].cells[cellsIndex].solutionValue = solvedDigits[digitsIndex];
                     puzzle.boxes[i].cells[cellsIndex].row = rowNumber;
                     puzzle.boxes[i].cells[cellsIndex].column = columnNumber;
-                    puzzle.boxes[i].cells[cellsIndex].value = digits[digitsIndex];
                     if (digits[digitsIndex] !== 0) {
-                        puzzle.boxes[i].cells[cellsIndex].isStartingValue = true;
+                        puzzle.boxes[i].cells[cellsIndex].isStarting = true;
                     }
                 }
             }
@@ -336,9 +419,21 @@ class Puzzle extends React.Component {
         return puzzle;
     }
 
+    isDifficultyCorrect(puzzle) {
+        let isCorrect = true;
+        for (let i = 0; i < 10; i++) {
+            let currentRating = this.sudoku.ratepuzzle(puzzle, 15);
+            if (currentRating > 0) {
+                isCorrect = false;
+                break;
+            }
+        }
+        return isCorrect;
+    }
+
     resetPuzzle(type) {
         if (type === 'new') {
-            const newPuzzle = this.generateNewPuzzle(this.state.difficulty);
+            const newPuzzle = this.generateNewPuzzle();
             this.setState({ puzzle: newPuzzle });
             const newHistory = [{
                 moveNumber: 0,
@@ -372,6 +467,7 @@ class Puzzle extends React.Component {
                 boxNumber={b.boxNumber}
                 cells={b.cells}
                 handleClick={this.handleClick}
+                handleDoubleClick={this.handleDoubleClick}
             />;
         });
     }
@@ -383,8 +479,11 @@ class Puzzle extends React.Component {
             </div>
             <Tools
                 isUsingButtonMultiselect={this.state.isUsingButtonMultiselect}
+                isUsingButtonMarkup={this.state.isUsingButtonMarkup}
                 handleNew={this.handleNew}
+                handleShortcuts={this.handleShortcuts}
                 handleMultiselect={this.handleMultiselect}
+                handleMarkup={this.handleMarkup}
                 handleSubmit={this.handleSubmit}
                 handleInput={this.handleInput}
                 handleUndo={this.handleUndo}

@@ -10,12 +10,18 @@
     text-align: center;
     caret-color: transparent;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .selected div {
     background-color: rgba(247, 247, 56, 0.466);
 }
 .starting div {
     color: black;
+}
+.markup {
+    font-size: 1em;
 }
 .incorrect div {
     background-color: #ee7d79;

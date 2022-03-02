@@ -5,39 +5,42 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 class Modal extends React.Component {
     constructor(props) {
         super(props);
+        this.onOK = this.onOK.bind(this);
         this.onCancel = this.onCancel.bind(this);
     }
 
-    onOK(newDifficulty) { this.props.handleOK(newDifficulty); }
+    onOK() { this.props.handleOK(); }
     onCancel() { this.props.handleCancel(); }
 
     renderNew() {
         return <div className='modal-content'>
-            <p>New puzzle difficulty:</p>
-            <div>
+            <p>🤔 Generate a new puzzle? 🤔</p>
+            <div className='double'>
                 <button
                     type='button'
-                    className='triple-button'
-                    onClick={() => this.onOK('easy')}
-                >Easy</button>
+                    className='double-button'
+                    onClick={this.onOK}
+                >OK <FontAwesomeIcon icon='fa-circle-check' /></button>
                 <button
                     type='button'
-                    className='triple-button'
-                    onClick={() => this.onOK('medium')}
-                >Medium</button>
-                <button
-                    type='button'
-                    className='triple-button'
-                    onClick={() => this.onOK('hard')}
-                >Hard</button>
-            </div>
-            <div>
-                <button
-                    type='button'
-                    className='single-button'
+                    className='double-button'
                     onClick={this.onCancel}
                 >Cancel <FontAwesomeIcon icon='fa-circle-xmark' /></button>
             </div>
+        </div>;
+    }
+
+    renderShortcuts() {
+        return <div className='modal-content'>
+            <p>• Multiselect: Ctrl+click</p>
+            <p>• Markup: Shift+input</p>
+            <p>• Double click to highlight matching values</p>
+            <p>• Navigate the selection using arrow keys</p>
+            <button
+                type='button'
+                className='single-button'
+                onClick={this.onOK}
+            >OK <FontAwesomeIcon icon='fa-circle-check' /></button>
         </div>;
     }
 
@@ -48,7 +51,7 @@ class Modal extends React.Component {
                 <button
                     type='button'
                     className='double-button'
-                    onClick={() => this.onOK('none')}
+                    onClick={this.onOK}
                 >OK <FontAwesomeIcon icon='fa-circle-check' /></button>
                 <button
                     type='button'
@@ -65,7 +68,7 @@ class Modal extends React.Component {
             <button
                 type='button'
                 className='single-button'
-                onClick={() => this.onOK('none')}
+                onClick={this.onOK}
             >OK <FontAwesomeIcon icon='fa-circle-check' /></button>
         </div>;
     }
@@ -76,7 +79,7 @@ class Modal extends React.Component {
             <button
                 type='button'
                 className='single-button'
-                onClick={() => this.onOK('none')}
+                onClick={this.onOK}
             >OK <FontAwesomeIcon icon='fa-circle-check' /></button>
         </div>;
     }
@@ -86,8 +89,8 @@ class Modal extends React.Component {
             <p>Whoops, something's broken</p>
             <button
                 type='button'
-                className='button'
-                onClick={() => this.onOK('none')}
+                className='single-button'
+                onClick={this.onOK}
             >OK <FontAwesomeIcon icon='fa-circle-check' /></button>
         </div>;
     }
@@ -98,6 +101,9 @@ class Modal extends React.Component {
         switch (this.props.currentDialog) {
             case ('new'):
                 content = this.renderNew();
+                break;
+            case('shortcuts'):
+                content = this.renderShortcuts();
                 break;
             case ('restart'):
                 content = this.renderRestart();

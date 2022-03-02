@@ -6,7 +6,9 @@ class Tools extends React.Component {
     constructor(props) {
         super(props);
         this.onNew = this.onNew.bind(this);
+        this.onShortcuts = this.onShortcuts.bind(this);
         this.onMultiselect = this.onMultiselect.bind(this);
+        this.onMarkup = this.onMarkup.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.onUndo = this.onUndo.bind(this);
         this.onRedo = this.onRedo.bind(this);
@@ -14,7 +16,9 @@ class Tools extends React.Component {
     }
 
     onNew() { this.props.handleNew(); }
+    onShortcuts() { this.props.handleShortcuts(); }
     onMultiselect() { this.props.handleMultiselect(); }
+    onMarkup() { this.props.handleMarkup(); }
     onSubmit() { this.props.handleSubmit(); }
     onInput(input) { this.props.handleInput(input); }
     onUndo() { this.props.handleUndo(); }
@@ -22,7 +26,8 @@ class Tools extends React.Component {
     onRestart() { this.props.handleRestart(); }
 
     render() {
-        const classNames = this.props.isUsingButtonMultiselect ? 'other-button tooltip active' : 'other-button tooltip';
+        const multiselectClassNames = this.props.isUsingButtonMultiselect ? 'other-button active' : 'other-button';
+        const markupClassNames = this.props.isUsingButtonMarkup ? 'other-button active' : 'other-button';
         return <div className='tools'>
             <div className='tools-container'>
                 <div className='tools-left'>
@@ -33,9 +38,19 @@ class Tools extends React.Component {
                     >New Puzzle</button>
                     <button
                         type='button'
-                        className={classNames}
+                        className='other-button'
+                        onClick={this.onShortcuts}
+                    >Shortcuts</button>
+                    <button
+                        type='button'
+                        className={multiselectClassNames}
                         onClick={this.onMultiselect}
-                    >Multiselect<span className='tooltip-text'>Shortcut: Ctrl+click</span></button>
+                    >Multiselect</button>
+                    <button
+                        type='button'
+                        className={markupClassNames}
+                        onClick={this.onMarkup}
+                    >Markup</button>
                 </div>
             </div>
             <div className='tools-container'>

@@ -1,0 +1,25 @@
+.single-button,
+.double-button,
+.triple-button {
+  height: 40px;
+  width: 306px;
+  background-color: #03045e;
+  transition: 0.3s;
+  color: white;
+  font-size: 1em;
+}
+
+.double-button {
+  width: 153px;
+}
+
+.triple-button {
+  width: 102px;
+}
+
+.single-button:hover,
+.double-button:hover,
+.triple-button:hover {
+  background-color: #00b4d8a4;
+  color: #03045e;
+}

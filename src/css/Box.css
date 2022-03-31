@@ -1,11 +1,12 @@
 .box {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    outline: 4px black solid;
-    outline-offset: -4px;
-    width: 261px;
-    background-color: white;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  outline: 4px black solid;
+  outline-offset: -4px;
+  width: 261px;
+  background-color: white;
 }
+
 .box div {
-    aspect-ratio: 1;
+  aspect-ratio: 1;
 }

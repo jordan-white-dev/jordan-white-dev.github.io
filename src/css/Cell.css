@@ -1,31 +1,37 @@
 .cell {
-    width: 85px;
-    border: 1px solid rgb(0, 0, 0);
+  width: 85px;
+  border: 1px solid rgb(0, 0, 0);
 }
-.digit-container {
-    width: 85px;
-    border: none;
-    color: blue;
-    font-size: 4em;
-    text-align: center;
-    caret-color: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.digit-container div {
+  width: 85px;
+  border: none;
+  color: blue;
+  font-size: 4em;
+  text-align: center;
+  caret-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .selected div {
-    background-color: rgba(247, 247, 56, 0.466);
+  background-color: rgba(247, 247, 56, 0.466);
 }
+
 .starting div {
-    color: black;
+  color: black;
 }
-.markup {
-    font-size: 1em;
+
+.markup div {
+  font-size: 1em;
 }
+
 .incorrect div {
-    background-color: #ee7d79;
+  background-color: #ee7d79;
 }
+
 ::selection {
-    background-color: transparent;
+  background-color: transparent;
 }

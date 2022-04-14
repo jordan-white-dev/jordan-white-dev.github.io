@@ -3,7 +3,7 @@
   border: 1px solid rgb(0, 0, 0);
 }
 
-.digit-container div {
+.cell div {
   width: 85px;
   border: none;
   color: blue;

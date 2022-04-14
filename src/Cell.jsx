@@ -32,8 +32,9 @@ function Cell(props) {
       onDoubleClick(value);
     }
   });
+
   function getClassName() {
-    let className = 'cell digit-container';
+    let className = 'cell';
     if (isStarting) {
       className += ' starting';
     }

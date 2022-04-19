@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makepuzzle, solvepuzzle, ratepuzzle } from 'sudoku';
 import './css/App.css';
 import Box from './Box';
@@ -16,42 +16,7 @@ function App() {
   const [isUsingButtonMarkup, setIsUsingButtonMarkup] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [currentDialog, setCurrentDialog] = useState('');
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.ctrlKey && !isUsingCtrlMultiselect) {
-        setIsUsingCtrlMultiselect(true);
-      } else if (event.shiftKey && !isUsingShiftMarkup) {
-        setIsUsingShiftMarkup(true);
-      } else if (event.key > 0 && event.key < 10) {
-        handleInput(event.key);
-      } else if (event.key === 'Escape' || event.key === 'Delete' || event.key === 'Backspace') {
-        handleInput(0);
-      } else if (!hasMultipleSelections() && event.key.includes('Arrow')) {
-        handleArrowKey(event.key);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  });
-
-  useEffect(() => {
-    const handleKeyUp = (event) => {
-      if (event.key === 'Control' && isUsingCtrlMultiselect) {
-        setIsUsingCtrlMultiselect(false);
-      } else if (event.key === 'Shift' && isUsingShiftMarkup) {
-        setIsUsingShiftMarkup(false);
-      }
-    };
-    window.addEventListener('keyup', handleKeyUp);
-    return () => {
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  });
-
-  const handleClick = useCallback((boxNumber, cellNumber) => {
+  const handleClick = (boxNumber, cellNumber) => {
     const updated = JSON.parse(JSON.stringify(puzzle));
     updated.boxes = updated.boxes.map((box) => {
       if (!isUsingCtrlMultiselect && !isUsingButtonMultiselect) {
@@ -95,9 +60,8 @@ function App() {
       return box;
     });
     setPuzzle(updated);
-  });
-
-  const handleDoubleClick = useCallback((value) => {
+  };
+  const handleDoubleClick = (value) => {
     const updated = JSON.parse(JSON.stringify(puzzle));
     updated.boxes = updated.boxes.map((box) => {
       box.cells = box.cells.map((cell) => {
@@ -111,75 +75,18 @@ function App() {
       return box;
     });
     setPuzzle(updated);
-  });
-
-  function handleArrowKey(key) {
-    const updated = JSON.parse(JSON.stringify(puzzle));
-    let newRow;
-    let newColumn;
-    updated.boxes.map((box) => {
-      box.cells.map((cell) => {
-        if (cell.isSelected) {
-          if (key === 'ArrowUp') {
-            if (cell.row > 1) {
-              newRow = cell.row - 1;
-              newColumn = cell.column;
-            }
-          } else if (key === 'ArrowDown') {
-            if (cell.row < 9) {
-              newRow = cell.row + 1;
-              newColumn = cell.column;
-            }
-          } else if (key === 'ArrowLeft') {
-            if (cell.column > 1) {
-              newRow = cell.row;
-              newColumn = cell.column - 1;
-            }
-          } else if (key === 'ArrowRight') {
-            if (cell.column < 9) {
-              newRow = cell.row;
-              newColumn = cell.column + 1;
-            }
-          }
-        }
-      });
-    });
-
-    if (newRow && newColumn) {
-      updated.boxes = updated.boxes.map((box) => {
-        box.cells = box.cells.map((cell) => {
-          if (cell.row === newRow && cell.column === newColumn) {
-            cell.isSelected = true;
-          } else {
-            cell.isSelected = false;
-          }
-          return cell;
-        });
-        return box;
-      });
-      setPuzzle(updated);
-    }
-  }
-
-  const handleNew = useCallback(() => {
+  };
+  const handleNew = () => {
     setShowModal(true);
     setCurrentDialog('new');
-  });
-
-  const handleShortcuts = useCallback(() => {
+  };
+  const handleShortcuts = () => {
     setShowModal(true);
     setCurrentDialog('shortcuts');
-  });
-
-  const handleMultiselect = useCallback(() => {
-    setIsUsingButtonMultiselect(!isUsingButtonMultiselect);
-  });
-
-  const handleMarkup = useCallback(() => {
-    setIsUsingButtonMarkup(!isUsingButtonMarkup);
-  });
-
-  const handleSubmit = useCallback(() => {
+  };
+  const handleMultiselect = () => { setIsUsingButtonMultiselect(!isUsingButtonMultiselect); };
+  const handleMarkup = () => { setIsUsingButtonMarkup(!isUsingButtonMarkup); };
+  const handleSubmit = () => {
     const updated = JSON.parse(JSON.stringify(puzzle));
     let isSolved = true;
     updated.boxes = updated.boxes.map((box) => {
@@ -203,66 +110,9 @@ function App() {
       setCurrentDialog('notSolved');
     }
     setShowModal(true);
-  });
-
-  const handleNumpad = useCallback((input) => {
-    handleInput(input);
-  });
-
-  function handleInput(input) {
-    if (hasAnySelections()) {
-      let wasChanged = false;
-      const puzzleUpdated = JSON.parse(JSON.stringify(puzzle));
-      puzzleUpdated.boxes = puzzleUpdated.boxes.map((box) => {
-        box.cells = box.cells.map((cell) => {
-          if (cell.isSelected && !cell.isStarting) {
-            if (!isUsingShiftMarkup && !isUsingButtonMarkup) {
-              cell.value = input;
-              puzzleUpdated.rows[cell.row - 1][cell.column - 1] = input;
-              puzzleUpdated.columns[cell.column - 1][cell.row - 1] = input;
-            } else {
-              let value;
-              if (input === '0') {
-                value = '';
-              } else if (cell.value === '0') {
-                value = input;
-              } else if (cell.value.includes(input)) {
-                value = cell.value.replace(input, '');
-              } else {
-                value = cell.value + input.toString();
-              }
-              let markupValues = Array.from(value.split(''));
-              markupValues = markupValues.sort().join('');
-              cell.value = markupValues === '' ? '0' : markupValues;
-              cell.isMarkup = true;
-              puzzleUpdated.rows[cell.row - 1][cell.column - 1] = 0;
-              puzzleUpdated.columns[cell.column - 1][cell.row - 1] = 0;
-            }
-            wasChanged = true;
-          }
-          cell.isIncorrect = false;
-          return cell;
-        });
-        return box;
-      });
-      if (wasChanged) {
-        const historyUpdated = JSON.parse(JSON.stringify(history));
-        if (lastMove < history.length - 1) {
-          historyUpdated.slice(0, historyUpdated.length - lastMove);
-        }
-        const newMove = {
-          moveNumber: historyUpdated.length,
-          puzzle: puzzleUpdated
-        };
-        historyUpdated.push(newMove);
-        setHistory(historyUpdated);
-        setLastMove(historyUpdated.length - 1);
-        setPuzzle(puzzleUpdated);
-      }
-    }
-  }
-
-  const handleUndo = useCallback(() => {
+  };
+  const handleNumpad = (input) => { handleInput(input); };
+  const handleUndo = () => {
     if (lastMove > 0) {
       const previousPuzzleState = JSON.parse(JSON.stringify(history[lastMove - 1].puzzle));
       previousPuzzleState.boxes = previousPuzzleState.boxes.map((box) => {
@@ -277,9 +127,8 @@ function App() {
       setLastMove(lastMove - 1);
       setPuzzle(previousPuzzleState);
     }
-  });
-
-  const handleRedo = useCallback(() => {
+  };
+  const handleRedo = () => {
     if (lastMove < history.length - 1) {
       const nextPuzzleState = JSON.parse(JSON.stringify(history[lastMove + 1].puzzle));
       nextPuzzleState.boxes = nextPuzzleState.boxes.map((box) => {
@@ -294,54 +143,52 @@ function App() {
       setLastMove(lastMove + 1);
       setPuzzle(nextPuzzleState);
     }
-  });
-
-  const handleRestart = useCallback(() => {
+  };
+  const handleRestart = () => {
     setShowModal(true);
     setCurrentDialog('restart');
-  });
-
-  const handleOK = useCallback(() => {
+  };
+  const handleOK = () => {
     setShowModal(false);
     if (currentDialog === 'new' || currentDialog === 'restart') {
       resetPuzzle(currentDialog);
     }
-  });
+  };
+  const handleCancel = () => { setShowModal(false); };
 
-  const handleCancel = useCallback(() => {
-    setShowModal(false);
-  });
-
-  function resetPuzzle(type) {
-    if (type === 'new') {
-      const generated = generateNewPuzzle();
-      setPuzzle(generated);
-      const newHistory = [{
-        moveNumber: 0,
-        puzzle: generated
-      }];
-      setHistory(newHistory);
-    } else if (type === 'restart') {
-      const historyUpdated = [];
-      historyUpdated.push(JSON.parse(JSON.stringify(history)).shift());
-      const startingPuzzle = historyUpdated[0].puzzle;
-      setHistory(historyUpdated);
-      setLastMove(0);
-      setPuzzle(startingPuzzle);
-    }
-  }
-
-  function isDifficultyCorrect(puzzleToCheck) {
-    let isCorrect = true;
-    for (let i = 0; i < 10; i++) {
-      const currentRating = ratepuzzle(puzzleToCheck, 15);
-      if (currentRating > 0) {
-        isCorrect = false;
-        break;
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && !isUsingCtrlMultiselect) {
+        setIsUsingCtrlMultiselect(true);
+      } else if (event.shiftKey && !isUsingShiftMarkup) {
+        setIsUsingShiftMarkup(true);
+      } else if (event.key > 0 && event.key < 10) {
+        handleInput(event.key);
+      } else if (event.key === 'Escape' || event.key === 'Delete' || event.key === 'Backspace') {
+        handleInput(0);
+      } else if (!hasMultipleSelections() && event.key.includes('Arrow')) {
+        handleArrowKey(event.key);
       }
-    }
-    return isCorrect;
-  }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  });
+
+  useEffect(() => {
+    const handleKeyUp = (event) => {
+      if (event.key === 'Control' && isUsingCtrlMultiselect) {
+        setIsUsingCtrlMultiselect(false);
+      } else if (event.key === 'Shift' && isUsingShiftMarkup) {
+        setIsUsingShiftMarkup(false);
+      }
+    };
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  });
 
   function generateNewPuzzle() {
     const generated = {
@@ -414,17 +261,16 @@ function App() {
     return generated;
   }
 
-  function hasAnySelections() {
-    const boxesCopy = JSON.parse(JSON.stringify(puzzle.boxes));
-    let count = 0;
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        if (boxesCopy[i].cells[j].isSelected) {
-          count++;
-        }
+  function isDifficultyCorrect(puzzleToCheck) {
+    let isCorrect = true;
+    for (let i = 0; i < 10; i++) {
+      const currentRating = ratepuzzle(puzzleToCheck, 15);
+      if (currentRating > 0) {
+        isCorrect = false;
+        break;
       }
     }
-    return count > 0;
+    return isCorrect;
   }
 
   function hasMultipleSelections() {
@@ -438,6 +284,139 @@ function App() {
       }
     }
     return count > 1;
+  }
+
+  function handleInput(input) {
+    if (hasAnySelections()) {
+      let wasChanged = false;
+      const puzzleUpdated = JSON.parse(JSON.stringify(puzzle));
+      puzzleUpdated.boxes = puzzleUpdated.boxes.map((box) => {
+        box.cells = box.cells.map((cell) => {
+          if (cell.isSelected && !cell.isStarting) {
+            if (!isUsingShiftMarkup && !isUsingButtonMarkup) {
+              cell.value = input;
+              puzzleUpdated.rows[cell.row - 1][cell.column - 1] = input;
+              puzzleUpdated.columns[cell.column - 1][cell.row - 1] = input;
+            } else {
+              let value;
+              if (input === '0') {
+                value = '';
+              } else if (cell.value === '0') {
+                value = input;
+              } else if (cell.value.includes(input)) {
+                value = cell.value.replace(input, '');
+              } else {
+                value = cell.value + input.toString();
+              }
+              let markupValues = Array.from(value.split(''));
+              markupValues = markupValues.sort().join('');
+              cell.value = markupValues === '' ? '0' : markupValues;
+              cell.isMarkup = true;
+              puzzleUpdated.rows[cell.row - 1][cell.column - 1] = 0;
+              puzzleUpdated.columns[cell.column - 1][cell.row - 1] = 0;
+            }
+            wasChanged = true;
+          }
+          cell.isIncorrect = false;
+          return cell;
+        });
+        return box;
+      });
+      if (wasChanged) {
+        const historyUpdated = JSON.parse(JSON.stringify(history));
+        if (lastMove < history.length - 1) {
+          historyUpdated.slice(0, historyUpdated.length - lastMove);
+        }
+        const newMove = {
+          moveNumber: historyUpdated.length,
+          puzzle: puzzleUpdated
+        };
+        historyUpdated.push(newMove);
+        setHistory(historyUpdated);
+        setLastMove(historyUpdated.length - 1);
+        setPuzzle(puzzleUpdated);
+      }
+    }
+  }
+
+  function resetPuzzle(type) {
+    if (type === 'new') {
+      const generated = generateNewPuzzle();
+      setPuzzle(generated);
+      const newHistory = [{
+        moveNumber: 0,
+        puzzle: generated
+      }];
+      setHistory(newHistory);
+    } else if (type === 'restart') {
+      const historyUpdated = [];
+      historyUpdated.push(JSON.parse(JSON.stringify(history)).shift());
+      const startingPuzzle = historyUpdated[0].puzzle;
+      setHistory(historyUpdated);
+      setLastMove(0);
+      setPuzzle(startingPuzzle);
+    }
+  }
+
+  function hasAnySelections() {
+    const boxesCopy = JSON.parse(JSON.stringify(puzzle.boxes));
+    let count = 0;
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (boxesCopy[i].cells[j].isSelected) {
+          count++;
+        }
+      }
+    }
+    return count > 0;
+  }
+
+  function handleArrowKey(key) {
+    const updated = JSON.parse(JSON.stringify(puzzle));
+    let newRow;
+    let newColumn;
+    updated.boxes.map((box) => {
+      box.cells.map((cell) => {
+        if (cell.isSelected) {
+          if (key === 'ArrowUp') {
+            if (cell.row > 1) {
+              newRow = cell.row - 1;
+              newColumn = cell.column;
+            }
+          } else if (key === 'ArrowDown') {
+            if (cell.row < 9) {
+              newRow = cell.row + 1;
+              newColumn = cell.column;
+            }
+          } else if (key === 'ArrowLeft') {
+            if (cell.column > 1) {
+              newRow = cell.row;
+              newColumn = cell.column - 1;
+            }
+          } else if (key === 'ArrowRight') {
+            if (cell.column < 9) {
+              newRow = cell.row;
+              newColumn = cell.column + 1;
+            }
+          }
+        }
+      });
+    });
+
+    if (newRow && newColumn) {
+      updated.boxes = updated.boxes.map((box) => {
+        box.cells = box.cells.map((cell) => {
+          if (cell.row === newRow && cell.column === newColumn) {
+            cell.isSelected = true;
+          } else {
+            cell.isSelected = false;
+          }
+          return cell;
+        });
+        return box;
+      });
+      setPuzzle(updated);
+    }
   }
 
   function renderAllBoxes() {

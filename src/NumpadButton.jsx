@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 NumpadButton.propTypes = {
-  handleNumpad: PropTypes.string.isRequired,
+  handleNumpad: PropTypes.func.isRequired,
   number: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired
 };

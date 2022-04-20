@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import './css/Box.css';
 import PropTypes from 'prop-types';
 import Cell from './Cell';
@@ -12,12 +12,12 @@ Box.propTypes = {
 
 function Box(props) {
   const { handleClick, handleDoubleClick, number, cells } = props;
-  const onClick = useCallback((cellNumber) => {
+  const onClick = (cellNumber) => {
     handleClick(number, cellNumber);
-  });
-  const onDoubleClick = useCallback((value) => {
+  };
+  const onDoubleClick = (value) => {
     handleDoubleClick(value);
-  });
+  };
 
   function renderAllCells() {
     return cells.map((c) => (

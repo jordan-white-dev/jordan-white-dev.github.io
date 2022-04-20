@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import './css/Cell.css';
 import PropTypes from 'prop-types';
 
@@ -24,14 +24,14 @@ function Cell(props) {
     onClick,
     onDoubleClick
   } = props;
-  const onSingle = useCallback(() => {
+  const onSingle = () => {
     onClick(number);
-  });
-  const onDouble = useCallback(() => {
+  };
+  const onDouble = () => {
     if (value !== '0' && !isMarkup) {
       onDoubleClick(value);
     }
-  });
+  };
 
   function getClassName() {
     let className = 'cell';

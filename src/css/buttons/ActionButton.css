@@ -1,0 +1,32 @@
+.action {
+  background-color: #00b4d8a4;
+  transition: 0.3s;
+  color: #03045e;
+}
+
+.action:hover,
+.active {
+  background-color: #03045e;
+  color: white;
+}
+
+.action-large {
+  width: 120px;
+  height: 40px;
+  font-size: 1em;
+  margin: 6px;
+}
+
+.action-medium {
+  width: 100px;
+  height: 26.7px;
+  font-size: 0.85em;
+  margin: 4px;
+}
+
+.action-small {
+  width: 80px;
+  height: 18px;
+  font-size: 0.5em;
+  margin: 2px;
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makepuzzle, solvepuzzle, ratepuzzle } from 'sudoku';
-import './css/App.css';
+import '../css/App.css';
 import Box from './Box';
 import Tools from './Tools';
 import Modal from './Modal';
@@ -16,6 +16,59 @@ function App() {
   const [isUsingButtonMarkup, setIsUsingButtonMarkup] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [currentDialog, setCurrentDialog] = useState('');
+  const [windowSize, setWindowSize] = useState('');
+
+  useEffect(() => {
+    function handleResize() {
+      let size;
+      if (window.innerWidth >= 818 && window.innerHeight >= 1100) {
+        size = 'large';
+      } else if (window.innerWidth >= 545 && window.innerHeight >= 750) {
+        size = 'medium';
+      } else {
+        size = 'small';
+      }
+      setWindowSize(size);
+    }
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && !isUsingCtrlMultiselect) {
+        setIsUsingCtrlMultiselect(true);
+      } else if (event.shiftKey && !isUsingShiftMarkup) {
+        setIsUsingShiftMarkup(true);
+      } else if (event.key > 0 && event.key < 10) {
+        handleInput(event.key);
+      } else if (event.key === 'Escape' || event.key === 'Delete' || event.key === 'Backspace') {
+        handleInput(0);
+      } else if (!hasMultipleSelections() && event.key.includes('Arrow')) {
+        handleArrowKey(event.key);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  });
+
+  useEffect(() => {
+    const handleKeyUp = (event) => {
+      if (event.key === 'Control' && isUsingCtrlMultiselect) {
+        setIsUsingCtrlMultiselect(false);
+      } else if (event.key === 'Shift' && isUsingShiftMarkup) {
+        setIsUsingShiftMarkup(false);
+      }
+    };
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  });
+
   const handleClick = (boxNumber, cellNumber) => {
     const updated = JSON.parse(JSON.stringify(puzzle));
     updated.boxes = updated.boxes.map((box) => {
@@ -155,40 +208,6 @@ function App() {
     }
   };
   const handleCancel = () => { setShowModal(false); };
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.ctrlKey && !isUsingCtrlMultiselect) {
-        setIsUsingCtrlMultiselect(true);
-      } else if (event.shiftKey && !isUsingShiftMarkup) {
-        setIsUsingShiftMarkup(true);
-      } else if (event.key > 0 && event.key < 10) {
-        handleInput(event.key);
-      } else if (event.key === 'Escape' || event.key === 'Delete' || event.key === 'Backspace') {
-        handleInput(0);
-      } else if (!hasMultipleSelections() && event.key.includes('Arrow')) {
-        handleArrowKey(event.key);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  });
-
-  useEffect(() => {
-    const handleKeyUp = (event) => {
-      if (event.key === 'Control' && isUsingCtrlMultiselect) {
-        setIsUsingCtrlMultiselect(false);
-      } else if (event.key === 'Shift' && isUsingShiftMarkup) {
-        setIsUsingShiftMarkup(false);
-      }
-    };
-    window.addEventListener('keyup', handleKeyUp);
-    return () => {
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  });
 
   function generateNewPuzzle() {
     const generated = {
@@ -380,23 +399,23 @@ function App() {
         if (cell.isSelected) {
           if (key === 'ArrowUp') {
             if (cell.row > 1) {
-              newRow = cell.row - 1;
+              newRow = `${parseInt(cell.row) - 1}`;
               newColumn = cell.column;
             }
           } else if (key === 'ArrowDown') {
             if (cell.row < 9) {
-              newRow = cell.row + 1;
+              newRow = `${parseInt(cell.row) + 1}`;
               newColumn = cell.column;
             }
           } else if (key === 'ArrowLeft') {
             if (cell.column > 1) {
               newRow = cell.row;
-              newColumn = cell.column - 1;
+              newColumn = `${parseInt(cell.column) - 1}`;
             }
           } else if (key === 'ArrowRight') {
             if (cell.column < 9) {
               newRow = cell.row;
-              newColumn = cell.column + 1;
+              newColumn = `${parseInt(cell.column) + 1}`;
             }
           }
         }
@@ -425,6 +444,7 @@ function App() {
         key={b.key}
         number={b.number}
         cells={b.cells}
+        windowSize={windowSize}
         handleClick={handleClick}
         handleDoubleClick={handleDoubleClick}
       />
@@ -433,12 +453,13 @@ function App() {
 
   return (
     <div className='page'>
-      <div className='puzzle'>
+      <div className={`puzzle puzzle-${windowSize}`}>
         {renderAllBoxes()}
       </div>
       <Tools
         isUsingButtonMultiselect={isUsingButtonMultiselect}
         isUsingButtonMarkup={isUsingButtonMarkup}
+        windowSize={windowSize}
         handleNew={handleNew}
         handleShortcuts={handleShortcuts}
         handleMultiselect={handleMultiselect}

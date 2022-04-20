@@ -1,0 +1,11 @@
+.container {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.numpad-container {
+  display: grid;
+  justify-items: center;
+  grid-template-columns: repeat(3, 1fr);
+}

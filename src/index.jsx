@@ -17,7 +17,7 @@ import {
   fa8,
   fa9
 } from '@fortawesome/free-solid-svg-icons';
-import App from './App';
+import App from './components/App';
 
 library.add(
   faArrowRotateLeft,

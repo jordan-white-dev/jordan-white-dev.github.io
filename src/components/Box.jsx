@@ -1,17 +1,18 @@
 import React from 'react';
-import './css/Box.css';
+import '../css/Box.css';
 import PropTypes from 'prop-types';
 import Cell from './Cell';
 
 Box.propTypes = {
-  handleClick: PropTypes.func.isRequired,
-  handleDoubleClick: PropTypes.func.isRequired,
   number: PropTypes.string.isRequired,
-  cells: PropTypes.arrayOf(PropTypes.instanceOf(Object)).isRequired
+  cells: PropTypes.arrayOf(PropTypes.instanceOf(Object)).isRequired,
+  windowSize: PropTypes.string.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  handleDoubleClick: PropTypes.func.isRequired
 };
 
 function Box(props) {
-  const { handleClick, handleDoubleClick, number, cells } = props;
+  const { number, cells, windowSize, handleClick, handleDoubleClick } = props;
   const onClick = (cellNumber) => {
     handleClick(number, cellNumber);
   };
@@ -27,8 +28,9 @@ function Box(props) {
         value={c.value}
         isStarting={c.isStarting}
         isSelected={c.isSelected}
-        isMarkup={c.isMarkup}
         isIncorrect={c.isIncorrect}
+        isMarkup={c.isMarkup}
+        windowSize={windowSize}
         onClick={onClick}
         onDoubleClick={onDoubleClick}
       />
@@ -36,7 +38,7 @@ function Box(props) {
   }
 
   return (
-    <div className='box'>
+    <div className={`box box-${windowSize}`}>
       {renderAllCells()}
     </div>
   );

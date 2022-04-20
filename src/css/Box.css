@@ -1,10 +1,25 @@
 .box {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  background-color: white;
+}
+
+.box-large {
+  width: 261px;
   outline: 4px black solid;
   outline-offset: -4px;
-  width: 261px;
-  background-color: white;
+}
+
+.box-medium {
+  width: 176px;
+  outline: 3px black solid;
+  outline-offset: -3px;
+}
+
+.box-small {
+  width: 90px;
+  outline: 2px black solid;
+  outline-offset: -2px;
 }
 
 .box div {

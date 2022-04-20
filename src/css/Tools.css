@@ -1,9 +1,17 @@
 .tools {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  width: 783px;
   padding-top: 25px;
-  padding-left: 15%;
-  padding-right: 15%;
-  padding-bottom: 5%;
+}
+
+.tools-large {
+  width: 783px;
+}
+
+.tools-medium {
+  width: 522px;
+}
+
+.tools-small {
+  width: 261px;
 }

@@ -1,0 +1,10 @@
+.container {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.progress-container {
+  display: grid;
+  justify-items: center;
+}

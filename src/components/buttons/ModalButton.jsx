@@ -1,5 +1,5 @@
 import React from 'react';
-import './css/ModalButton.css';
+import '../../css/buttons/ModalButton.css';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 

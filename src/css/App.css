@@ -11,6 +11,16 @@ body {
 .puzzle {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  padding-top: 15px;
+}
+
+.puzzle-large {
   width: 783px;
+}
+
+.puzzle-medium {
+  width: 522px;
+}
+
+.puzzle-small {
+  width: 261px;
 }

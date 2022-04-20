@@ -1,14 +1,15 @@
 import React from 'react';
-import './css/Cell.css';
+import '../css/Cell.css';
 import PropTypes from 'prop-types';
 
 Cell.propTypes = {
   number: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
-  isMarkup: PropTypes.bool.isRequired,
   isStarting: PropTypes.bool.isRequired,
   isSelected: PropTypes.bool.isRequired,
   isIncorrect: PropTypes.bool.isRequired,
+  isMarkup: PropTypes.bool.isRequired,
+  windowSize: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   onDoubleClick: PropTypes.func.isRequired
 };
@@ -17,10 +18,11 @@ function Cell(props) {
   const {
     number,
     value,
-    isMarkup,
     isStarting,
     isSelected,
     isIncorrect,
+    isMarkup,
+    windowSize,
     onClick,
     onDoubleClick
   } = props;
@@ -34,7 +36,7 @@ function Cell(props) {
   };
 
   function getClassName() {
-    let className = 'cell';
+    let className = `cell cell-${windowSize}`;
     if (isStarting) {
       className += ' starting';
     }

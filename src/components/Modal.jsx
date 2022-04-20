@@ -1,7 +1,7 @@
 import React from 'react';
-import './css/Modal.css';
+import '../css/Modal.css';
 import PropTypes from 'prop-types';
-import ModalButton from './ModalButton';
+import ModalButton from './buttons/ModalButton';
 
 Modal.propTypes = {
   handleOK: PropTypes.func.isRequired,

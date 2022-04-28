@@ -47,7 +47,7 @@ function Cell(props) {
       className += ' incorrect';
     }
     if (isMarkup) {
-      className += ' markup';
+      className += ` markup-${windowSize}`;
     }
     return className;
   }

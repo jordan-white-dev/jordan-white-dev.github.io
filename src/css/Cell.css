@@ -34,8 +34,16 @@
   color: black;
 }
 
-.markup div {
+.markup-large {
   font-size: 1em;
+}
+
+.markup-medium {
+  font-size: 0.67em;
+}
+
+.markup-small {
+  font-size: 0.33em;
 }
 
 .incorrect div {

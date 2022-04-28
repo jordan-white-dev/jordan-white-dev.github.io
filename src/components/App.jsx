@@ -314,6 +314,7 @@ function App() {
           if (cell.isSelected && !cell.isStarting) {
             if (!isUsingShiftMarkup && !isUsingButtonMarkup) {
               cell.value = input;
+              cell.isMarkup = false;
               puzzleUpdated.rows[cell.row - 1][cell.column - 1] = input;
               puzzleUpdated.columns[cell.column - 1][cell.row - 1] = input;
             } else {

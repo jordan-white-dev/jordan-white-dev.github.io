@@ -1,8 +1,8 @@
-import { SimpleGrid, Square, Text } from "@chakra-ui/react";
+import { AspectRatio, Flex, SimpleGrid, Square, Text } from "@chakra-ui/react";
 
 const SudokuCell = (cellValue: string) => {
   return (
-    <Square border="1px solid black">
+    <Square aspectRatio="square" border="1px solid black" minWidth="50px">
       <Text>{cellValue}</Text>
     </Square>
   );
@@ -30,7 +30,7 @@ const SudokuBox = (
 );
 
 const SudokuGrid = (
-  <SimpleGrid border="2px solid black" columns={3} gap="0">
+  <SimpleGrid aspectRatio="square" border="2px solid black" columns={3} gap="0">
     {SudokuBox}
     {SudokuBox}
     {SudokuBox}
@@ -43,67 +43,56 @@ const SudokuGrid = (
   </SimpleGrid>
 );
 
-// const NumberPad = (
-//   <Grid templateColumns="repeat(3, 1fr)" >
-//     <GridItem>
-//       <Square backgroundColor="purple.fg" border="none" rounded="lg">
-//         <Text>1</Text>
-//       </Square>
-//     </GridItem>
-//     <GridItem>
-//       <Square backgroundColor="purple.fg" border="none" rounded="lg">
-//         <Text>2</Text>
-//       </Square>
-//     </GridItem>
-//     <GridItem>
-//       <Square backgroundColor="purple.fg" border="none" rounded="lg">
-//         <Text>3</Text>
-//       </Square>
-//     </GridItem>
-//     <GridItem>
-//       <Square backgroundColor="purple.fg" border="none" rounded="lg">
-//         <Text>4</Text>
-//       </Square>
-//     </GridItem>
-//     <GridItem>
-//       <Square backgroundColor="purple.fg" border="none" rounded="lg">
-//         <Text>5</Text>
-//       </Square>
-//     </GridItem>
-//     <GridItem>
-//       <Square backgroundColor="purple.fg" border="none" rounded="lg">
-//         <Text>6</Text>
-//       </Square>
-//     </GridItem>
-//     <GridItem>
-//       <Square backgroundColor="purple.fg" border="none" rounded="lg">
-//         <Text>7</Text>
-//       </Square>
-//     </GridItem>
-//     <GridItem>
-//       <Square backgroundColor="purple.fg" border="none" rounded="lg">
-//         <Text>8</Text>
-//       </Square>
-//     </GridItem>
-//     <GridItem>
-//       <Square backgroundColor="purple.fg" border="none" rounded="lg">
-//         <Text>9</Text>
-//       </Square>
-//     </GridItem>
-//     <GridItem>
-//       <Square backgroundColor="purple.fg" border="none" rounded="lg">
-//         <Text>0</Text>
-//       </Square>
-//     </GridItem>
-//   </Grid>
-// );
+const NumberPad = (
+  <SimpleGrid aspectRatio="square" columns={3} gap="2">
+    <AspectRatio ratio={1 / 1}>
+      <Square
+        aspectRatio="square"
+        backgroundColor="purple.fg"
+        border="none"
+        fontFamily="sans-serif"
+        rounded="lg"
+        textStyle="6xl"
+      >
+        <Text>1</Text>
+      </Square>
+    </AspectRatio>
+    <Square backgroundColor="purple.fg" border="none" rounded="lg">
+      <Text>2</Text>
+    </Square>
+    <Square backgroundColor="purple.fg" border="none" rounded="lg">
+      <Text>3</Text>
+    </Square>
+    <Square backgroundColor="purple.fg" border="none" rounded="lg">
+      <Text>4</Text>
+    </Square>
+    <Square backgroundColor="purple.fg" border="none" rounded="lg">
+      <Text>5</Text>
+    </Square>
+    <Square backgroundColor="purple.fg" border="none" rounded="lg">
+      <Text>6</Text>
+    </Square>
+    <Square backgroundColor="purple.fg" border="none" rounded="lg">
+      <Text>7</Text>
+    </Square>
+    <Square backgroundColor="purple.fg" border="none" rounded="lg">
+      <Text>8</Text>
+    </Square>
+    <Square backgroundColor="purple.fg" border="none" rounded="lg">
+      <Text>9</Text>
+    </Square>
+    <Square backgroundColor="purple.fg" border="none" rounded="lg">
+      <Text>0</Text>
+    </Square>
+  </SimpleGrid>
+);
 
 const Home = () => {
   return (
-    // <HStack>
-    SudokuGrid
-    // {/* {NumberPad} */}
-    // </HStack>
+    <Flex direction="row" alignItems="center" gap="8">
+      {SudokuGrid}
+      {NumberPad}
+    </Flex>
   );
 };
 

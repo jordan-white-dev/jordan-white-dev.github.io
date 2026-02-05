@@ -1,62 +1,46 @@
-import { Grid, GridItem, Square, Text } from "@chakra-ui/react";
+import { SimpleGrid, Square, Text } from "@chakra-ui/react";
 
-const SudokuCell = (
-  cellValue: string,
-  isBorderTopSet: boolean,
-  isBorderBottomSet: boolean,
-  isBorderLeftSet: boolean,
-  isBorderRightSet: boolean,
-) => {
+const SudokuCell = (cellValue: string) => {
   return (
-    <Square
-      aspectRatio="square"
-      borderTop={isBorderTopSet ? "3px solid black" : "none"}
-      borderBottom={isBorderBottomSet ? "3px solid black" : "none"}
-      borderLeft={isBorderLeftSet ? "3px solid black" : "none"}
-      borderRight={isBorderRightSet ? "3px solid black" : "none"}
-    >
+    <Square border="1px solid black">
       <Text>{cellValue}</Text>
     </Square>
   );
 };
 
 const SudokuBox = (
-  <Grid
+  <SimpleGrid
     aspectRatio="square"
-    gap={0}
-    templateColumns="repeat(3, 1fr)"
-    divideColor="black"
-    divideStyle="solid"
-    divideX="3px"
-    divideY="3px"
-    textStyle="6xl"
+    border="2px solid black"
+    columns={3}
     fontFamily="sans-serif"
-    color="black"
+    gap="0"
+    textStyle="6xl"
   >
-    <GridItem>{SudokuCell("1", true, false, true, false)}</GridItem>
-    <GridItem>{SudokuCell("2", false, false, false, false)}</GridItem>
-    <GridItem>{SudokuCell("3", false, false, false, true)}</GridItem>
-    <GridItem>{SudokuCell("4", false, false, false, false)}</GridItem>
-    <GridItem>{SudokuCell("5", false, false, false, false)}</GridItem>
-    <GridItem>{SudokuCell("6", false, false, false, true)}</GridItem>
-    <GridItem>{SudokuCell("7", false, true, false, false)}</GridItem>
-    <GridItem>{SudokuCell("8", false, true, false, false)}</GridItem>
-    <GridItem>{SudokuCell("9", false, true, false, true)}</GridItem>
-  </Grid>
+    {SudokuCell("1")}
+    {SudokuCell("2")}
+    {SudokuCell("3")}
+    {SudokuCell("4")}
+    {SudokuCell("5")}
+    {SudokuCell("6")}
+    {SudokuCell("7")}
+    {SudokuCell("8")}
+    {SudokuCell("9")}
+  </SimpleGrid>
 );
 
 const SudokuGrid = (
-  <Grid gap={0} templateColumns="repeat(3, 1fr)">
-    <GridItem>{SudokuBox}</GridItem>
-    <GridItem>{SudokuBox}</GridItem>
-    <GridItem>{SudokuBox}</GridItem>
-    <GridItem>{SudokuBox}</GridItem>
-    <GridItem>{SudokuBox}</GridItem>
-    <GridItem>{SudokuBox}</GridItem>
-    <GridItem>{SudokuBox}</GridItem>
-    <GridItem>{SudokuBox}</GridItem>
-    <GridItem>{SudokuBox}</GridItem>
-  </Grid>
+  <SimpleGrid border="2px solid black" columns={3} gap="0">
+    {SudokuBox}
+    {SudokuBox}
+    {SudokuBox}
+    {SudokuBox}
+    {SudokuBox}
+    {SudokuBox}
+    {SudokuBox}
+    {SudokuBox}
+    {SudokuBox}
+  </SimpleGrid>
 );
 
 // const NumberPad = (

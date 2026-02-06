@@ -15,23 +15,6 @@ const SudokuCell = (cellValue: string) => {
   );
 };
 
-const NumpadCell = (cellValue: string) => {
-  return (
-    <Square
-      aspectRatio="square"
-      backgroundColor="purple.fg"
-      border="none"
-      fontFamily="sans-serif"
-      rounded="lg"
-      textStyle="6xl"
-      color="white"
-      width="stretch"
-    >
-      <Text>{cellValue}</Text>
-    </Square>
-  );
-};
-
 const SudokuBox = (
   <SimpleGrid
     border="2px solid black"
@@ -65,6 +48,23 @@ const SudokuGrid = (
     {SudokuBox}
   </SimpleGrid>
 );
+
+const NumpadCell = (cellValue: string) => {
+  return (
+    <Square
+      aspectRatio="square"
+      backgroundColor="purple.fg"
+      border="none"
+      fontFamily="sans-serif"
+      rounded="lg"
+      textStyle="6xl"
+      color="white"
+      width="stretch"
+    >
+      <Text>{cellValue}</Text>
+    </Square>
+  );
+};
 
 const NumberPad = (
   <SimpleGrid

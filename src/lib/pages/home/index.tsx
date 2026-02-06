@@ -1,4 +1,11 @@
-import { AspectRatio, Flex, SimpleGrid, Square, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  GridItem,
+  HStack,
+  SimpleGrid,
+  Square,
+  Text,
+} from "@chakra-ui/react";
 
 const SudokuCell = (cellValue: string) => {
   return (
@@ -8,9 +15,25 @@ const SudokuCell = (cellValue: string) => {
   );
 };
 
+const NumpadCell = (cellValue: string) => {
+  return (
+    <Square
+      aspectRatio="square"
+      backgroundColor="purple.fg"
+      border="none"
+      fontFamily="sans-serif"
+      rounded="lg"
+      textStyle="6xl"
+      color="white"
+      width="stretch"
+    >
+      <Text>{cellValue}</Text>
+    </Square>
+  );
+};
+
 const SudokuBox = (
   <SimpleGrid
-    aspectRatio="square"
     border="2px solid black"
     columns={3}
     fontFamily="sans-serif"
@@ -30,7 +53,7 @@ const SudokuBox = (
 );
 
 const SudokuGrid = (
-  <SimpleGrid aspectRatio="square" border="2px solid black" columns={3} gap="0">
+  <SimpleGrid border="2px solid black" columns={3} gap="0">
     {SudokuBox}
     {SudokuBox}
     {SudokuBox}
@@ -44,54 +67,33 @@ const SudokuGrid = (
 );
 
 const NumberPad = (
-  <SimpleGrid aspectRatio="square" columns={3} gap="2">
-    <AspectRatio ratio={1 / 1}>
-      <Square
-        aspectRatio="square"
-        backgroundColor="purple.fg"
-        border="none"
-        fontFamily="sans-serif"
-        rounded="lg"
-        textStyle="6xl"
-      >
-        <Text>1</Text>
-      </Square>
-    </AspectRatio>
-    <Square backgroundColor="purple.fg" border="none" rounded="lg">
-      <Text>2</Text>
-    </Square>
-    <Square backgroundColor="purple.fg" border="none" rounded="lg">
-      <Text>3</Text>
-    </Square>
-    <Square backgroundColor="purple.fg" border="none" rounded="lg">
-      <Text>4</Text>
-    </Square>
-    <Square backgroundColor="purple.fg" border="none" rounded="lg">
-      <Text>5</Text>
-    </Square>
-    <Square backgroundColor="purple.fg" border="none" rounded="lg">
-      <Text>6</Text>
-    </Square>
-    <Square backgroundColor="purple.fg" border="none" rounded="lg">
-      <Text>7</Text>
-    </Square>
-    <Square backgroundColor="purple.fg" border="none" rounded="lg">
-      <Text>8</Text>
-    </Square>
-    <Square backgroundColor="purple.fg" border="none" rounded="lg">
-      <Text>9</Text>
-    </Square>
-    <Square backgroundColor="purple.fg" border="none" rounded="lg">
-      <Text>0</Text>
-    </Square>
+  <SimpleGrid
+    columns={3}
+    fontFamily="sans-serif"
+    gap="2"
+    textStyle="6xl"
+    width="fit-content"
+  >
+    {NumpadCell("1")}
+    {NumpadCell("2")}
+    {NumpadCell("3")}
+    {NumpadCell("4")}
+    {NumpadCell("5")}
+    {NumpadCell("6")}
+    {NumpadCell("7")}
+    {NumpadCell("8")}
+    {NumpadCell("9")}
+    <GridItem colSpan={3}>{NumpadCell("0")}</GridItem>
   </SimpleGrid>
 );
 
+const PlayerInterface = <HStack gap="8">{NumberPad}</HStack>;
+
 const Home = () => {
   return (
-    <Flex direction="row" gap="8">
+    <Flex direction="column" alignItems="center" gap="8">
       {SudokuGrid}
-      {NumberPad}
+      {PlayerInterface}
     </Flex>
   );
 };

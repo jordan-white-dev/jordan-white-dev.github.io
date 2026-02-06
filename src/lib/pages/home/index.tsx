@@ -1,11 +1,4 @@
-import {
-  Flex,
-  GridItem,
-  HStack,
-  SimpleGrid,
-  Square,
-  Text,
-} from "@chakra-ui/react";
+import { Flex, HStack, SimpleGrid, Square, Text } from "@chakra-ui/react";
 
 const SudokuCell = (cellValue: string) => {
   return (
@@ -83,7 +76,6 @@ const NumberPad = (
     {NumpadCell("7")}
     {NumpadCell("8")}
     {NumpadCell("9")}
-    <GridItem colSpan={3}>{NumpadCell("0")}</GridItem>
   </SimpleGrid>
 );
 

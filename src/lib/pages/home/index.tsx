@@ -2,7 +2,7 @@ import { AspectRatio, Flex, SimpleGrid, Square, Text } from "@chakra-ui/react";
 
 const SudokuCell = (cellValue: string) => {
   return (
-    <Square aspectRatio="square" border="1px solid black" minWidth="50px">
+    <Square aspectRatio="square" border="1px solid black">
       <Text>{cellValue}</Text>
     </Square>
   );
@@ -89,7 +89,7 @@ const NumberPad = (
 
 const Home = () => {
   return (
-    <Flex direction="row" alignItems="center" gap="8">
+    <Flex direction="row" gap="8">
       {SudokuGrid}
       {NumberPad}
     </Flex>

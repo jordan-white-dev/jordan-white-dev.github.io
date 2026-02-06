@@ -1,9 +1,17 @@
-import { Flex, HStack, SimpleGrid, Square, Text } from "@chakra-ui/react";
+import { Button, Flex, HStack, SimpleGrid, Square } from "@chakra-ui/react";
 
 const SudokuCell = (cellValue: string) => {
   return (
     <Square aspectRatio="square" border="1px solid black">
-      <Text>{cellValue}</Text>
+      <Button
+        backgroundColor="white"
+        borderRadius="0"
+        color="black"
+        height="stretch"
+        textStyle="6xl"
+      >
+        {cellValue}
+      </Button>
     </Square>
   );
 };
@@ -46,15 +54,19 @@ const NumpadCell = (cellValue: string) => {
   return (
     <Square
       aspectRatio="square"
-      backgroundColor="purple.fg"
       border="none"
       fontFamily="sans-serif"
-      rounded="lg"
-      textStyle="6xl"
-      color="white"
       width="stretch"
     >
-      <Text>{cellValue}</Text>
+      <Button
+        backgroundColor="purple.fg"
+        color="white"
+        height="stretch"
+        rounded="lg"
+        textStyle="6xl"
+      >
+        {cellValue}
+      </Button>
     </Square>
   );
 };
@@ -83,7 +95,7 @@ const PlayerInterface = <HStack gap="8">{NumberPad}</HStack>;
 
 const Home = () => {
   return (
-    <Flex direction="column" alignItems="center" gap="8">
+    <Flex alignItems="center" direction="column" gap="8">
       {SudokuGrid}
       {PlayerInterface}
     </Flex>

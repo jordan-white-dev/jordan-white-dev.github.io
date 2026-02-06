@@ -1,9 +1,9 @@
-import { Box, Flex } from '@chakra-ui/react';
-import type { ReactNode } from 'react';
+import { Box, Flex } from "@chakra-ui/react";
+import type { ReactNode } from "react";
 
-import { Footer } from './components/footer';
-import { Header } from './components/header';
-import { Meta } from './components/meta';
+import { Footer } from "./components/footer";
+import { Header } from "./components/header";
+import { Meta } from "./components/meta";
 
 type LayoutProps = {
   children: ReactNode;

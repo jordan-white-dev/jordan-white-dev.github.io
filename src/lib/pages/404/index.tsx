@@ -6,13 +6,13 @@ import {
   Image,
   Link,
   Text,
-} from '@chakra-ui/react';
-import { useNavigate } from '@tanstack/react-router';
+} from "@chakra-ui/react";
+import { useNavigate } from "@tanstack/react-router";
 
 const Page404 = () => {
   const navigate = useNavigate();
 
-  const handleBackToHome = () => navigate({ to: '/' });
+  const handleBackToHome = () => navigate({ to: "/" });
 
   return (
     <Grid gap={4} textAlign="center">

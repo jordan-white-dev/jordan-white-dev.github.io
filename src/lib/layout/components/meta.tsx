@@ -1,4 +1,4 @@
-const APP_NAME = 'vite-react-chakra-starter';
+const APP_NAME = "vite-react-chakra-starter";
 
 export const Meta = () => {
   return (

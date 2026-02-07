@@ -2,13 +2,29 @@ import { Button, Flex, HStack, SimpleGrid, Square } from "@chakra-ui/react";
 
 const SudokuCell = (cellValue: string) => {
   return (
-    <Square aspectRatio="square" border="1px solid black">
+    <Square
+      aspectRatio="square"
+      border="1px solid black"
+      minHeight="31px"
+      minWidth="31px"
+    >
       <Button
-        backgroundColor="white"
+        backgroundColor="transparent"
         borderRadius="0"
+        borderWidth="0"
+        padding={{ base: "0", sm: "1rem", md: "1.5rem" }}
         color="black"
         height="stretch"
-        textStyle="6xl"
+        minHeight="31px"
+        minWidth="31px"
+        textStyle={{
+          base: "xl",
+          sm: "3xl",
+          md: "5xl",
+          // lg: "xs",
+          // xl: "5xl",
+          // "2xl": "6xl",
+        }}
       >
         {cellValue}
       </Button>
@@ -17,7 +33,13 @@ const SudokuCell = (cellValue: string) => {
 };
 
 const SudokuBox = (
-  <SimpleGrid border="2px solid black" columns={3} gap="0">
+  <SimpleGrid
+    border="2px solid black"
+    columns={3}
+    gap="0"
+    minHeight="103px"
+    minWidth="103px"
+  >
     {SudokuCell("1")}
     {SudokuCell("2")}
     {SudokuCell("3")}
@@ -31,7 +53,13 @@ const SudokuBox = (
 );
 
 const SudokuGrid = (
-  <SimpleGrid border="2px solid black" columns={3} gap="0">
+  <SimpleGrid
+    border="2px solid black"
+    columns={3}
+    gap="0"
+    minHeight="313px"
+    minWidth="313px"
+  >
     {SudokuBox}
     {SudokuBox}
     {SudokuBox}

@@ -5,25 +5,22 @@ const SudokuCell = (cellValue: string) => {
     <Square
       aspectRatio="square"
       border="1px solid black"
-      minHeight="31px"
-      minWidth="31px"
+      minHeight={{ base: "31px", sm: "51px", md: "80px" }}
+      minWidth={{ base: "31px", sm: "51px", md: "80px" }}
     >
       <Button
         backgroundColor="transparent"
         borderRadius="0"
         borderWidth="0"
-        padding={{ base: "0", sm: "1rem", md: "1.5rem" }}
+        padding="0"
         color="black"
         height="stretch"
-        minHeight="31px"
-        minWidth="31px"
+        minHeight={{ base: "31px", sm: "51px", md: "80px" }}
+        minWidth={{ base: "31px", sm: "51px", md: "80px" }}
         textStyle={{
-          base: "xl",
-          sm: "3xl",
-          md: "5xl",
-          // lg: "xs",
-          // xl: "5xl",
-          // "2xl": "6xl",
+          base: "2xl",
+          sm: "4xl",
+          md: "6xl",
         }}
       >
         {cellValue}
@@ -37,8 +34,8 @@ const SudokuBox = (
     border="2px solid black"
     columns={3}
     gap="0"
-    minHeight="103px"
-    minWidth="103px"
+    minHeight={{ base: "103px", sm: "157px", md: "244px" }}
+    minWidth={{ base: "103px", sm: "157px", md: "244px" }}
   >
     {SudokuCell("1")}
     {SudokuCell("2")}
@@ -57,8 +54,8 @@ const SudokuGrid = (
     border="2px solid black"
     columns={3}
     gap="0"
-    minHeight="313px"
-    minWidth="313px"
+    minHeight={{ base: "313px", sm: "475px", md: "736px" }}
+    minWidth={{ base: "313px", sm: "475px", md: "736px" }}
   >
     {SudokuBox}
     {SudokuBox}

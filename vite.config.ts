@@ -15,8 +15,8 @@ const pwaOptions: Partial<VitePWAOptions> = {
   disable: true,
   registerType: "autoUpdate",
   manifest: {
-    short_name: "vite-react-chakra-starter",
-    name: "Vite React App Template",
+    short_name: "sudoku",
+    name: "Sudoku",
     lang: "en",
     start_url: "/",
     background_color: "#FFFFFF",

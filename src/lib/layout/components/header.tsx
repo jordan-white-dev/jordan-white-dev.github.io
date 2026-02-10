@@ -1,6 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
-
-import { ColorModeButton } from "@/lib/components/ui/color-mode";
+import { Flex } from "@chakra-ui/react";
 
 export const Header = () => {
   return (
@@ -10,11 +8,6 @@ export const Header = () => {
       align="center"
       alignSelf="flex-start"
       justifyContent="center"
-      gridGap={2}
-    >
-      <Box marginLeft="auto">
-        <ColorModeButton />
-      </Box>
-    </Flex>
+    ></Flex>
   );
 };

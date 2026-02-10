@@ -1,4 +1,4 @@
-import { Flex, Link, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 
 export const Footer = () => {
   return (
@@ -8,17 +8,6 @@ export const Footer = () => {
       align="center"
       alignSelf="flex-end"
       justifyContent="center"
-    >
-      <Text fontSize="xs">
-        {new Date().getFullYear()} -{" "}
-        <Link
-          href="https://agustinusnathaniel.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          agustinusnathaniel.com
-        </Link>
-      </Text>
-    </Flex>
+    ></Flex>
   );
 };

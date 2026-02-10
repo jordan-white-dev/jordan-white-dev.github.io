@@ -5,11 +5,9 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import { Layout } from "@/lib/layout";
 
-const title = "Vite React Chakra Starter";
-const description = "app starter template";
-const url = "https://vite-react-chakra-starter.sznm.dev";
-const ogImgUrl =
-  "https://og.sznm.dev/api/generate?heading=vite-react-chakra-starter&text=React+vite+template+with+Chakra+UI+and+TypeScript+setup.&template=color";
+const title = "Sudoku";
+const description = "sudoku app";
+const url = "https://jordan-white-dev.github.io/";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -70,10 +68,6 @@ export const Route = createRootRoute({
         content: description,
       },
       {
-        name: "og:image",
-        content: ogImgUrl,
-      },
-      {
         name: "twitter:card",
         content: "summary_large_image",
       },
@@ -88,10 +82,6 @@ export const Route = createRootRoute({
       {
         name: "twitter:description",
         content: description,
-      },
-      {
-        name: "twitter:image",
-        content: ogImgUrl,
       },
     ],
     links: [

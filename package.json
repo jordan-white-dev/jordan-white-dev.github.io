@@ -1,8 +1,8 @@
 {
-  "name": "vite-react-chakra-starter",
+  "name": "sudoku",
   "version": "0.1.0",
   "private": true,
-  "author": "agustinusnathaniel",
+  "author": "jordanwhite",
   "type": "module",
   "engines": {
     "node": "^24.11.x"

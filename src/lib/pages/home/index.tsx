@@ -73,11 +73,12 @@ const NumpadButton = (buttonValue: string) => {
   return (
     <Square aspectRatio="square" width="stretch">
       <Button
+        aspectRatio="square"
         backgroundColor="purple.fg"
         color="white"
-        height="stretch"
         rounded="lg"
-        textStyle="6xl"
+        size={{ base: "xs", sm: "md", md: "2xl" }}
+        textStyle={{ base: "md", sm: "3xl", md: "5xl" }}
       >
         {buttonValue}
       </Button>
@@ -86,7 +87,7 @@ const NumpadButton = (buttonValue: string) => {
 };
 
 const NumberPad = (
-  <SimpleGrid columns={3} gap="2">
+  <SimpleGrid columns={3} gap={{ base: "0.5", sm: "1", md: "1.5" }}>
     {NumpadButton("1")}
     {NumpadButton("2")}
     {NumpadButton("3")}

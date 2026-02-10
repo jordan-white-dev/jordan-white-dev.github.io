@@ -1,4 +1,7 @@
-import { Button, Flex, HStack, SimpleGrid, Square } from "@chakra-ui/react";
+import { Button, Flex, SimpleGrid, Square, Stack } from "@chakra-ui/react";
+import { GrMultiple } from "react-icons/gr";
+import { ImCheckmark, ImRedo, ImUndo } from "react-icons/im";
+import type { IconType } from "react-icons/lib";
 
 const SudokuCell = (cellValue: string) => {
   return (
@@ -12,11 +15,11 @@ const SudokuCell = (cellValue: string) => {
         backgroundColor="transparent"
         borderRadius="0"
         borderWidth="0"
-        padding="0"
         color="black"
         height="stretch"
         minHeight={{ base: "31px", sm: "51px", md: "80px" }}
         minWidth={{ base: "31px", sm: "51px", md: "80px" }}
+        padding="0"
         textStyle={{
           base: "2xl",
           sm: "4xl",
@@ -100,7 +103,29 @@ const NumberPad = (
   </SimpleGrid>
 );
 
-const PlayerInterface = <HStack gap="8">{NumberPad}</HStack>;
+const ActionButton = (buttonValue: string, Icon?: IconType) => {
+  return (
+    <Button aspectRatio={2 / 1} rounded="lg">
+      {buttonValue} {Icon && <Icon />}
+    </Button>
+  );
+};
+
+const PuzzleActions = (
+  <Stack direction="column">
+    {ActionButton("Undo", ImUndo)}
+    {ActionButton("Redo", ImRedo)}
+    {ActionButton("Submit", ImCheckmark)}
+    {ActionButton("Multiselect", GrMultiple)}
+  </Stack>
+);
+
+const PlayerInterface = (
+  <Stack direction={{ base: "row", lg: "column" }} gap="8">
+    {PuzzleActions}
+    {NumberPad}
+  </Stack>
+);
 
 const Home = () => {
   return (

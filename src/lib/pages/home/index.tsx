@@ -81,7 +81,7 @@ const SudokuGrid = (
 
 const NumpadButton = (buttonValue: string) => {
   return (
-    <Square aspectRatio="square" width="stretch">
+    <Square aspectRatio="square">
       <Button
         aspectRatio="square"
         backgroundColor="purple.fg"
@@ -97,7 +97,12 @@ const NumpadButton = (buttonValue: string) => {
 };
 
 const NumberPad = (
-  <SimpleGrid columns={3} gap={{ base: "0.5", sm: "1", md: "1.5" }}>
+  <SimpleGrid
+    columns={3}
+    gap={{ base: "0.5", sm: "1", md: "1.5" }}
+    height="fit-content"
+    width="fit-content"
+  >
     {NumpadButton("1")}
     {NumpadButton("2")}
     {NumpadButton("3")}
@@ -162,7 +167,7 @@ const PuzzleInputActions = (
 );
 
 const PlayerInterface = (
-  <Stack direction={{ base: "row", lg: "column" }} gap="8">
+  <Stack alignItems="center" direction={{ base: "row", lg: "column" }} gap="8">
     {PuzzleActions}
     {NumberPad}
     {PuzzleInputActions}

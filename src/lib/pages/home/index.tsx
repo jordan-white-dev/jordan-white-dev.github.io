@@ -139,7 +139,7 @@ const inputs = [
   { value: "color", title: "Color" },
 ];
 
-const PuzzleInputActions = (
+const InputActions = (
   <Stack direction={{ base: "column", lg: "row" }}>
     <RadioCard.Root
       align="center"
@@ -170,7 +170,7 @@ const PlayerInterface = (
   <Stack alignItems="center" direction={{ base: "row", lg: "column" }} gap="8">
     {PuzzleActions}
     {NumberPad}
-    {PuzzleInputActions}
+    {InputActions}
   </Stack>
 );
 

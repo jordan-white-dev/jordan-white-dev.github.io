@@ -1,7 +1,14 @@
-import { Button, Flex, SimpleGrid, Square, Stack } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Icon,
+  RadioCard,
+  SimpleGrid,
+  Square,
+  Stack,
+} from "@chakra-ui/react";
 import { GrMultiple } from "react-icons/gr";
 import { ImCheckmark, ImRedo, ImUndo } from "react-icons/im";
-import type { IconType } from "react-icons/lib";
 
 const SudokuCell = (cellValue: string) => {
   return (
@@ -103,20 +110,54 @@ const NumberPad = (
   </SimpleGrid>
 );
 
-const ActionButton = (buttonValue: string, Icon?: IconType) => {
-  return (
-    <Button aspectRatio={2 / 1} rounded="lg">
-      {buttonValue} {Icon && <Icon />}
-    </Button>
-  );
-};
+const actions = [
+  { value: "undo", icon: <ImUndo /> },
+  { value: "redo", icon: <ImRedo /> },
+  { value: "check", icon: <ImCheckmark /> },
+  { value: "multiselect", icon: <GrMultiple /> },
+];
 
 const PuzzleActions = (
-  <Stack direction="column">
-    {ActionButton("Undo", ImUndo)}
-    {ActionButton("Redo", ImRedo)}
-    {ActionButton("Submit", ImCheckmark)}
-    {ActionButton("Multiselect", GrMultiple)}
+  <Stack direction={{ base: "column", lg: "row" }}>
+    {actions.map((action) => (
+      <Button aspectRatio={2 / 1} key={action.value} rounded="lg">
+        <Icon>{action.icon}</Icon>
+      </Button>
+    ))}
+  </Stack>
+);
+
+const inputs = [
+  { value: "digit", title: "Digit" },
+  { value: "corner", title: "Corner" },
+  { value: "center", title: "Center" },
+  { value: "color", title: "Color" },
+];
+
+const PuzzleInputActions = (
+  <Stack direction={{ base: "column", lg: "row" }}>
+    <RadioCard.Root
+      align="center"
+      defaultValue="digit"
+      justify="center"
+      orientation="horizontal"
+      size="sm"
+      maxWidth="sm"
+    >
+      <Stack align="stretch" direction={{ base: "column", lg: "row" }}>
+        {inputs.map((input) => (
+          <RadioCard.Item key={input.value} value={input.value}>
+            <RadioCard.ItemHiddenInput />
+            <RadioCard.ItemControl>
+              {/* <Icon fontSize="2xl" color="fg.muted">
+                {input.icon}
+              </Icon> */}
+              <RadioCard.ItemText>{input.title}</RadioCard.ItemText>
+            </RadioCard.ItemControl>
+          </RadioCard.Item>
+        ))}
+      </Stack>
+    </RadioCard.Root>
   </Stack>
 );
 
@@ -124,6 +165,7 @@ const PlayerInterface = (
   <Stack direction={{ base: "row", lg: "column" }} gap="8">
     {PuzzleActions}
     {NumberPad}
+    {PuzzleInputActions}
   </Stack>
 );
 

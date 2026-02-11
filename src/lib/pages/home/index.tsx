@@ -86,8 +86,8 @@ const NumpadButton = (buttonValue: string) => {
         aspectRatio="square"
         backgroundColor="purple.fg"
         color="white"
-        rounded="lg"
-        size={{ base: "xs", sm: "md", md: "2xl" }}
+        rounded="md"
+        size={{ base: "xs", sm: "lg", md: "2xl" }}
         textStyle={{ base: "md", sm: "3xl", md: "5xl" }}
       >
         {buttonValue}
@@ -97,12 +97,7 @@ const NumpadButton = (buttonValue: string) => {
 };
 
 const NumberPad = (
-  <SimpleGrid
-    columns={3}
-    gap={{ base: "0.5", sm: "1", md: "1.5" }}
-    height="fit-content"
-    width="fit-content"
-  >
+  <SimpleGrid columns={3} gap={{ base: "0.1875rem", sm: "1", md: "1.5" }}>
     {NumpadButton("1")}
     {NumpadButton("2")}
     {NumpadButton("3")}
@@ -125,21 +120,18 @@ const actions = [
 const PuzzleActions = (
   <SimpleGrid
     columns={{ base: 1, lg: 2 }}
-    gap={{ base: "0.5", sm: "1", md: "1.5" }}
+    gap={{ base: "0.5", sm: "1", md: "0.5833rem", lg: "3" }}
   >
     {actions.map((action) => (
       <Button
         aspectRatio={2 / 1}
         key={action.value}
-        padding={{
-          sm: "0.25rem 1rem 0.25rem 1rem",
-          md: "0.375rem 1rem 0.375rem 1rem",
-        }}
-        rounded="lg"
-        height="fit-content"
-        width="fit-content"
+        rounded={{ base: "sm", sm: "md" }}
+        size={{ sm: "xs", md: "lg", lg: "xl" }}
+        paddingTop={{ base: "1px", sm: "0px" }}
+        paddingBottom={{ base: "1px", sm: "0px" }}
       >
-        <Icon size={{ base: "sm", sm: "md", md: "2xl" }}>{action.icon}</Icon>
+        <Icon size={{ base: "md", md: "xl" }}>{action.icon}</Icon>
       </Button>
     ))}
   </SimpleGrid>
@@ -180,7 +172,7 @@ const InputActions = (
 );
 
 const PlayerInterface = (
-  <Stack alignItems="center" direction={{ base: "row", lg: "column" }} gap="8">
+  <Stack alignItems="center" direction={{ base: "row", lg: "column" }} gap="2">
     {PuzzleActions}
     {NumberPad}
     {InputActions}

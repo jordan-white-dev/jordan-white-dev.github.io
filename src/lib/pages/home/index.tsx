@@ -123,13 +123,26 @@ const actions = [
 ];
 
 const PuzzleActions = (
-  <Stack direction={{ base: "column", lg: "row" }}>
+  <SimpleGrid
+    columns={{ base: 1, lg: 2 }}
+    gap={{ base: "0.5", sm: "1", md: "1.5" }}
+  >
     {actions.map((action) => (
-      <Button aspectRatio={2 / 1} key={action.value} rounded="lg">
-        <Icon>{action.icon}</Icon>
+      <Button
+        aspectRatio={2 / 1}
+        key={action.value}
+        padding={{
+          sm: "0.25rem 1rem 0.25rem 1rem",
+          md: "0.375rem 1rem 0.375rem 1rem",
+        }}
+        rounded="lg"
+        height="fit-content"
+        width="fit-content"
+      >
+        <Icon size={{ base: "sm", sm: "md", md: "2xl" }}>{action.icon}</Icon>
       </Button>
     ))}
-  </Stack>
+  </SimpleGrid>
 );
 
 const inputs = [

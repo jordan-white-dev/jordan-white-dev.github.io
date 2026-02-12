@@ -1,12 +1,15 @@
 import {
   Button,
   Flex,
+  GridItem,
   Icon,
+  IconButton,
   RadioCard,
   SimpleGrid,
   Square,
   Stack,
 } from "@chakra-ui/react";
+import { FiDelete } from "react-icons/fi";
 import { GrMultiple } from "react-icons/gr";
 import { ImCheckmark, ImRedo, ImUndo } from "react-icons/im";
 
@@ -82,7 +85,7 @@ const SudokuGrid = (
 const NumpadButton = (buttonValue: string) => {
   return (
     <Square aspectRatio="square">
-      <Button
+      <IconButton
         aspectRatio="square"
         backgroundColor="purple.fg"
         color="white"
@@ -91,13 +94,17 @@ const NumpadButton = (buttonValue: string) => {
         textStyle={{ base: "md", sm: "3xl", md: "5xl" }}
       >
         {buttonValue}
-      </Button>
+      </IconButton>
     </Square>
   );
 };
 
 const NumberPad = (
-  <SimpleGrid columns={3} gap={{ base: "0.1875rem", sm: "1", md: "1.5" }}>
+  <SimpleGrid
+    height="fit-content"
+    columns={3}
+    gap={{ base: "0.1875rem", sm: "1", md: "1.5" }}
+  >
     {NumpadButton("1")}
     {NumpadButton("2")}
     {NumpadButton("3")}
@@ -107,14 +114,29 @@ const NumberPad = (
     {NumpadButton("7")}
     {NumpadButton("8")}
     {NumpadButton("9")}
+    <GridItem colSpan={3}>
+      <IconButton
+        aria-label="Delete"
+        backgroundColor="purple.fg"
+        color="white"
+        rounded="md"
+        size={{ base: "xs", sm: "lg", md: "2xl" }}
+        textStyle={{ base: "md", sm: "3xl", md: "5xl" }}
+        width="full"
+      >
+        <Icon size="2xl">
+          <FiDelete />
+        </Icon>
+      </IconButton>
+    </GridItem>
   </SimpleGrid>
 );
 
 const actions = [
-  { value: "undo", icon: <ImUndo /> },
-  { value: "redo", icon: <ImRedo /> },
-  { value: "check", icon: <ImCheckmark /> },
-  { value: "multiselect", icon: <GrMultiple /> },
+  { value: "undo", label: "Undo", icon: <ImUndo /> },
+  { value: "redo", label: "Redo", icon: <ImRedo /> },
+  { value: "Submit", label: "Submit", icon: <ImCheckmark /> },
+  { value: "multiselect", label: "Multiselect", icon: <GrMultiple /> },
 ];
 
 const PuzzleActions = (
@@ -123,7 +145,8 @@ const PuzzleActions = (
     gap={{ base: "0.5", sm: "1", md: "0.5833rem", lg: "3" }}
   >
     {actions.map((action) => (
-      <Button
+      <IconButton
+        aria-label={action.label}
         aspectRatio={2 / 1}
         key={action.value}
         rounded={{ base: "sm", sm: "md" }}
@@ -132,16 +155,16 @@ const PuzzleActions = (
         paddingBottom={{ base: "1px", sm: "0px" }}
       >
         <Icon size={{ base: "md", md: "xl" }}>{action.icon}</Icon>
-      </Button>
+      </IconButton>
     ))}
   </SimpleGrid>
 );
 
 const inputs = [
-  { value: "digit", title: "Digit" },
-  { value: "corner", title: "Corner" },
-  { value: "center", title: "Center" },
-  { value: "color", title: "Color" },
+  { value: "digit", label: "Digit" },
+  { value: "corner", label: "Corner" },
+  { value: "center", label: "Center" },
+  { value: "colors", label: "Colors" },
 ];
 
 const InputActions = (
@@ -156,13 +179,17 @@ const InputActions = (
     >
       <Stack align="stretch" direction={{ base: "column", lg: "row" }}>
         {inputs.map((input) => (
-          <RadioCard.Item key={input.value} value={input.value}>
+          <RadioCard.Item
+            aria-label={input.label}
+            key={input.value}
+            value={input.value}
+          >
             <RadioCard.ItemHiddenInput />
             <RadioCard.ItemControl>
               {/* <Icon fontSize="2xl" color="fg.muted">
                 {input.icon}
               </Icon> */}
-              <RadioCard.ItemText>{input.title}</RadioCard.ItemText>
+              <RadioCard.ItemText>{input.label}</RadioCard.ItemText>
             </RadioCard.ItemControl>
           </RadioCard.Item>
         ))}

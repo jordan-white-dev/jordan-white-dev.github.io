@@ -26,15 +26,14 @@ const SudokuCell = (cellValue: string) => {
         borderRadius="0"
         borderWidth="0"
         color="black"
-        height="stretch"
-        minHeight={{ base: "31px", sm: "51px", md: "80px" }}
-        minWidth={{ base: "31px", sm: "51px", md: "80px" }}
+        height={{ base: "31px", sm: "51px", md: "80px" }}
         padding="0"
         textStyle={{
           base: "2xl",
           sm: "4xl",
           md: "6xl",
         }}
+        width={{ base: "31px", sm: "51px", md: "80px" }}
       >
         {cellValue}
       </Button>
@@ -47,8 +46,8 @@ const SudokuBox = (
     border="2px solid black"
     columns={3}
     gap="0"
-    minHeight={{ base: "103px", sm: "157px", md: "244px" }}
-    minWidth={{ base: "103px", sm: "157px", md: "244px" }}
+    height={{ base: "103px", sm: "157px", md: "244px" }}
+    width={{ base: "103px", sm: "157px", md: "244px" }}
   >
     {SudokuCell("1")}
     {SudokuCell("2")}
@@ -168,34 +167,33 @@ const inputs = [
 ];
 
 const InputActions = (
-  <Stack direction={{ base: "column", lg: "row" }}>
-    <RadioCard.Root
-      align="center"
-      defaultValue="digit"
-      justify="center"
-      orientation="horizontal"
-      size="sm"
-      maxWidth="sm"
+  <RadioCard.Root
+    align="center"
+    colorPalette="purple"
+    defaultValue="digit"
+    size="lg"
+  >
+    <SimpleGrid
+      columns={{ base: 1, lg: 2 }}
+      gap={{ base: "0.5", sm: "1", md: "0.5833rem", lg: "3" }}
     >
-      <Stack align="stretch" direction={{ base: "column", lg: "row" }}>
-        {inputs.map((input) => (
-          <RadioCard.Item
-            aria-label={input.label}
-            key={input.value}
-            value={input.value}
-          >
-            <RadioCard.ItemHiddenInput />
-            <RadioCard.ItemControl>
-              {/* <Icon fontSize="2xl" color="fg.muted">
+      {inputs.map((input) => (
+        <RadioCard.Item
+          aria-label={input.label}
+          key={input.value}
+          value={input.value}
+        >
+          <RadioCard.ItemHiddenInput />
+          <RadioCard.ItemControl>
+            {/* <Icon fontSize="2xl" color="fg.muted">
                 {input.icon}
-              </Icon> */}
-              <RadioCard.ItemText>{input.label}</RadioCard.ItemText>
-            </RadioCard.ItemControl>
-          </RadioCard.Item>
-        ))}
-      </Stack>
-    </RadioCard.Root>
-  </Stack>
+                </Icon> */}
+            <RadioCard.ItemText>{input.label}</RadioCard.ItemText>
+          </RadioCard.ItemControl>
+        </RadioCard.Item>
+      ))}
+    </SimpleGrid>
+  </RadioCard.Root>
 );
 
 const PlayerInterface = (

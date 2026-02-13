@@ -10,6 +10,7 @@ import {
   SimpleGrid,
   Square,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import { FiDelete } from "react-icons/fi";
 import { GrMultiple } from "react-icons/gr";
@@ -125,7 +126,10 @@ const NumberPad = (
         textStyle={{ base: "md", sm: "3xl", md: "5xl" }}
         width="full"
       >
-        <Icon size="2xl">
+        <Icon
+          height={{ base: "6", sm: "8", md: "11" }}
+          width={{ base: "6", sm: "8", md: "11" }}
+        >
           <FiDelete />
         </Icon>
       </IconButton>
@@ -134,30 +138,55 @@ const NumberPad = (
 );
 
 const actions = [
+  { value: "new-puzzle", label: "New Puzzle", text: "New Puzzle" },
   { value: "undo", label: "Undo", icon: <ImUndo /> },
   { value: "redo", label: "Redo", icon: <ImRedo /> },
-  { value: "Submit", label: "Submit", icon: <ImCheckmark /> },
+  { value: "submit", label: "Submit", icon: <ImCheckmark /> },
   { value: "multiselect", label: "Multiselect", icon: <GrMultiple /> },
 ];
 
 const PuzzleActions = (
   <SimpleGrid
     columns={{ base: 1, lg: 2 }}
-    gap={{ base: "0.5", sm: "1", md: "0.5833rem", lg: "3" }}
+    columnGap={{ base: "0.5", sm: "1", lg: "3" }}
+    rowGap={{ base: "0.5", sm: "1" }}
   >
-    {actions.map((action) => (
-      <IconButton
-        aria-label={action.label}
-        aspectRatio={2 / 1}
-        key={action.value}
-        rounded={{ base: "sm", sm: "md" }}
-        size={{ sm: "xs", md: "lg", lg: "xl" }}
-        paddingTop={{ base: "1px", sm: "0px" }}
-        paddingBottom={{ base: "1px", sm: "0px" }}
-      >
-        <Icon size={{ base: "md", md: "xl" }}>{action.icon}</Icon>
-      </IconButton>
-    ))}
+    {actions.map((action) =>
+      action.icon ? (
+        <IconButton
+          aria-label={action.label}
+          aspectRatio={{ lg: 2 / 1 }}
+          key={action.value}
+          rounded={{ base: "sm", sm: "md" }}
+          size={{ sm: "xs", md: "lg", lg: "xl" }}
+          padding={{ base: "0.25rem 0 0.25rem 0" }}
+          width="full"
+        >
+          <Icon
+            height={{ base: "4", sm: "4.5", md: "6", lg: "7" }}
+            width={{ base: "4", sm: "4.5", md: "6", lg: "7" }}
+          >
+            {action.icon}
+          </Icon>
+        </IconButton>
+      ) : (
+        action.text && (
+          <GridItem colSpan={{ base: 1, lg: 2 }}>
+            <Button
+              aria-label={action.label}
+              fontSize={{ base: "sm", sm: "md", md: "lg", lg: "xl" }}
+              key={action.value}
+              rounded={{ base: "sm", sm: "md" }}
+              size={{ sm: "xs", md: "lg", lg: "xl" }}
+              padding={{ base: "1" }}
+              width="full"
+            >
+              <Text>{action.text}</Text>
+            </Button>
+          </GridItem>
+        )
+      ),
+    )}
   </SimpleGrid>
 );
 
@@ -233,7 +262,7 @@ const ColorSVG = (props: HTMLChakraProps<"svg">) => (
 
 const inputs = [
   { value: "digit", label: "Digit", icon: <DigitSVG /> },
-  { value: "colors", label: "Colors", icon: <ColorSVG /> },
+  { value: "color", label: "Color", icon: <ColorSVG /> },
   { value: "corner", label: "Corner", icon: <CornerSVG /> },
   { value: "center", label: "Center", icon: <CenterSVG /> },
 ];
@@ -280,7 +309,7 @@ const InputActions = (
 
 const PlayerInterface = (
   <Stack
-    alignItems="center"
+    alignItems="start"
     direction={{ base: "row", lg: "column" }}
     gap="4"
     minWidth={{ lg: "52" }}
@@ -297,7 +326,7 @@ const Home = () => {
       alignItems="center"
       direction={{ base: "column", lg: "row" }}
       fontFamily="sans-serif"
-      gap="8"
+      gap={{ base: "4", md: "8" }}
     >
       {SudokuGrid}
       {PlayerInterface}

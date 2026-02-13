@@ -16,6 +16,8 @@ import { FiDelete } from "react-icons/fi";
 import { GrMultiple } from "react-icons/gr";
 import { ImCheckmark, ImRedo, ImUndo } from "react-icons/im";
 
+import { Tooltip } from "./components/tooltip";
+
 const SudokuCell = (cellValue: string) => {
   return (
     <Square
@@ -117,22 +119,24 @@ const NumberPad = (
     {NumpadButton("8")}
     {NumpadButton("9")}
     <GridItem colSpan={3}>
-      <IconButton
-        aria-label="Delete"
-        backgroundColor="blue.fg"
-        color="white"
-        rounded="md"
-        size={{ base: "xs", sm: "lg", md: "2xl" }}
-        textStyle={{ base: "md", sm: "3xl", md: "5xl" }}
-        width="full"
-      >
-        <Icon
-          height={{ base: "6", sm: "8", md: "11" }}
-          width={{ base: "6", sm: "8", md: "11" }}
+      <Tooltip content="Delete" positioning={{ placement: "bottom" }}>
+        <IconButton
+          aria-label="Delete"
+          backgroundColor="blue.fg"
+          color="white"
+          rounded="md"
+          size={{ base: "xs", sm: "lg", md: "2xl" }}
+          textStyle={{ base: "md", sm: "3xl", md: "5xl" }}
+          width="full"
         >
-          <FiDelete />
-        </Icon>
-      </IconButton>
+          <Icon
+            height={{ base: "6", sm: "8", md: "11" }}
+            width={{ base: "6", sm: "8", md: "11" }}
+          >
+            <FiDelete />
+          </Icon>
+        </IconButton>
+      </Tooltip>
     </GridItem>
   </SimpleGrid>
 );
@@ -153,22 +157,28 @@ const PuzzleActions = (
   >
     {actions.map((action) =>
       action.icon ? (
-        <IconButton
-          aria-label={action.label}
-          aspectRatio={{ lg: 2 / 1 }}
-          key={action.value}
-          rounded={{ base: "sm", sm: "md" }}
-          size={{ sm: "xs", md: "lg", lg: "xl" }}
-          padding={{ base: "0.25rem 0 0.25rem 0" }}
-          width="full"
+        <Tooltip
+          key={`${action.value}-tooltip`}
+          content={action.label}
+          positioning={{ placement: "left-start" }}
         >
-          <Icon
-            height={{ base: "4", sm: "4.5", md: "6", lg: "7" }}
-            width={{ base: "4", sm: "4.5", md: "6", lg: "7" }}
+          <IconButton
+            aria-label={action.label}
+            aspectRatio={{ lg: 2 / 1 }}
+            key={action.value}
+            rounded={{ base: "sm", sm: "md" }}
+            size={{ sm: "xs", md: "lg", lg: "xl" }}
+            padding={{ base: "0.25rem 0 0.25rem 0" }}
+            width="full"
           >
-            {action.icon}
-          </Icon>
-        </IconButton>
+            <Icon
+              height={{ base: "4", sm: "4.5", md: "6", lg: "7" }}
+              width={{ base: "4", sm: "4.5", md: "6", lg: "7" }}
+            >
+              {action.icon}
+            </Icon>
+          </IconButton>
+        </Tooltip>
       ) : (
         action.text && (
           <GridItem colSpan={{ base: 1, lg: 2 }}>
@@ -288,19 +298,24 @@ const InputActions = (
           value={input.value}
         >
           <RadioCard.ItemHiddenInput />
-          <RadioCard.ItemControl padding="0">
-            <Icon
-              boxSize={{
-                base: "1.922rem",
-                sm: "2.625rem",
-                md: "3.72rem",
-                lg: 20,
-              }}
-              fill="black"
-            >
-              {input.icon}
-            </Icon>
-          </RadioCard.ItemControl>
+          <Tooltip
+            content={input.label}
+            positioning={{ placement: "right-start" }}
+          >
+            <RadioCard.ItemControl padding="0">
+              <Icon
+                boxSize={{
+                  base: "1.922rem",
+                  sm: "2.625rem",
+                  md: "3.72rem",
+                  lg: 20,
+                }}
+                fill="black"
+              >
+                {input.icon}
+              </Icon>
+            </RadioCard.ItemControl>
+          </Tooltip>
         </RadioCard.Item>
       ))}
     </SimpleGrid>

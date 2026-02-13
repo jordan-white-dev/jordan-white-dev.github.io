@@ -48,7 +48,6 @@
       },
       "style": {
         "noDefaultExport": "error",
-        "useBlockStatements": "error",
         "useCollapsedElseIf": "error",
         "useDefaultSwitchClause": "error",
         "useConsistentArrayType": {

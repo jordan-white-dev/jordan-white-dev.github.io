@@ -8,7 +8,6 @@ import {
   SimpleGrid,
   Square,
   Stack,
-  Text,
 } from "@chakra-ui/react";
 import { FiDelete } from "react-icons/fi";
 import { GrMultiple } from "react-icons/gr";
@@ -190,7 +189,7 @@ const PuzzleActions = (
               padding={{ base: "1" }}
               width="full"
             >
-              <Text>{action.text}</Text>
+              {action.text}
             </Button>
           </GridItem>
         )

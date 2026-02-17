@@ -2,12 +2,26 @@ import {
   GridItem,
   Icon,
   IconButton,
+  type IconButtonProps,
+  type IconProps,
   SimpleGrid,
   Square,
 } from "@chakra-ui/react";
 import { FiDelete } from "react-icons/fi";
 
 import { Tooltip } from "./tooltip";
+
+const ICON_SIZE: IconProps["width"] = { base: "6", sm: "8", md: "11" };
+const ICON_BUTTON_SIZE: IconButtonProps["size"] = {
+  base: "xs",
+  sm: "lg",
+  md: "2xl",
+};
+const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
+  base: "md",
+  sm: "3xl",
+  md: "5xl",
+};
 
 const NumpadButton = (buttonValue: string) => {
   return (
@@ -17,8 +31,8 @@ const NumpadButton = (buttonValue: string) => {
         backgroundColor="blue.fg"
         color="white"
         rounded="md"
-        size={{ base: "xs", sm: "lg", md: "2xl" }}
-        textStyle={{ base: "md", sm: "3xl", md: "5xl" }}
+        size={ICON_BUTTON_SIZE}
+        textStyle={ICON_BUTTON_TEXT_STYLE}
       >
         {buttonValue}
       </IconButton>
@@ -48,14 +62,11 @@ export const NumberPad = (
           backgroundColor="blue.fg"
           color="white"
           rounded="md"
-          size={{ base: "xs", sm: "lg", md: "2xl" }}
-          textStyle={{ base: "md", sm: "3xl", md: "5xl" }}
+          size={ICON_BUTTON_SIZE}
+          textStyle={ICON_BUTTON_TEXT_STYLE}
           width="full"
         >
-          <Icon
-            height={{ base: "6", sm: "8", md: "11" }}
-            width={{ base: "6", sm: "8", md: "11" }}
-          >
+          <Icon height={ICON_SIZE} width={ICON_SIZE}>
             <FiDelete />
           </Icon>
         </IconButton>

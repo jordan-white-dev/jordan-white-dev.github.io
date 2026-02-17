@@ -14,12 +14,7 @@ import { FiDelete } from "react-icons/fi";
 import { GrMultiple } from "react-icons/gr";
 import { ImCheckmark, ImRedo, ImUndo } from "react-icons/im";
 
-import {
-  CenterSVG,
-  ColorSVG,
-  CornerSVG,
-  DigitSVG,
-} from "./components/svg-definitions";
+import { CenterSVG, ColorSVG, CornerSVG, DigitSVG } from "./components/svgs";
 import { Tooltip } from "./components/tooltip";
 
 const SudokuCell = (cellValue: string) => {
@@ -211,7 +206,7 @@ const inputs = [
   { value: "center", label: "Center", icon: <CenterSVG /> },
 ];
 
-const InputActions = (
+const InputRadioCard = (
   <RadioCard.Root
     align="center"
     colorPalette="orange"
@@ -265,7 +260,7 @@ const PlayerInterface = (
   >
     {PuzzleActions}
     {NumberPad}
-    {InputActions}
+    {InputRadioCard}
   </Stack>
 );
 

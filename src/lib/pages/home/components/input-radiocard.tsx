@@ -10,7 +10,7 @@ const inputs = [
   { value: "center", label: "Center", icon: <CenterSVG /> },
 ];
 
-export const InputRadioCard = (
+export const InputRadioCard = () => (
   <RadioCard.Root
     align="center"
     colorPalette="orange"

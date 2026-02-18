@@ -40,7 +40,7 @@ const NumpadButton = (buttonValue: string) => {
   );
 };
 
-export const NumberPad = (
+export const NumberPad = () => (
   <SimpleGrid
     height="fit-content"
     columns={3}

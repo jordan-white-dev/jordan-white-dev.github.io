@@ -12,9 +12,9 @@ const PlayerInterface = (
     gap="4"
     minWidth={{ lg: "52" }}
   >
-    {PuzzleActions}
-    {NumberPad}
-    {InputRadioCard}
+    {PuzzleActions()}
+    {NumberPad()}
+    {InputRadioCard()}
   </Stack>
 );
 

@@ -37,7 +37,7 @@ const actions = [
   { value: "multiselect", label: "Multiselect", icon: <GrMultiple /> },
 ];
 
-export const PuzzleActions = (
+export const PuzzleActions = () => (
   <SimpleGrid
     columns={{ base: 1, lg: 2 }}
     columnGap={{ base: "0.5", sm: "1", lg: "3" }}

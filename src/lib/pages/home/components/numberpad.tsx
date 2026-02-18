@@ -72,7 +72,7 @@ export const NumberPad = () => (
     >
       <Tooltip
         key="multiselect-tooltip"
-        content="Multiple cells can be selected at once while this is active."
+        content="Multiple cells can be selected while this is toggled"
       >
         <Stack alignItems="center" direction="column" gap="1">
           <Switch.Root colorPalette="blue" size="lg">
@@ -96,7 +96,10 @@ export const NumberPad = () => (
       </Tooltip>
     </GridItem>
     <GridItem colSpan={3}>
-      <Tooltip content="Delete" positioning={{ placement: "bottom" }}>
+      <Tooltip
+        content="Delete content from the selected cells"
+        positioning={{ placement: "bottom" }}
+      >
         <IconButton
           aria-label="Delete"
           backgroundColor="blue.fg"

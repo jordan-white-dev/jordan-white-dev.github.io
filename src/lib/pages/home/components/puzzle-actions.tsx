@@ -1,5 +1,4 @@
 import {
-  Button,
   type ButtonProps,
   GridItem,
   Icon,
@@ -9,7 +8,7 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 import { ImCheckmark, ImRedo, ImUndo } from "react-icons/im";
-import { MdRestartAlt } from "react-icons/md";
+import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 
 import { Tooltip } from "./tooltip";
 
@@ -17,6 +16,12 @@ const ICON_BUTTON_SIZE: IconButtonProps["size"] = {
   sm: "xs",
   md: "lg",
   lg: "xl",
+};
+const ICON_BUTTON_WIDTH: IconButtonProps["width"] = {
+  base: "2rem",
+  sm: "3rem",
+  md: "4rem",
+  lg: "full",
 };
 const IM_ICON_SIZE: IconProps["width"] = {
   base: "4",
@@ -42,22 +47,43 @@ export const PuzzleActions = () => (
     rowGap={{ base: "0.5", sm: "1" }}
   >
     <GridItem colSpan={{ base: 1, lg: 2 }}>
-      <Button
-        aria-label="New Puzzle"
-        fontSize={{ base: "sm", sm: "md", md: "lg", lg: "xl" }}
-        key="new-puzzle"
-        rounded={BUTTON_ROUNDED}
-        size={ICON_BUTTON_SIZE}
-        padding={{ base: "1" }}
-        width="full"
+      <Tooltip
+        key="new-tooltip"
+        content="Start a new puzzle"
+        positioning={{ placement: "left-start" }}
       >
-        New Puzzle
-      </Button>
+        <IconButton
+          aria-label="New Puzzle"
+          aspectRatio={{ lg: 2 / 1 }}
+          key="new-puzzle"
+          rounded={BUTTON_ROUNDED}
+          size={ICON_BUTTON_SIZE}
+          padding={{ base: "0.25rem 0 0.25rem 0" }}
+          width={ICON_BUTTON_WIDTH}
+        >
+          <Icon
+            height={{
+              base: "5",
+              sm: "8",
+              md: "10",
+              lg: "14",
+            }}
+            width={{
+              base: "5",
+              sm: "8",
+              md: "10",
+              lg: "14",
+            }}
+          >
+            <MdOutlineFiberNew />
+          </Icon>
+        </IconButton>
+      </Tooltip>
     </GridItem>
 
     <Tooltip
       key="undo-tooltip"
-      content="Undo"
+      content="Undo the last move"
       positioning={{ placement: "left-start" }}
     >
       <IconButton
@@ -67,7 +93,7 @@ export const PuzzleActions = () => (
         rounded={BUTTON_ROUNDED}
         size={ICON_BUTTON_SIZE}
         padding={{ base: "0.25rem 0 0.25rem 0" }}
-        width="full"
+        width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
           <ImUndo />
@@ -77,7 +103,7 @@ export const PuzzleActions = () => (
 
     <Tooltip
       key="redo-tooltip"
-      content="Redo"
+      content="Redo the last undone move"
       positioning={{ placement: "left-start" }}
     >
       <IconButton
@@ -87,7 +113,7 @@ export const PuzzleActions = () => (
         rounded={BUTTON_ROUNDED}
         size={ICON_BUTTON_SIZE}
         padding={{ base: "0.25rem 0 0.25rem 0" }}
-        width="full"
+        width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
           <ImRedo />
@@ -96,18 +122,18 @@ export const PuzzleActions = () => (
     </Tooltip>
 
     <Tooltip
-      key="submit-tooltip"
-      content="Submit"
+      key="check-tooltip"
+      content="Check the puzzle solution"
       positioning={{ placement: "left-start" }}
     >
       <IconButton
-        aria-label="Submit"
+        aria-label="Check Solution"
         aspectRatio={{ lg: 2 / 1 }}
-        key="submit"
+        key="check"
         rounded={BUTTON_ROUNDED}
         size={ICON_BUTTON_SIZE}
         padding={{ base: "0.25rem 0 0.25rem 0" }}
-        width="full"
+        width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
           <ImCheckmark />
@@ -117,7 +143,7 @@ export const PuzzleActions = () => (
 
     <Tooltip
       key="restart-tooltip"
-      content="Restart"
+      content="Restart the puzzle"
       positioning={{ placement: "left-start" }}
     >
       <IconButton
@@ -127,7 +153,7 @@ export const PuzzleActions = () => (
         rounded={BUTTON_ROUNDED}
         size={ICON_BUTTON_SIZE}
         padding={{ base: "0.25rem 0 0.25rem 0" }}
-        width="full"
+        width={ICON_BUTTON_WIDTH}
       >
         <Icon height={MD_ICON_SIZE} width={MD_ICON_SIZE}>
           <MdRestartAlt />

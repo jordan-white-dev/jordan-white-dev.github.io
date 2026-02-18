@@ -60,15 +60,15 @@ const SudokuBox = (
     height={BOX_SIZE}
     width={BOX_SIZE}
   >
-    {SudokuCell("1")}
-    {SudokuCell("2")}
-    {SudokuCell("3")}
-    {SudokuCell("4")}
-    {SudokuCell("5")}
-    {SudokuCell("6")}
-    {SudokuCell("7")}
-    {SudokuCell("8")}
-    {SudokuCell("9")}
+    {SudokuCell("")}
+    {SudokuCell("")}
+    {SudokuCell("")}
+    {SudokuCell("")}
+    {SudokuCell("")}
+    {SudokuCell("")}
+    {SudokuCell("")}
+    {SudokuCell("")}
+    {SudokuCell("")}
   </SimpleGrid>
 );
 

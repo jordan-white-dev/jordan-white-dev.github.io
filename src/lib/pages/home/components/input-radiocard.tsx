@@ -4,10 +4,30 @@ import { CenterSVG, ColorSVG, CornerSVG, DigitSVG } from "./svgs";
 import { Tooltip } from "./tooltip";
 
 const inputs = [
-  { value: "digit", label: "Digit", icon: <DigitSVG /> },
-  { value: "color", label: "Color", icon: <ColorSVG /> },
-  { value: "corner", label: "Corner", icon: <CornerSVG /> },
-  { value: "center", label: "Center", icon: <CenterSVG /> },
+  {
+    value: "digit",
+    label: "Digit",
+    icon: <DigitSVG />,
+    tooltip: "Digit input mode",
+  },
+  {
+    value: "color",
+    label: "Color",
+    icon: <ColorSVG />,
+    tooltip: "Color markup mode",
+  },
+  {
+    value: "corner",
+    label: "Corner",
+    icon: <CornerSVG />,
+    tooltip: "Corner markup mode",
+  },
+  {
+    value: "center",
+    label: "Center",
+    icon: <CenterSVG />,
+    tooltip: "Center markup mode",
+  },
 ];
 
 export const InputRadioCard = () => (
@@ -32,7 +52,7 @@ export const InputRadioCard = () => (
         >
           <RadioCard.ItemHiddenInput />
           <Tooltip
-            content={input.label}
+            content={input.tooltip}
             positioning={{ placement: "right-start" }}
           >
             <RadioCard.ItemControl padding="0">

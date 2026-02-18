@@ -7,7 +7,7 @@ import { PuzzleActions } from "./components/puzzle-actions";
 
 const PlayerInterface = (
   <Stack
-    alignItems="start"
+    alignItems="center"
     direction={{ base: "row", lg: "column" }}
     gap="4"
     minWidth={{ lg: "52" }}

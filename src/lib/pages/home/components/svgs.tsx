@@ -56,15 +56,15 @@ export const ColorSVG = (props: HTMLChakraProps<"svg">) => (
     {...props}
   >
     <g stroke="#0003" strokeWidth={0.3}>
-      <path fill="#e6e6e6" d="m12 12 3.36-7.2h3.84v3.84L12 12" />
-      <path fill="#b0b0b0" d="m12 12 7.2-3.36v5.29L12 12" />
-      <path fill="#505050" d="m12 12 7.2 1.93v5.27h-2.16L12 12" />
-      <path fill="#d1efa5" d="m12 12 5.04 7.2h-5.67L12 12" />
-      <path fill="#f1b0f6" d="m12 12-.63 7.2H4.8L12 12" />
-      <path fill="#f3b48f" d="m12 12-7.2 7.2v-6.57L12 12" />
-      <path fill="#f39390" d="m12 12-7.2.63V6.96L12 12" />
-      <path fill="#fae799" d="M12 12 4.8 6.96V4.8h5.27L12 12" />
-      <path fill="#8ac1f9" d="m12 12-1.93-7.2h5.29L12 12" />
+      <path fill="#b0b0b0" d="m12 12 3.36-7.2h3.84v3.84L12 12" />
+      <path fill="#ffffff" d="m12 12 7.2-3.36v5.29L12 12" />
+      <path fill="#f690f6" d="m12 12 7.2 1.93v5.27h-2.16L12 12" />
+      <path fill="#f98987" d="m12 12 5.04 7.2h-5.67L12 12" />
+      <path fill="#c69c78" d="m12 12-.63 7.2H4.8L12 12" />
+      <path fill="#efc084" d="m12 12-7.2 7.2v-6.57L12 12" />
+      <path fill="#ffff75" d="m12 12-7.2.63V6.96L12 12" />
+      <path fill="#d1efa6" d="M12 12 4.8 6.96V4.8h5.27L12 12" />
+      <path fill="#666666" d="m12 12-1.93-7.2h5.29L12 12" />
     </g>
     <path d="M18 19H6c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1zm1-16H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
   </chakra.svg>

@@ -1,5 +1,7 @@
 import { Flex, Stack } from "@chakra-ui/react";
 
+// import { makepuzzle, solvepuzzle, ratepuzzle } from "sudoku";
+
 import { InputModes } from "./components/inputmodes";
 import { InputPad } from "./components/inputpad";
 import { PuzzleActions } from "./components/puzzleactions";

@@ -37,6 +37,7 @@ const SudokuCell = (cellValue: string) => {
         borderRadius="0"
         borderWidth="0"
         color="black"
+        // color="#1d6ae5"
         height={CELL_SIZE}
         padding="0"
         textStyle={{

@@ -1,4 +1,5 @@
 import {
+  // ColorSwatch,
   GridItem,
   Icon,
   IconButton,
@@ -15,6 +16,11 @@ import { GrCheckbox, GrMultiple } from "react-icons/gr";
 
 import { Tooltip } from "./tooltip";
 
+// const COLOR_SWATCH_SIZE: IconProps["width"] = {
+//   base: "2.105rem",
+//   sm: "11",
+//   md: "16",
+// };
 const ICON_SIZE: IconProps["width"] = { base: "6", sm: "8", md: "11" };
 const ICON_BUTTON_SIZE: IconButtonProps["size"] = {
   base: "xs",
@@ -26,6 +32,19 @@ const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
   sm: "3xl",
   md: "5xl",
 };
+
+// const ColorInput = (buttonColor: string) => {
+//   return (
+//     <GridItem colSpan={2} height={COLOR_SWATCH_SIZE} width={COLOR_SWATCH_SIZE}>
+//       <ColorSwatch
+//         height={COLOR_SWATCH_SIZE}
+//         rounded="md"
+//         value={buttonColor}
+//         width={COLOR_SWATCH_SIZE}
+//       />
+//     </GridItem>
+//   );
+// };
 
 const NumberInput = (buttonValue: string) => {
   return (
@@ -61,6 +80,15 @@ export const InputPad = () => (
     {NumberInput("7")}
     {NumberInput("8")}
     {NumberInput("9")}
+    {/* {ColorInput("#666666")}
+    {ColorInput("#b0b0b0")}
+    {ColorInput("#ffffff")}
+    {ColorInput("#f690f6")}
+    {ColorInput("#f98987")}
+    {ColorInput("#c69c78")}
+    {ColorInput("#efc084")}
+    {ColorInput("#ffff75")}
+    {ColorInput("#d1efa6")} */}
     <GridItem
       alignContent="center"
       border={{ sm: "2px solid" }}

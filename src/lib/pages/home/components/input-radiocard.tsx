@@ -33,7 +33,7 @@ const inputs = [
 export const InputRadioCard = () => (
   <RadioCard.Root
     align="center"
-    colorPalette="orange"
+    colorPalette="yellow"
     defaultValue="digit"
     variant="solid"
   >

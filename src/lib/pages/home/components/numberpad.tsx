@@ -33,8 +33,8 @@ const NumpadButton = (buttonValue: string) => {
       <Square aspectRatio="square">
         <IconButton
           aspectRatio="square"
-          backgroundColor="blue.fg"
           color="white"
+          colorPalette="blue"
           rounded="md"
           size={ICON_BUTTON_SIZE}
           textStyle={ICON_BUTTON_TEXT_STYLE}
@@ -48,9 +48,9 @@ const NumpadButton = (buttonValue: string) => {
 
 export const NumberPad = () => (
   <SimpleGrid
-    height="fit-content"
     columns={6}
     gap={{ base: "0.1875rem", sm: "1", md: "1.5" }}
+    height="fit-content"
   >
     {NumpadButton("1")}
     {NumpadButton("2")}
@@ -64,15 +64,15 @@ export const NumberPad = () => (
     <GridItem
       alignContent="center"
       border="2px solid"
-      borderColor="blue.fg"
+      borderColor="blue.border"
       colSpan={3}
+      height="full"
       rounded="md"
       width="full"
-      height="full"
     >
       <Tooltip
-        key="multiselect-tooltip"
         content="Multiple cells can be selected while this is toggled"
+        key="multiselect-tooltip"
       >
         <Stack alignItems="center" direction="column" gap="1">
           <Switch.Root colorPalette="blue" size="lg">
@@ -102,8 +102,8 @@ export const NumberPad = () => (
       >
         <IconButton
           aria-label="Delete"
-          backgroundColor="blue.fg"
           color="white"
+          colorPalette="blue"
           rounded="md"
           size={ICON_BUTTON_SIZE}
           textStyle={ICON_BUTTON_TEXT_STYLE}

@@ -42,23 +42,23 @@ const BUTTON_ROUNDED: ButtonProps["rounded"] = {
 
 export const PuzzleActions = () => (
   <SimpleGrid
-    columns={{ base: 1, lg: 2 }}
     columnGap={{ base: "0.5", sm: "1", lg: "3" }}
+    columns={{ base: 1, lg: 2 }}
     rowGap={{ base: "0.5", sm: "1" }}
   >
     <GridItem colSpan={{ base: 1, lg: 2 }}>
       <Tooltip
-        key="new-tooltip"
         content="Start a new puzzle"
+        key="new-tooltip"
         positioning={{ placement: "left-start" }}
       >
         <IconButton
           aria-label="New Puzzle"
           aspectRatio={{ lg: 2 / 1 }}
           key="new-puzzle"
+          padding={{ base: "0.25rem 0 0.25rem 0" }}
           rounded={BUTTON_ROUNDED}
           size={ICON_BUTTON_SIZE}
-          padding={{ base: "0.25rem 0 0.25rem 0" }}
           width={ICON_BUTTON_WIDTH}
         >
           <Icon
@@ -82,17 +82,17 @@ export const PuzzleActions = () => (
     </GridItem>
 
     <Tooltip
-      key="undo-tooltip"
       content="Undo the last move"
+      key="undo-tooltip"
       positioning={{ placement: "left-start" }}
     >
       <IconButton
         aria-label="Undo"
         aspectRatio={{ lg: 2 / 1 }}
         key="undo"
+        padding={{ base: "0.25rem 0 0.25rem 0" }}
         rounded={BUTTON_ROUNDED}
         size={ICON_BUTTON_SIZE}
-        padding={{ base: "0.25rem 0 0.25rem 0" }}
         width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
@@ -102,17 +102,17 @@ export const PuzzleActions = () => (
     </Tooltip>
 
     <Tooltip
-      key="redo-tooltip"
       content="Redo the last undone move"
+      key="redo-tooltip"
       positioning={{ placement: "left-start" }}
     >
       <IconButton
         aria-label="Redo"
         aspectRatio={{ lg: 2 / 1 }}
         key="redo"
+        padding={{ base: "0.25rem 0 0.25rem 0" }}
         rounded={BUTTON_ROUNDED}
         size={ICON_BUTTON_SIZE}
-        padding={{ base: "0.25rem 0 0.25rem 0" }}
         width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
@@ -122,17 +122,17 @@ export const PuzzleActions = () => (
     </Tooltip>
 
     <Tooltip
-      key="check-tooltip"
       content="Check the puzzle solution"
+      key="check-tooltip"
       positioning={{ placement: "left-start" }}
     >
       <IconButton
         aria-label="Check Solution"
         aspectRatio={{ lg: 2 / 1 }}
         key="check"
+        padding={{ base: "0.25rem 0 0.25rem 0" }}
         rounded={BUTTON_ROUNDED}
         size={ICON_BUTTON_SIZE}
-        padding={{ base: "0.25rem 0 0.25rem 0" }}
         width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
@@ -142,17 +142,17 @@ export const PuzzleActions = () => (
     </Tooltip>
 
     <Tooltip
-      key="restart-tooltip"
       content="Restart the puzzle"
+      key="restart-tooltip"
       positioning={{ placement: "left-start" }}
     >
       <IconButton
         aria-label="Restart"
         aspectRatio={{ lg: 2 / 1 }}
         key="restart"
+        padding={{ base: "0.25rem 0 0.25rem 0" }}
         rounded={BUTTON_ROUNDED}
         size={ICON_BUTTON_SIZE}
-        padding={{ base: "0.25rem 0 0.25rem 0" }}
         width={ICON_BUTTON_WIDTH}
       >
         <Icon height={MD_ICON_SIZE} width={MD_ICON_SIZE}>

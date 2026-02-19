@@ -52,7 +52,7 @@ const SudokuCell = (cellValue: string) => {
   );
 };
 
-const SudokuBox = (
+const SudokuBox = () => (
   <SimpleGrid
     border={THICK_BORDER}
     columns={3}
@@ -80,14 +80,14 @@ export const SudokuGrid = (
     minHeight={GRID_SIZE}
     minWidth={GRID_SIZE}
   >
-    {SudokuBox}
-    {SudokuBox}
-    {SudokuBox}
-    {SudokuBox}
-    {SudokuBox}
-    {SudokuBox}
-    {SudokuBox}
-    {SudokuBox}
-    {SudokuBox}
+    {SudokuBox()}
+    {SudokuBox()}
+    {SudokuBox()}
+    {SudokuBox()}
+    {SudokuBox()}
+    {SudokuBox()}
+    {SudokuBox()}
+    {SudokuBox()}
+    {SudokuBox()}
   </SimpleGrid>
 );

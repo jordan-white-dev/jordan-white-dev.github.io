@@ -27,7 +27,7 @@ const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
   md: "5xl",
 };
 
-const NumpadButton = (buttonValue: string) => {
+const NumberInput = (buttonValue: string) => {
   return (
     <GridItem colSpan={2}>
       <Square aspectRatio="square">
@@ -46,21 +46,21 @@ const NumpadButton = (buttonValue: string) => {
   );
 };
 
-export const NumberPad = () => (
+export const InputPad = () => (
   <SimpleGrid
     columns={6}
     gap={{ base: "0.1874rem", sm: "1", md: "1.5" }}
     height="fit-content"
   >
-    {NumpadButton("1")}
-    {NumpadButton("2")}
-    {NumpadButton("3")}
-    {NumpadButton("4")}
-    {NumpadButton("5")}
-    {NumpadButton("6")}
-    {NumpadButton("7")}
-    {NumpadButton("8")}
-    {NumpadButton("9")}
+    {NumberInput("1")}
+    {NumberInput("2")}
+    {NumberInput("3")}
+    {NumberInput("4")}
+    {NumberInput("5")}
+    {NumberInput("6")}
+    {NumberInput("7")}
+    {NumberInput("8")}
+    {NumberInput("9")}
     <GridItem
       alignContent="center"
       border={{ sm: "2px solid" }}

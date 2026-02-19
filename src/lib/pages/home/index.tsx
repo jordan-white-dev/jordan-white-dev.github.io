@@ -1,9 +1,9 @@
 import { Flex, Stack } from "@chakra-ui/react";
 
-import { SudokuGrid } from "./components/grid";
-import { InputRadioCard } from "./components/input-radiocard";
-import { NumberPad } from "./components/numberpad";
-import { PuzzleActions } from "./components/puzzle-actions";
+import { InputModes } from "./components/inputmodes";
+import { InputPad } from "./components/inputpad";
+import { PuzzleActions } from "./components/puzzleactions";
+import { SudokuGrid } from "./components/sudokugrid";
 
 const PlayerInterface = (
   <Stack
@@ -13,8 +13,8 @@ const PlayerInterface = (
     minWidth={{ lg: "52" }}
   >
     {PuzzleActions()}
-    {NumberPad()}
-    {InputRadioCard()}
+    {InputPad()}
+    {InputModes()}
   </Stack>
 );
 

@@ -30,7 +30,7 @@ const inputs = [
   },
 ];
 
-export const InputRadioCard = () => (
+export const InputModes = () => (
   <RadioCard.Root
     align="center"
     colorPalette="yellow"

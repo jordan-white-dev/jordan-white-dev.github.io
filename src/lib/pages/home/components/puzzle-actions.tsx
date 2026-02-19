@@ -1,10 +1,14 @@
 import {
+  Button,
   type ButtonProps,
+  CloseButton,
+  Dialog,
   GridItem,
   Icon,
   IconButton,
   type IconButtonProps,
   type IconProps,
+  Portal,
   SimpleGrid,
 } from "@chakra-ui/react";
 import { ImCheckmark, ImRedo, ImUndo } from "react-icons/im";
@@ -12,11 +16,6 @@ import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 
 import { Tooltip } from "./tooltip";
 
-// const ICON_BUTTON_SIZE: IconButtonProps["size"] = {
-//   sm: "xs",
-//   md: "lg",
-//   lg: "xl",
-// };
 const ICON_BUTTON_HEIGHT: IconButtonProps["height"] = {
   base: "1.6757rem",
   sm: "2.25rem",
@@ -58,28 +57,54 @@ export const PuzzleActions = () => (
     columns={{ base: 1, lg: 2 }}
     rowGap={{ base: "0.5", md: "0.2875rem" }}
   >
-    <GridItem colSpan={{ base: 1, lg: 2 }}>
-      <Tooltip
-        content="Start a new puzzle"
-        key="new-tooltip"
-        positioning={{ placement: "left-start" }}
-      >
-        <IconButton
-          aria-label="New Puzzle"
-          aspectRatio={{ lg: 2 / 1 }}
-          height={ICON_BUTTON_HEIGHT}
-          key="new-puzzle"
-          padding={{ base: "0.25rem 0 0.25rem 0" }}
-          rounded={BUTTON_ROUNDED}
-          // size={ICON_BUTTON_SIZE}
-          width={ICON_BUTTON_WIDTH}
+    <Dialog.Root placement="center" size="xs">
+      <GridItem colSpan={{ base: 1, lg: 2 }}>
+        <Tooltip
+          content="Start a new puzzle"
+          key="new-tooltip"
+          positioning={{ placement: "left-start" }}
         >
-          <Icon height={MD_ICON_SIZE_ALT} width={MD_ICON_SIZE_ALT}>
-            <MdOutlineFiberNew />
-          </Icon>
-        </IconButton>
-      </Tooltip>
-    </GridItem>
+          <Dialog.Trigger asChild>
+            <IconButton
+              aria-label="New Puzzle"
+              aspectRatio={{ lg: 2 / 1 }}
+              height={ICON_BUTTON_HEIGHT}
+              key="new-puzzle"
+              padding={{ base: "0.25rem 0 0.25rem 0" }}
+              rounded={BUTTON_ROUNDED}
+              width={ICON_BUTTON_WIDTH}
+            >
+              <Icon height={MD_ICON_SIZE_ALT} width={MD_ICON_SIZE_ALT}>
+                <MdOutlineFiberNew />
+              </Icon>
+            </IconButton>
+          </Dialog.Trigger>
+        </Tooltip>
+      </GridItem>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>Confirm New</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.Body>
+              Are you sure you want to discard the current puzzle and generate a
+              new one? All progress will be lost!
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Dialog.ActionTrigger asChild>
+                <Button variant="outline">Cancel</Button>
+              </Dialog.ActionTrigger>
+              <Button>New Puzzle</Button>
+            </Dialog.Footer>
+            <Dialog.CloseTrigger asChild>
+              <CloseButton size="sm" />
+            </Dialog.CloseTrigger>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
 
     <Tooltip
       content="Undo the last move"
@@ -93,7 +118,6 @@ export const PuzzleActions = () => (
         key="undo"
         padding={{ base: "0.25rem 0 0.25rem 0" }}
         rounded={BUTTON_ROUNDED}
-        // size={ICON_BUTTON_SIZE}
         width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
@@ -114,7 +138,6 @@ export const PuzzleActions = () => (
         key="redo"
         padding={{ base: "0.25rem 0 0.25rem 0" }}
         rounded={BUTTON_ROUNDED}
-        // size={ICON_BUTTON_SIZE}
         width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
@@ -123,46 +146,97 @@ export const PuzzleActions = () => (
       </IconButton>
     </Tooltip>
 
-    <Tooltip
-      content="Check the puzzle solution"
-      key="check-tooltip"
-      positioning={{ placement: "left-start" }}
-    >
-      <IconButton
-        aria-label="Check Solution"
-        aspectRatio={{ lg: 2 / 1 }}
-        height={ICON_BUTTON_HEIGHT}
-        key="check"
-        padding={{ base: "0.25rem 0 0.25rem 0" }}
-        rounded={BUTTON_ROUNDED}
-        // size={ICON_BUTTON_SIZE}
-        width={ICON_BUTTON_WIDTH}
+    <Dialog.Root placement="center" size="xs">
+      <Tooltip
+        content="Check the puzzle solution"
+        key="check-tooltip"
+        positioning={{ placement: "left-start" }}
       >
-        <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
-          <ImCheckmark />
-        </Icon>
-      </IconButton>
-    </Tooltip>
+        <Dialog.Trigger asChild>
+          <IconButton
+            aria-label="Check Solution"
+            aspectRatio={{ lg: 2 / 1 }}
+            height={ICON_BUTTON_HEIGHT}
+            key="check"
+            padding={{ base: "0.25rem 0 0.25rem 0" }}
+            rounded={BUTTON_ROUNDED}
+            width={ICON_BUTTON_WIDTH}
+          >
+            <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
+              <ImCheckmark />
+            </Icon>
+          </IconButton>
+        </Dialog.Trigger>
+      </Tooltip>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>Dialog Title</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.Body>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Dialog.ActionTrigger asChild>
+                <Button variant="outline">Okay</Button>
+              </Dialog.ActionTrigger>
+            </Dialog.Footer>
+            <Dialog.CloseTrigger asChild>
+              <CloseButton size="sm" />
+            </Dialog.CloseTrigger>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
 
-    <Tooltip
-      content="Restart the puzzle"
-      key="restart-tooltip"
-      positioning={{ placement: "left-start" }}
-    >
-      <IconButton
-        aria-label="Restart"
-        aspectRatio={{ lg: 2 / 1 }}
-        height={ICON_BUTTON_HEIGHT}
-        key="restart"
-        padding={{ base: "0.25rem 0 0.25rem 0" }}
-        rounded={BUTTON_ROUNDED}
-        // size={ICON_BUTTON_SIZE}
-        width={ICON_BUTTON_WIDTH}
+    <Dialog.Root placement="center" size="xs">
+      <Tooltip
+        content="Restart the puzzle"
+        key="restart-tooltip"
+        positioning={{ placement: "left-start" }}
       >
-        <Icon height={MD_ICON_SIZE} width={MD_ICON_SIZE}>
-          <MdRestartAlt />
-        </Icon>
-      </IconButton>
-    </Tooltip>
+        <Dialog.Trigger asChild>
+          <IconButton
+            aria-label="Restart"
+            aspectRatio={{ lg: 2 / 1 }}
+            height={ICON_BUTTON_HEIGHT}
+            key="restart"
+            padding={{ base: "0.25rem 0 0.25rem 0" }}
+            rounded={BUTTON_ROUNDED}
+            width={ICON_BUTTON_WIDTH}
+          >
+            <Icon height={MD_ICON_SIZE} width={MD_ICON_SIZE}>
+              <MdRestartAlt />
+            </Icon>
+          </IconButton>
+        </Dialog.Trigger>
+      </Tooltip>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>Confirm Restart</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.Body>
+              Are you sure you want to restart the puzzle? All progress will be
+              lost!
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Dialog.ActionTrigger asChild>
+                <Button variant="outline">Cancel</Button>
+              </Dialog.ActionTrigger>
+              <Button>Restart Puzzle</Button>
+            </Dialog.Footer>
+            <Dialog.CloseTrigger asChild>
+              <CloseButton size="sm" />
+            </Dialog.CloseTrigger>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
   </SimpleGrid>
 );

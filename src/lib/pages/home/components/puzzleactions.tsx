@@ -96,7 +96,7 @@ export const PuzzleActions = () => (
               <Dialog.ActionTrigger asChild>
                 <Button variant="outline">Cancel</Button>
               </Dialog.ActionTrigger>
-              <Button>New Puzzle</Button>
+              <Button colorPalette="blue">New Puzzle</Button>
             </Dialog.Footer>
             <Dialog.CloseTrigger asChild>
               <CloseButton size="sm" />
@@ -229,7 +229,7 @@ export const PuzzleActions = () => (
               <Dialog.ActionTrigger asChild>
                 <Button variant="outline">Cancel</Button>
               </Dialog.ActionTrigger>
-              <Button>Restart Puzzle</Button>
+              <Button colorPalette="blue">Restart Puzzle</Button>
             </Dialog.Footer>
             <Dialog.CloseTrigger asChild>
               <CloseButton size="sm" />

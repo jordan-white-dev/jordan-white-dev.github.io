@@ -63,8 +63,8 @@ export const NumberPad = () => (
     {NumpadButton("9")}
     <GridItem
       alignContent="center"
-      border="2px solid"
-      borderColor="blue.border"
+      border={{ sm: "2px solid" }}
+      borderColor={{ sm: "blue.border" }}
       colSpan={3}
       height="full"
       rounded="md"

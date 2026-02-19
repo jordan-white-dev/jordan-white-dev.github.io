@@ -49,7 +49,7 @@ const NumpadButton = (buttonValue: string) => {
 export const NumberPad = () => (
   <SimpleGrid
     columns={6}
-    gap={{ base: "0.1875rem", sm: "1", md: "1.5" }}
+    gap={{ base: "0.1874rem", sm: "1", md: "1.5" }}
     height="fit-content"
   >
     {NumpadButton("1")}

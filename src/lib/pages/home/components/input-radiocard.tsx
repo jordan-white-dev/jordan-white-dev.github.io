@@ -39,7 +39,7 @@ export const InputRadioCard = () => (
   >
     <SimpleGrid
       columns={{ base: 1, lg: 2 }}
-      gap={{ base: "0.5", sm: "1", md: "0.5833rem", lg: "3" }}
+      gap={{ base: "0.229rem", sm: "1", md: "0.5833rem", lg: "3" }}
       minWidth={{ lg: "12.75rem" }}
     >
       {inputs.map((input) => (

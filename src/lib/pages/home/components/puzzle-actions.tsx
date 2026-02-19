@@ -12,10 +12,16 @@ import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 
 import { Tooltip } from "./tooltip";
 
-const ICON_BUTTON_SIZE: IconButtonProps["size"] = {
-  sm: "xs",
-  md: "lg",
-  lg: "xl",
+// const ICON_BUTTON_SIZE: IconButtonProps["size"] = {
+//   sm: "xs",
+//   md: "lg",
+//   lg: "xl",
+// };
+const ICON_BUTTON_HEIGHT: IconButtonProps["height"] = {
+  base: "1.6757rem",
+  sm: "2.25rem",
+  md: "3.196rem",
+  lg: "3.25rem",
 };
 const ICON_BUTTON_WIDTH: IconButtonProps["width"] = {
   base: "2rem",
@@ -35,6 +41,12 @@ const MD_ICON_SIZE: IconProps["width"] = {
   md: "8",
   lg: "9",
 };
+const MD_ICON_SIZE_ALT: IconProps["width"] = {
+  base: "5",
+  sm: "8",
+  md: "10",
+  lg: "14",
+};
 const BUTTON_ROUNDED: ButtonProps["rounded"] = {
   base: "sm",
   sm: "md",
@@ -42,9 +54,9 @@ const BUTTON_ROUNDED: ButtonProps["rounded"] = {
 
 export const PuzzleActions = () => (
   <SimpleGrid
-    columnGap={{ base: "0.5", sm: "1", lg: "3" }}
+    columnGap={{ base: "0.5", lg: "3" }}
     columns={{ base: 1, lg: 2 }}
-    rowGap={{ base: "0.5", sm: "1" }}
+    rowGap={{ base: "0.5", md: "0.2875rem" }}
   >
     <GridItem colSpan={{ base: 1, lg: 2 }}>
       <Tooltip
@@ -55,26 +67,14 @@ export const PuzzleActions = () => (
         <IconButton
           aria-label="New Puzzle"
           aspectRatio={{ lg: 2 / 1 }}
+          height={ICON_BUTTON_HEIGHT}
           key="new-puzzle"
           padding={{ base: "0.25rem 0 0.25rem 0" }}
           rounded={BUTTON_ROUNDED}
-          size={ICON_BUTTON_SIZE}
+          // size={ICON_BUTTON_SIZE}
           width={ICON_BUTTON_WIDTH}
         >
-          <Icon
-            height={{
-              base: "5",
-              sm: "8",
-              md: "10",
-              lg: "14",
-            }}
-            width={{
-              base: "5",
-              sm: "8",
-              md: "10",
-              lg: "14",
-            }}
-          >
+          <Icon height={MD_ICON_SIZE_ALT} width={MD_ICON_SIZE_ALT}>
             <MdOutlineFiberNew />
           </Icon>
         </IconButton>
@@ -89,10 +89,11 @@ export const PuzzleActions = () => (
       <IconButton
         aria-label="Undo"
         aspectRatio={{ lg: 2 / 1 }}
+        height={ICON_BUTTON_HEIGHT}
         key="undo"
         padding={{ base: "0.25rem 0 0.25rem 0" }}
         rounded={BUTTON_ROUNDED}
-        size={ICON_BUTTON_SIZE}
+        // size={ICON_BUTTON_SIZE}
         width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
@@ -109,10 +110,11 @@ export const PuzzleActions = () => (
       <IconButton
         aria-label="Redo"
         aspectRatio={{ lg: 2 / 1 }}
+        height={ICON_BUTTON_HEIGHT}
         key="redo"
         padding={{ base: "0.25rem 0 0.25rem 0" }}
         rounded={BUTTON_ROUNDED}
-        size={ICON_BUTTON_SIZE}
+        // size={ICON_BUTTON_SIZE}
         width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
@@ -129,10 +131,11 @@ export const PuzzleActions = () => (
       <IconButton
         aria-label="Check Solution"
         aspectRatio={{ lg: 2 / 1 }}
+        height={ICON_BUTTON_HEIGHT}
         key="check"
         padding={{ base: "0.25rem 0 0.25rem 0" }}
         rounded={BUTTON_ROUNDED}
-        size={ICON_BUTTON_SIZE}
+        // size={ICON_BUTTON_SIZE}
         width={ICON_BUTTON_WIDTH}
       >
         <Icon height={IM_ICON_SIZE} width={IM_ICON_SIZE}>
@@ -149,10 +152,11 @@ export const PuzzleActions = () => (
       <IconButton
         aria-label="Restart"
         aspectRatio={{ lg: 2 / 1 }}
+        height={ICON_BUTTON_HEIGHT}
         key="restart"
         padding={{ base: "0.25rem 0 0.25rem 0" }}
         rounded={BUTTON_ROUNDED}
-        size={ICON_BUTTON_SIZE}
+        // size={ICON_BUTTON_SIZE}
         width={ICON_BUTTON_WIDTH}
       >
         <Icon height={MD_ICON_SIZE} width={MD_ICON_SIZE}>

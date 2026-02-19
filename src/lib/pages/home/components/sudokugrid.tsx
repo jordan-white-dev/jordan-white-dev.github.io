@@ -24,34 +24,35 @@ const GRID_SIZE: SimpleGridProps["minWidth"] = {
 const THIN_BORDER: SquareProps["border"] = "1px solid black";
 const THICK_BORDER: SquareProps["border"] = "2px solid black";
 
-const SudokuCell = (cellValue: string) => {
-  return (
-    <Square
-      aspectRatio="square"
-      border={THIN_BORDER}
-      minHeight={CELL_SIZE}
-      minWidth={CELL_SIZE}
-    >
-      <Button
-        backgroundColor="transparent"
-        borderRadius="0"
-        borderWidth="0"
-        color="black"
-        // color="#1d6ae5"
-        height={CELL_SIZE}
-        padding="0"
-        textStyle={{
-          base: "2xl",
-          sm: "4xl",
-          md: "6xl",
-        }}
-        width={CELL_SIZE}
-      >
-        {cellValue}
-      </Button>
-    </Square>
-  );
+type SudokuCellProps = {
+  cellValue: string;
 };
+
+const SudokuCell = ({ cellValue }: SudokuCellProps) => (
+  <Square
+    aspectRatio="square"
+    border={THIN_BORDER}
+    minHeight={CELL_SIZE}
+    minWidth={CELL_SIZE}
+  >
+    <Button
+      backgroundColor="transparent"
+      borderRadius="0"
+      borderWidth="0"
+      color="black" // "#1d6ae5"
+      height={CELL_SIZE}
+      padding="0"
+      textStyle={{
+        base: "2xl",
+        sm: "4xl",
+        md: "6xl",
+      }}
+      width={CELL_SIZE}
+    >
+      {cellValue}
+    </Button>
+  </Square>
+);
 
 const SudokuBox = () => (
   <SimpleGrid
@@ -61,15 +62,15 @@ const SudokuBox = () => (
     height={BOX_SIZE}
     width={BOX_SIZE}
   >
-    {SudokuCell("")}
-    {SudokuCell("")}
-    {SudokuCell("")}
-    {SudokuCell("")}
-    {SudokuCell("")}
-    {SudokuCell("")}
-    {SudokuCell("")}
-    {SudokuCell("")}
-    {SudokuCell("")}
+    <SudokuCell cellValue="" />
+    <SudokuCell cellValue="" />
+    <SudokuCell cellValue="" />
+    <SudokuCell cellValue="" />
+    <SudokuCell cellValue="" />
+    <SudokuCell cellValue="" />
+    <SudokuCell cellValue="" />
+    <SudokuCell cellValue="" />
+    <SudokuCell cellValue="" />
   </SimpleGrid>
 );
 
@@ -81,14 +82,14 @@ export const SudokuGrid = (
     minHeight={GRID_SIZE}
     minWidth={GRID_SIZE}
   >
-    {SudokuBox()}
-    {SudokuBox()}
-    {SudokuBox()}
-    {SudokuBox()}
-    {SudokuBox()}
-    {SudokuBox()}
-    {SudokuBox()}
-    {SudokuBox()}
-    {SudokuBox()}
+    <SudokuBox />
+    <SudokuBox />
+    <SudokuBox />
+    <SudokuBox />
+    <SudokuBox />
+    <SudokuBox />
+    <SudokuBox />
+    <SudokuBox />
+    <SudokuBox />
   </SimpleGrid>
 );

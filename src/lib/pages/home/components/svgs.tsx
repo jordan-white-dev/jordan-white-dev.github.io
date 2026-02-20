@@ -26,6 +26,19 @@ export const COLOR_INPUT_ORANGE = "#f5ae51";
 export const COLOR_INPUT_YELLOW = "#ffff75";
 export const COLOR_INPUT_GREEN = "#d1efa6";
 
+export const colorInputs = [
+  COLOR_INPUT_GRAY,
+  COLOR_INPUT_SILVER,
+  COLOR_INPUT_WHITE,
+  COLOR_INPUT_VIOLET,
+  COLOR_INPUT_RED,
+  COLOR_INPUT_TAN,
+  COLOR_INPUT_ORANGE,
+  COLOR_INPUT_YELLOW,
+  COLOR_INPUT_GREEN,
+] as const;
+export type ColorInput = (typeof colorInputs)[number];
+
 export const ColorSVG = (props: HTMLChakraProps<"svg">) => (
   <chakra.svg
     aria-label="Color Icon"

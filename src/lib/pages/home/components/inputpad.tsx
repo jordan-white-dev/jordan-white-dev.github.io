@@ -121,10 +121,7 @@ const MultiselectSwitch = ({
     rounded="md"
     width="full"
   >
-    <Tooltip
-      content="Multiple cells can be selected while this is toggled"
-      key="multiselect-tooltip"
-    >
+    <Tooltip content="Multiple cells can be selected while this is toggled">
       <Stack alignItems="center" direction="column" gap="1">
         <Switch.Root
           checked={isMultiselectMode}

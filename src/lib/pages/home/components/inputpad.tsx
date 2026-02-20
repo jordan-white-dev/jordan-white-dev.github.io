@@ -16,6 +16,17 @@ import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
 
 import type { InputMode } from "..";
+import {
+  COLOR_INPUT_GRAY,
+  COLOR_INPUT_GREEN,
+  COLOR_INPUT_ORANGE,
+  COLOR_INPUT_RED,
+  COLOR_INPUT_SILVER,
+  COLOR_INPUT_TAN,
+  COLOR_INPUT_VIOLET,
+  COLOR_INPUT_WHITE,
+  COLOR_INPUT_YELLOW,
+} from "./svgs";
 import { Tooltip } from "./tooltip";
 
 const COLOR_SWATCH_SIZE: IconProps["width"] = {
@@ -37,32 +48,35 @@ const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
 
 type ColorInputsProps = {
   buttonColor: string;
+  tooltipText: string;
 };
 
-const ColorInput = ({ buttonColor }: ColorInputsProps) => {
+const ColorInput = ({ buttonColor, tooltipText }: ColorInputsProps) => {
   return (
     <GridItem colSpan={2} height={COLOR_SWATCH_SIZE} width={COLOR_SWATCH_SIZE}>
-      <ColorSwatch
-        height={COLOR_SWATCH_SIZE}
-        rounded="md"
-        value={buttonColor}
-        width={COLOR_SWATCH_SIZE}
-      />
+      <Tooltip content={tooltipText}>
+        <ColorSwatch
+          height={COLOR_SWATCH_SIZE}
+          rounded="md"
+          value={buttonColor}
+          width={COLOR_SWATCH_SIZE}
+        />
+      </Tooltip>
     </GridItem>
   );
 };
 
 const ColorPadInputs = () => (
   <>
-    <ColorInput buttonColor="#666666" />
-    <ColorInput buttonColor="#b0b0b0" />
-    <ColorInput buttonColor="#ffffff" />
-    <ColorInput buttonColor="#f690f6" />
-    <ColorInput buttonColor="#f98987" />
-    <ColorInput buttonColor="#c69c78" />
-    <ColorInput buttonColor="#efc084" />
-    <ColorInput buttonColor="#ffff75" />
-    <ColorInput buttonColor="#d1efa6" />
+    <ColorInput buttonColor={COLOR_INPUT_GRAY} tooltipText="Gray" />
+    <ColorInput buttonColor={COLOR_INPUT_SILVER} tooltipText="Silver" />
+    <ColorInput buttonColor={COLOR_INPUT_WHITE} tooltipText="White" />
+    <ColorInput buttonColor={COLOR_INPUT_VIOLET} tooltipText="Violet" />
+    <ColorInput buttonColor={COLOR_INPUT_RED} tooltipText="Red" />
+    <ColorInput buttonColor={COLOR_INPUT_TAN} tooltipText="Tan" />
+    <ColorInput buttonColor={COLOR_INPUT_ORANGE} tooltipText="Orange" />
+    <ColorInput buttonColor={COLOR_INPUT_YELLOW} tooltipText="Yellow" />
+    <ColorInput buttonColor={COLOR_INPUT_GREEN} tooltipText="Green" />
   </>
 );
 

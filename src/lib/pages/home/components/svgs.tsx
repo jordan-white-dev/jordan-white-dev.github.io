@@ -16,6 +16,40 @@ export const DigitSVG = (props: HTMLChakraProps<"svg">) => (
   </chakra.svg>
 );
 
+export const COLOR_INPUT_GRAY = "#666666";
+export const COLOR_INPUT_SILVER = "#b0b0b0";
+export const COLOR_INPUT_WHITE = "#ffffff";
+export const COLOR_INPUT_VIOLET = "#f690f6";
+export const COLOR_INPUT_RED = "#f76664";
+export const COLOR_INPUT_TAN = "#c69c78";
+export const COLOR_INPUT_ORANGE = "#f5ae51";
+export const COLOR_INPUT_YELLOW = "#ffff75";
+export const COLOR_INPUT_GREEN = "#d1efa6";
+
+export const ColorSVG = (props: HTMLChakraProps<"svg">) => (
+  <chakra.svg
+    aria-label="Color Icon"
+    focusable="false"
+    role="img"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g stroke="#0003" strokeWidth={0.3}>
+      <path fill={COLOR_INPUT_SILVER} d="m12 12 3.36-7.2h3.84v3.84L12 12" />
+      <path fill={COLOR_INPUT_WHITE} d="m12 12 7.2-3.36v5.29L12 12" />
+      <path fill={COLOR_INPUT_VIOLET} d="m12 12 7.2 1.93v5.27h-2.16L12 12" />
+      <path fill={COLOR_INPUT_RED} d="m12 12 5.04 7.2h-5.67L12 12" />
+      <path fill={COLOR_INPUT_TAN} d="m12 12-.63 7.2H4.8L12 12" />
+      <path fill={COLOR_INPUT_ORANGE} d="m12 12-7.2 7.2v-6.57L12 12" />
+      <path fill={COLOR_INPUT_YELLOW} d="m12 12-7.2.63V6.96L12 12" />
+      <path fill={COLOR_INPUT_GREEN} d="M12 12 4.8 6.96V4.8h5.27L12 12" />
+      <path fill={COLOR_INPUT_GRAY} d="m12 12-1.93-7.2h5.29L12 12" />
+    </g>
+    <path d="M18 19H6c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1zm1-16H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
+  </chakra.svg>
+);
+
 export const CornerSVG = (props: HTMLChakraProps<"svg">) => (
   <chakra.svg
     aria-label="Corner Icon"
@@ -43,29 +77,5 @@ export const CenterSVG = (props: HTMLChakraProps<"svg">) => (
   >
     <path d="M18 19H6c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1zm1-16H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
     <path d="M11.726 14.5H8.282v-.91h1.1v-2.755h-1.1v-.85q.242 0 .48-.032t.381-.101q.168-.084.261-.226t.107-.351h1.141v4.315h1.075v.91zM15.957 14.5h-3.829v-.85q.487-.386.874-.729t.68-.65q.382-.403.553-.708t.172-.626q0-.364-.217-.558t-.606-.194q-.199 0-.376.048t-.359.126q-.178.081-.304.165l-.189.126h-.102V9.512q.221-.105.69-.215t.903-.11q.927 0 1.405.413t.478 1.162q0 .462-.217.905t-.721.95q-.315.311-.613.555t-.43.345h2.208v.983z" />
-  </chakra.svg>
-);
-
-export const ColorSVG = (props: HTMLChakraProps<"svg">) => (
-  <chakra.svg
-    aria-label="Color Icon"
-    focusable="false"
-    role="img"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <g stroke="#0003" strokeWidth={0.3}>
-      <path fill="#b0b0b0" d="m12 12 3.36-7.2h3.84v3.84L12 12" />
-      <path fill="#ffffff" d="m12 12 7.2-3.36v5.29L12 12" />
-      <path fill="#f690f6" d="m12 12 7.2 1.93v5.27h-2.16L12 12" />
-      <path fill="#f98987" d="m12 12 5.04 7.2h-5.67L12 12" />
-      <path fill="#c69c78" d="m12 12-.63 7.2H4.8L12 12" />
-      <path fill="#efc084" d="m12 12-7.2 7.2v-6.57L12 12" />
-      <path fill="#ffff75" d="m12 12-7.2.63V6.96L12 12" />
-      <path fill="#d1efa6" d="M12 12 4.8 6.96V4.8h5.27L12 12" />
-      <path fill="#666666" d="m12 12-1.93-7.2h5.29L12 12" />
-    </g>
-    <path d="M18 19H6c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1zm1-16H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
   </chakra.svg>
 );

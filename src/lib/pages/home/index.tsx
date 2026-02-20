@@ -8,10 +8,17 @@ import { SudokuGrid } from "./components/sudokugrid";
 
 type PlayerInterfaceProps = {
   inputMode: InputMode;
+  isMultiselectMode: boolean;
   setInputMode: Dispatch<SetStateAction<InputMode>>;
+  setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
 };
 
-const PlayerInterface = ({ inputMode, setInputMode }: PlayerInterfaceProps) => (
+const PlayerInterface = ({
+  inputMode,
+  isMultiselectMode,
+  setInputMode,
+  setIsMultiselectMode,
+}: PlayerInterfaceProps) => (
   <Stack
     alignItems="center"
     direction={{ base: "row", lg: "column" }}
@@ -19,7 +26,11 @@ const PlayerInterface = ({ inputMode, setInputMode }: PlayerInterfaceProps) => (
     minWidth={{ lg: "52" }}
   >
     <PuzzleActions />
-    <InputPad inputMode={inputMode} />
+    <InputPad
+      inputMode={inputMode}
+      isMultiselectMode={isMultiselectMode}
+      setIsMultiselectMode={setIsMultiselectMode}
+    />
     <InputModes inputMode={inputMode} setInputMode={setInputMode} />
   </Stack>
 );
@@ -29,6 +40,7 @@ export type InputMode = (typeof inputModes)[number];
 
 const Home = () => {
   const [inputMode, setInputMode] = useState<InputMode>("Digit");
+  const [isMultiselectMode, setIsMultiselectMode] = useState<boolean>(false);
 
   return (
     <Flex
@@ -38,7 +50,12 @@ const Home = () => {
       gap={{ base: "4", md: "8" }}
     >
       <SudokuGrid />
-      <PlayerInterface inputMode={inputMode} setInputMode={setInputMode} />
+      <PlayerInterface
+        inputMode={inputMode}
+        isMultiselectMode={isMultiselectMode}
+        setInputMode={setInputMode}
+        setIsMultiselectMode={setIsMultiselectMode}
+      />
     </Flex>
   );
 };

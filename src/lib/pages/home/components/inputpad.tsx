@@ -11,6 +11,7 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
+import type { Dispatch, SetStateAction } from "react";
 import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
 
@@ -102,7 +103,15 @@ const NumberPadInputs = () => (
   </>
 );
 
-const MultiselectSwitch = () => (
+type MultiselectSwitchProps = {
+  isMultiselectMode: boolean;
+  setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
+};
+
+const MultiselectSwitch = ({
+  isMultiselectMode,
+  setIsMultiselectMode,
+}: MultiselectSwitchProps) => (
   <GridItem
     alignContent="center"
     border={{ sm: "2px solid" }}
@@ -117,7 +126,12 @@ const MultiselectSwitch = () => (
       key="multiselect-tooltip"
     >
       <Stack alignItems="center" direction="column" gap="1">
-        <Switch.Root colorPalette="blue" size="lg">
+        <Switch.Root
+          checked={isMultiselectMode}
+          colorPalette="blue"
+          size="lg"
+          onCheckedChange={(e) => setIsMultiselectMode(e.checked)}
+        >
           <Switch.HiddenInput />
           <Switch.Control>
             <Switch.Thumb />
@@ -164,9 +178,15 @@ const DeleteButton = () => (
 
 type InputPadProps = {
   inputMode: InputMode;
+  isMultiselectMode: boolean;
+  setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
 };
 
-export const InputPad = ({ inputMode }: InputPadProps) => {
+export const InputPad = ({
+  inputMode,
+  isMultiselectMode,
+  setIsMultiselectMode,
+}: InputPadProps) => {
   return (
     <SimpleGrid
       columns={6}
@@ -175,7 +195,10 @@ export const InputPad = ({ inputMode }: InputPadProps) => {
     >
       {inputMode === "Color" ? <ColorPadInputs /> : <NumberPadInputs />}
 
-      <MultiselectSwitch />
+      <MultiselectSwitch
+        isMultiselectMode={isMultiselectMode}
+        setIsMultiselectMode={setIsMultiselectMode}
+      />
       <DeleteButton />
     </SimpleGrid>
   );

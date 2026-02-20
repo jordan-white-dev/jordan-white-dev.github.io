@@ -74,7 +74,7 @@ const SudokuBox = () => (
   </SimpleGrid>
 );
 
-export const SudokuGrid = (
+export const SudokuGrid = () => (
   <SimpleGrid
     border={THICK_BORDER}
     columns={3}

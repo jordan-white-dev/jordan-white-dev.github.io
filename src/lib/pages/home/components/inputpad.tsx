@@ -14,6 +14,7 @@ import {
 import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
 
+import type { InputMode } from "..";
 import { Tooltip } from "./tooltip";
 
 const COLOR_SWATCH_SIZE: IconProps["width"] = {
@@ -161,16 +162,18 @@ const DeleteButton = () => (
   </GridItem>
 );
 
-export const InputPad = () => {
-  const isNumberMode = true; // Will eventually be hooked up to state
+type InputPadProps = {
+  inputMode: InputMode;
+};
 
+export const InputPad = ({ inputMode }: InputPadProps) => {
   return (
     <SimpleGrid
       columns={6}
       gap={{ base: "0.1874rem", sm: "1", md: "1.5" }}
       height="fit-content"
     >
-      {isNumberMode ? <NumberPadInputs /> : <ColorPadInputs />}
+      {inputMode === "Color" ? <ColorPadInputs /> : <NumberPadInputs />}
 
       <MultiselectSwitch />
       <DeleteButton />

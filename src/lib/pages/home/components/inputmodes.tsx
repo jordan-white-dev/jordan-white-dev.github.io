@@ -1,27 +1,28 @@
 import { Icon, RadioCard, SimpleGrid } from "@chakra-ui/react";
-import type { ReactNode } from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 
+import type { InputMode } from "..";
 import { CenterSVG, ColorSVG, CornerSVG, DigitSVG } from "./svgs";
 import { Tooltip } from "./tooltip";
 
 type InputModeItemProps = {
-  ariaLabel: string;
   icon: ReactNode;
-  inputModeValue: string;
+  inputModeValue: InputMode;
   tooltipText: string;
+  setInputMode: Dispatch<SetStateAction<InputMode>>;
 };
 
 export const InputModeItem = ({
-  ariaLabel,
   icon,
   inputModeValue,
   tooltipText,
+  setInputMode,
   ...props
 }: InputModeItemProps) => {
   return (
     <RadioCard.Item
       alignItems="center"
-      aria-label={ariaLabel}
+      aria-label={tooltipText}
       padding="0"
       value={inputModeValue}
       {...props}
@@ -46,42 +47,51 @@ export const InputModeItem = ({
   );
 };
 
-export const InputModes = () => (
-  <RadioCard.Root
-    align="center"
-    colorPalette="yellow"
-    defaultValue="digit"
-    variant="solid"
-  >
-    <SimpleGrid
-      columns={{ base: 1, lg: 2 }}
-      gap={{ base: "0.229rem", sm: "1", md: "0.5833rem", lg: "3" }}
-      minWidth={{ lg: "12.75rem" }}
+type InputModesProps = {
+  inputMode: InputMode;
+  setInputMode: Dispatch<SetStateAction<InputMode>>;
+};
+
+export const InputModes = ({ inputMode, setInputMode }: InputModesProps) => {
+  return (
+    <RadioCard.Root
+      align="center"
+      colorPalette="yellow"
+      defaultValue="digit"
+      value={inputMode}
+      variant="solid"
+      onValueChange={(e) => setInputMode(e.value as InputMode)}
     >
-      <InputModeItem
-        ariaLabel="Digit"
-        icon={<DigitSVG />}
-        inputModeValue="digit"
-        tooltipText="Digit input mode"
-      />
-      <InputModeItem
-        ariaLabel="Color"
-        icon={<ColorSVG />}
-        inputModeValue="color"
-        tooltipText="Color markup mode"
-      />
-      <InputModeItem
-        ariaLabel="Center"
-        icon={<CenterSVG />}
-        inputModeValue="center"
-        tooltipText="Center markup mode"
-      />
-      <InputModeItem
-        ariaLabel="Corner"
-        icon={<CornerSVG />}
-        inputModeValue="corner"
-        tooltipText="Corner markup mode"
-      />
-    </SimpleGrid>
-  </RadioCard.Root>
-);
+      <SimpleGrid
+        columns={{ base: 1, lg: 2 }}
+        gap={{ base: "0.229rem", sm: "1", md: "0.5833rem", lg: "3" }}
+        minWidth={{ lg: "12.75rem" }}
+      >
+        <InputModeItem
+          icon={<DigitSVG />}
+          inputModeValue="Digit"
+          tooltipText="Digit input mode"
+          setInputMode={setInputMode}
+        />
+        <InputModeItem
+          icon={<ColorSVG />}
+          inputModeValue="Color"
+          tooltipText="Color markup mode"
+          setInputMode={setInputMode}
+        />
+        <InputModeItem
+          icon={<CenterSVG />}
+          inputModeValue="Center"
+          tooltipText="Center markup mode"
+          setInputMode={setInputMode}
+        />
+        <InputModeItem
+          icon={<CornerSVG />}
+          inputModeValue="Corner"
+          tooltipText="Corner markup mode"
+          setInputMode={setInputMode}
+        />
+      </SimpleGrid>
+    </RadioCard.Root>
+  );
+};

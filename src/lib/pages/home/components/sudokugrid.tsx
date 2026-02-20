@@ -7,19 +7,19 @@ import {
 } from "@chakra-ui/react";
 
 const CELL_SIZE: SquareProps["minWidth"] = {
-  base: "31px",
-  sm: "51px",
-  md: "80px",
+  base: "1.938rem", // 31px
+  sm: "3.188rem", // 51px
+  md: "5rem", // 80px
 };
 const BOX_SIZE: SimpleGridProps["width"] = {
-  base: "103px",
-  sm: "157px",
-  md: "244px",
+  base: "6.438rem", // 103px
+  sm: "9.813rem", // 157px
+  md: "15.25rem", // 244px
 };
 const GRID_SIZE: SimpleGridProps["minWidth"] = {
-  base: "313px",
-  sm: "475px",
-  md: "736px",
+  base: "19.563rem", // 313px
+  sm: "29.688rem", // 475px
+  md: "46rem", // 736px
 };
 const THIN_BORDER: SquareProps["border"] = "1px solid black";
 const THICK_BORDER: SquareProps["border"] = "2px solid black";
@@ -39,7 +39,7 @@ const SudokuCell = ({ cellValue }: SudokuCellProps) => (
       backgroundColor="transparent"
       borderRadius="0"
       borderWidth="0"
-      color="black" // "#1d6ae5"
+      color="black" // TODO: "#1d6ae5"
       height={CELL_SIZE}
       padding="0"
       textStyle={{

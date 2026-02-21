@@ -1,5 +1,6 @@
 import {
   Button,
+  type ButtonProps,
   SimpleGrid,
   type SimpleGridProps,
   Square,
@@ -9,9 +10,14 @@ import {
 import type { Cell, CellContents, SudokuBoard } from "..";
 
 const CELL_SIZE: SquareProps["minWidth"] = {
-  base: "1.938rem", // 31px
+  base: "31px", // 31px
   sm: "3.188rem", // 51px
   md: "5rem", // 80px
+};
+const TEXT_STYLE: ButtonProps["textStyle"] = {
+  base: "2xl",
+  sm: "4xl",
+  md: "6xl",
 };
 const BOX_SIZE: SimpleGridProps["width"] = {
   base: "6.438rem", // 103px
@@ -52,12 +58,9 @@ const SudokuCell = ({ cellContents: sudokuCell }: SudokuCellProps) => {
         borderWidth="0"
         color="black" // TODO: "#1d6ae5"
         height={CELL_SIZE}
+        minWidth={CELL_SIZE}
         padding="0"
-        textStyle={{
-          base: "2xl",
-          sm: "4xl",
-          md: "6xl",
-        }}
+        textStyle={TEXT_STYLE}
         width={CELL_SIZE}
       >
         {displayValue}

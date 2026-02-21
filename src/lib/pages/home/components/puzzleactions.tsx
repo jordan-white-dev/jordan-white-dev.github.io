@@ -69,7 +69,7 @@ const ActionIconButton = ({
       aria-label={ariaLabel}
       aspectRatio={{ lg: 2 / 1 }}
       height={ICON_BUTTON_HEIGHT}
-      padding={{ base: "0.25rem 0" }}
+      padding="0.25rem 0"
       rounded={BUTTON_ROUNDED}
       width={ICON_BUTTON_WIDTH}
       {...props}

@@ -61,11 +61,12 @@ type MarkupCell = {
 };
 export type CellContents = StartingDigitCell | PlayerDigitCell | MarkupCell;
 export type Cell = {
-  cellNumber: number;
-  rowNumber: number;
-  columnNumber: number;
   boxNumber: number;
+  cellNumber: number;
+  columnNumber: number;
   contents: CellContents;
+  isSelected: boolean;
+  rowNumber: number;
 };
 export type SudokuBoard = {
   cells: Array<Cell>;
@@ -87,17 +88,18 @@ const createBlankSudokuBoard = (): SudokuBoard => {
 
     const puzzleValue = rawPuzzle[cellNumber - 1];
 
-    const cellContents: CellContents =
+    const contents: CellContents =
       puzzleValue === null
         ? { playerDigit: "" }
         : { startingDigit: (puzzleValue + 1).toString() as SudokuDigit };
 
     cells.push({
-      cellNumber,
-      rowNumber,
-      columnNumber,
       boxNumber,
-      contents: cellContents,
+      cellNumber,
+      columnNumber,
+      contents,
+      isSelected: false,
+      rowNumber,
     });
   }
 

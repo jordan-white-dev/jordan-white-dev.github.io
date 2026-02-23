@@ -7,7 +7,7 @@ import {
   type SquareProps,
 } from "@chakra-ui/react";
 
-import type { Cell, CellContents, SudokuBoard } from "..";
+import type { Cell, CellContent, SudokuBoard } from "..";
 
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
@@ -50,15 +50,14 @@ type SudokuCellProps = {
 };
 
 const SudokuCell = ({ cell }: SudokuCellProps) => {
-  const getDisplayValue = (cellContents: CellContents): string => {
-    if ("startingDigit" in cellContents)
-      return cellContents.startingDigit as string;
-    if ("playerDigit" in cellContents)
-      return cellContents.playerDigit as string;
+  const getDisplayValue = (cellContent: CellContent): string => {
+    if (typeof cellContent === "string") {
+      return cellContent;
+    }
     return "";
   };
 
-  const displayValue = getDisplayValue(cell.cellContents);
+  const displayValue = getDisplayValue(cell.cellContent);
   return (
     <Square
       aspectRatio="square"
@@ -101,8 +100,8 @@ const SudokuBox = ({ boxCells }: SudokuBoxProps) => (
     height={BOX_SIZE}
     width={BOX_SIZE}
   >
-    {boxCells.map((sudokuCell) => (
-      <SudokuCell key={sudokuCell.cellNumber} cell={sudokuCell} />
+    {boxCells.map((cell) => (
+      <SudokuCell key={cell.cellNumber} cell={cell} />
     ))}
   </SimpleGrid>
 );
@@ -112,14 +111,15 @@ type SudokuGridProps = {
   currentSudokuBoard: SudokuBoard;
 };
 
+type CellsByBox = Array<Array<Cell>>;
+
 export const SudokuGrid = ({ currentSudokuBoard }: SudokuGridProps) => {
-  const sudokuBoxes = Array.from({ length: 9 }, (_, i) =>
-    currentSudokuBoard
-      .filter((cell) => cell.boxNumber === i + 1)
-      .sort(
-        (a, b) => a.rowNumber - b.rowNumber || a.columnNumber - b.columnNumber,
-      ),
-  );
+  const emptyBoxes: CellsByBox = Array.from({ length: 9 }, () => []);
+
+  const sudokuBoxes = currentSudokuBoard.reduce<CellsByBox>((boxes, cell) => {
+    boxes[cell.boxNumber - 1].push(cell);
+    return boxes;
+  }, emptyBoxes);
 
   return (
     <SimpleGrid

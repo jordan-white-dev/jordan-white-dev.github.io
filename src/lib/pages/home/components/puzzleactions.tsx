@@ -117,41 +117,39 @@ const ActionDialog = ({
   dialogTitleText,
   dialogTrigger,
   onConfirm,
-}: ActionDialogProps) => {
-  return (
-    <Dialog.Root placement="center" size="xs">
-      {dialogTrigger}
-      <Portal>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content>
-            <Dialog.Header>
-              <Dialog.Title>{dialogTitleText}</Dialog.Title>
-            </Dialog.Header>
+}: ActionDialogProps) => (
+  <Dialog.Root placement="center" size="xs">
+    {dialogTrigger}
+    <Portal>
+      <Dialog.Backdrop />
+      <Dialog.Positioner>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>{dialogTitleText}</Dialog.Title>
+          </Dialog.Header>
 
-            <Dialog.Body>{dialogBodyText}</Dialog.Body>
+          <Dialog.Body>{dialogBodyText}</Dialog.Body>
 
-            <Dialog.Footer>
-              <Dialog.ActionTrigger asChild>
-                <Button variant="outline">{closeDialogButtonText}</Button>
-              </Dialog.ActionTrigger>
+          <Dialog.Footer>
+            <Dialog.ActionTrigger asChild>
+              <Button variant="outline">{closeDialogButtonText}</Button>
+            </Dialog.ActionTrigger>
 
-              {actionButtonText && (
-                <Button colorPalette="blue" onClick={onConfirm}>
-                  {actionButtonText}
-                </Button>
-              )}
-            </Dialog.Footer>
+            {actionButtonText && (
+              <Button colorPalette="blue" onClick={onConfirm}>
+                {actionButtonText}
+              </Button>
+            )}
+          </Dialog.Footer>
 
-            <Dialog.CloseTrigger asChild>
-              <CloseButton size="sm" />
-            </Dialog.CloseTrigger>
-          </Dialog.Content>
-        </Dialog.Positioner>
-      </Portal>
-    </Dialog.Root>
-  );
-};
+          <Dialog.CloseTrigger asChild>
+            <CloseButton size="sm" />
+          </Dialog.CloseTrigger>
+        </Dialog.Content>
+      </Dialog.Positioner>
+    </Portal>
+  </Dialog.Root>
+);
 // #endregion
 
 // #region New Puzzle Button
@@ -194,8 +192,8 @@ const RedoButton = () => (
 );
 // #endregion
 
-// #region Check Puzzle Button
-const CheckPuzzleButton = () => (
+// #region Check Solution Button
+const CheckSolutionButton = () => (
   <ActionDialog
     closeDialogButtonText="Okay"
     dialogBodyText="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
@@ -247,7 +245,7 @@ export const PuzzleActions = () => (
     <NewPuzzleButton />
     <UndoButton />
     <RedoButton />
-    <CheckPuzzleButton />
+    <CheckSolutionButton />
     <RestartPuzzleButton />
   </SimpleGrid>
 );

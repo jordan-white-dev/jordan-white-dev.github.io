@@ -8,32 +8,28 @@ import type { MarkupColor } from "./components/svgs";
 
 // #region Types
 type SudokuDigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
-type StartingDigitCellContents = {
-  startingDigit: SudokuDigit;
-};
-type PlayerDigitCellContents = {
-  playerDigit: SudokuDigit | "";
-};
-type MarkupCellContents = {
+type StartingDigitCellContent = SudokuDigit;
+type PlayerDigitCellContent = SudokuDigit | "";
+type MarkupCellContent = {
   centerMarkups: Array<SudokuDigit>;
-  colorMarkups: MarkupColor;
   cornerMarkups: Array<SudokuDigit>;
+  markupColor: MarkupColor;
 };
-export type CellContents =
-  | StartingDigitCellContents
-  | PlayerDigitCellContents
-  | MarkupCellContents;
+export type CellContent =
+  | StartingDigitCellContent
+  | PlayerDigitCellContent
+  | MarkupCellContent;
 export type Cell = {
   boxNumber: number;
+  cellContent: CellContent;
   cellNumber: number;
   columnNumber: number;
-  cellContents: CellContents;
   isSelected: boolean;
   rowNumber: number;
 };
 export type SudokuBoard = Array<Cell>;
 
-type RawSudokuBoard = Array<number | null>;
+type RawSudokuBoard = Array<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | null>;
 
 export const inputModes = ["Digit", "Color", "Center", "Corner"] as const;
 export type InputMode = (typeof inputModes)[number];
@@ -53,16 +49,16 @@ const makeNewPuzzleSudokuBoard = (): SudokuBoard => {
 
     const rawSudokuBoardCell = rawSudokuBoard[cellNumber - 1];
 
-    const cellContents: CellContents =
+    const cellContent: CellContent =
       rawSudokuBoardCell === null
-        ? { playerDigit: "" }
-        : { startingDigit: (rawSudokuBoardCell + 1).toString() as SudokuDigit };
+        ? ""
+        : ((rawSudokuBoardCell + 1).toString() as SudokuDigit);
 
     sudokuBoard.push({
       boxNumber,
+      cellContent,
       cellNumber,
       columnNumber,
-      cellContents,
       isSelected: false,
       rowNumber,
     });

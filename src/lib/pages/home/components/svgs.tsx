@@ -43,7 +43,7 @@ export const markupColors = [
 export type MarkupColor = (typeof markupColors)[number];
 // #endregion
 
-// #region ColorSVG
+// #region Color SVG
 export const ColorSVG = (props: HTMLChakraProps<"svg">) => (
   <chakra.svg
     aria-label="Color Icon"
@@ -69,7 +69,7 @@ export const ColorSVG = (props: HTMLChakraProps<"svg">) => (
 );
 // #endregion
 
-// #region CornerSVG
+// #region Corner SVG
 export const CornerSVG = (props: HTMLChakraProps<"svg">) => (
   <chakra.svg
     aria-label="Corner Icon"
@@ -86,7 +86,7 @@ export const CornerSVG = (props: HTMLChakraProps<"svg">) => (
 );
 // #endregion
 
-// #region CenterSVG
+// #region Center SVG
 export const CenterSVG = (props: HTMLChakraProps<"svg">) => (
   <chakra.svg
     aria-label="Center Icon"

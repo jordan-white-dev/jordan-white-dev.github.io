@@ -16,6 +16,7 @@ type PlayerInterfaceProps = {
   inputMode: InputMode;
   isMultiselectMode: boolean;
   setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  setInitialRawSudokuBoard: Dispatch<SetStateAction<RawSudokuBoard>>;
   setInputMode: Dispatch<SetStateAction<InputMode>>;
   setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
@@ -26,6 +27,7 @@ export const PlayerInterface = ({
   inputMode,
   isMultiselectMode,
   setCurrentSudokuBoard,
+  setInitialRawSudokuBoard,
   setInputMode,
   setIsMultiselectMode,
   setPuzzleHistory,
@@ -39,6 +41,7 @@ export const PlayerInterface = ({
     <PuzzleActions
       initialRawSudokuBoard={initialRawSudokuBoard}
       setCurrentSudokuBoard={setCurrentSudokuBoard}
+      setInitialRawSudokuBoard={setInitialRawSudokuBoard}
       setPuzzleHistory={setPuzzleHistory}
     />
     <InputPad

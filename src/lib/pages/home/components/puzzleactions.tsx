@@ -17,6 +17,7 @@ import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 
 import {
   buildSudokuBoardState,
+  getNewPuzzle,
   type PuzzleHistory,
   type RawSudokuBoard,
   type SudokuBoardState,
@@ -157,7 +158,17 @@ const ActionDialog = ({
 // #endregion
 
 // #region New Puzzle Button
-const NewPuzzleButton = () => (
+type NewPuzzleButtonProps = {
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  setInitialRawSudokuBoard: Dispatch<SetStateAction<RawSudokuBoard>>;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+
+const NewPuzzleButton = ({
+  setCurrentSudokuBoard,
+  setInitialRawSudokuBoard,
+  setPuzzleHistory,
+}: NewPuzzleButtonProps) => (
   <GridItem colSpan={{ base: 1, lg: 2 }}>
     <ActionDialog
       actionButtonText="New Puzzle"
@@ -175,6 +186,12 @@ const NewPuzzleButton = () => (
           </Dialog.Trigger>
         </ActionTooltip>
       }
+      onConfirm={() => {
+        const newPuzzle = getNewPuzzle();
+        setInitialRawSudokuBoard(newPuzzle.initialRawSudokuBoard);
+        setCurrentSudokuBoard(newPuzzle.sudokuBoardState);
+        setPuzzleHistory([newPuzzle.sudokuBoardState]);
+      }}
     />
   </GridItem>
 );
@@ -264,12 +281,14 @@ const RestartPuzzleButton = ({
 type PuzzleActionsProps = {
   initialRawSudokuBoard: RawSudokuBoard;
   setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  setInitialRawSudokuBoard: Dispatch<SetStateAction<RawSudokuBoard>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 export const PuzzleActions = ({
   initialRawSudokuBoard,
   setCurrentSudokuBoard,
+  setInitialRawSudokuBoard,
   setPuzzleHistory,
 }: PuzzleActionsProps) => (
   <SimpleGrid
@@ -278,7 +297,11 @@ export const PuzzleActions = ({
     maxWidth="12.75rem"
     rowGap={{ base: "0.5", md: "0.2875rem" }}
   >
-    <NewPuzzleButton />
+    <NewPuzzleButton
+      setCurrentSudokuBoard={setCurrentSudokuBoard}
+      setInitialRawSudokuBoard={setInitialRawSudokuBoard}
+      setPuzzleHistory={setPuzzleHistory}
+    />
     <UndoButton />
     <RedoButton />
     <CheckSolutionButton />

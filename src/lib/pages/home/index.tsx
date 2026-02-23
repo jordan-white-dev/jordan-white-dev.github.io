@@ -69,7 +69,7 @@ export const buildSudokuBoardState = (
   return sudokuBoardState;
 };
 
-const getNewPuzzle = (): {
+export const getNewPuzzle = (): {
   initialRawSudokuBoard: RawSudokuBoard;
   sudokuBoardState: SudokuBoardState;
 } => {
@@ -84,7 +84,7 @@ const getNewPuzzle = (): {
 const Home = () => {
   const newPuzzle = getNewPuzzle();
 
-  const [initialRawSudokuBoard, _setInitialRawSudokuBoard] = useState(
+  const [initialRawSudokuBoard, setInitialRawSudokuBoard] = useState(
     newPuzzle.initialRawSudokuBoard,
   );
   const [inputMode, setInputMode] = useState<InputMode>("Digit");
@@ -110,6 +110,7 @@ const Home = () => {
         inputMode={inputMode}
         isMultiselectMode={isMultiselectMode}
         setCurrentSudokuBoard={setCurrentSudokuBoard}
+        setInitialRawSudokuBoard={setInitialRawSudokuBoard}
         setInputMode={setInputMode}
         setIsMultiselectMode={setIsMultiselectMode}
         setPuzzleHistory={setPuzzleHistory}

@@ -15,7 +15,7 @@ type PlayerDigitCell = {
 };
 type MarkupCell = {
   centerMarkups: Array<SudokuDigit>;
-  colorMarkups: Array<ColorInput>;
+  colorMarkups: ColorInput;
   cornerMarkups: Array<SudokuDigit>;
 };
 export type CellContents = StartingDigitCell | PlayerDigitCell | MarkupCell;
@@ -27,14 +27,15 @@ export type Cell = {
   isSelected: boolean;
   rowNumber: number;
 };
-export type SudokuBoard = {
-  cells: Array<Cell>;
-};
+export type SudokuBoard = Array<Cell>;
 
 type RawPuzzle = Array<number | null>;
 
+export const inputModes = ["Digit", "Color", "Center", "Corner"] as const;
+export type InputMode = (typeof inputModes)[number];
+
 const createBlankSudokuBoard = (): SudokuBoard => {
-  const cells: SudokuBoard["cells"] = [];
+  const cells: SudokuBoard = [];
   const rawPuzzle: RawPuzzle = makepuzzle();
 
   for (let cellNumber = 1; cellNumber <= 81; cellNumber++) {
@@ -62,11 +63,8 @@ const createBlankSudokuBoard = (): SudokuBoard => {
     });
   }
 
-  return { cells };
+  return cells;
 };
-
-export const inputModes = ["Digit", "Color", "Center", "Corner"] as const;
-export type InputMode = (typeof inputModes)[number];
 
 const Home = () => {
   const [inputMode, setInputMode] = useState<InputMode>("Digit");

@@ -106,7 +106,7 @@ type SudokuGridProps = {
 
 export const SudokuGrid = ({ currentSudokuBoard }: SudokuGridProps) => {
   const sudokuBoxes = Array.from({ length: 9 }, (_, i) =>
-    currentSudokuBoard.cells
+    currentSudokuBoard
       .filter((cell) => cell.boxNumber === i + 1)
       .sort(
         (a, b) => a.rowNumber - b.rowNumber || a.columnNumber - b.columnNumber,

@@ -1,41 +1,10 @@
-import { Flex, Stack } from "@chakra-ui/react";
-import { type Dispatch, type SetStateAction, useState } from "react";
+import { Flex } from "@chakra-ui/react";
+import { useState } from "react";
 import { makepuzzle } from "sudoku";
 
-import { InputModes } from "./components/inputmodes";
-import { InputPad } from "./components/inputpad";
-import { PuzzleActions } from "./components/puzzleactions";
+import { PlayerInterface } from "./components/playerinterface";
 import { SudokuGrid } from "./components/sudokugrid";
 import type { ColorInput } from "./components/svgs";
-
-type PlayerInterfaceProps = {
-  inputMode: InputMode;
-  isMultiselectMode: boolean;
-  setInputMode: Dispatch<SetStateAction<InputMode>>;
-  setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
-};
-
-const PlayerInterface = ({
-  inputMode,
-  isMultiselectMode,
-  setInputMode,
-  setIsMultiselectMode,
-}: PlayerInterfaceProps) => (
-  <Stack
-    alignItems="center"
-    direction={{ base: "row", lg: "column" }}
-    gap="4"
-    minWidth={{ lg: "52" }}
-  >
-    <PuzzleActions />
-    <InputPad
-      inputMode={inputMode}
-      isMultiselectMode={isMultiselectMode}
-      setIsMultiselectMode={setIsMultiselectMode}
-    />
-    <InputModes inputMode={inputMode} setInputMode={setInputMode} />
-  </Stack>
-);
 
 type SudokuDigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 type StartingDigitCell = {

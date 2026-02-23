@@ -154,6 +154,89 @@ const ActionDialog = ({
 };
 // #endregion
 
+// #region New Puzzle Button
+const NewPuzzleButton = () => (
+  <GridItem colSpan={{ base: 1, lg: 2 }}>
+    <ActionDialog
+      actionButtonText="New Puzzle"
+      closeDialogButtonText="Cancel"
+      dialogBodyText="Are you sure you want to start a new puzzle? All progress will be lost!"
+      dialogTitleText="Confirm New"
+      dialogTrigger={
+        <ActionTooltip tooltipText="Start a new puzzle">
+          <Dialog.Trigger asChild>
+            <ActionButton
+              ariaLabel="New Puzzle"
+              icon={<MdOutlineFiberNew />}
+              iconSize={MD_ICON_SIZE_ALT}
+            />
+          </Dialog.Trigger>
+        </ActionTooltip>
+      }
+    />
+  </GridItem>
+);
+// #endregion
+
+// #region Undo Button
+const UndoButton = () => (
+  <ActionTooltip tooltipText="Undo the last move">
+    <ActionButton ariaLabel="Undo" icon={<ImUndo />} iconSize={IM_ICON_SIZE} />
+  </ActionTooltip>
+);
+// #endregion
+
+// #region Redo Button
+const RedoButton = () => (
+  <ActionTooltip tooltipText="Redo the last undone move">
+    <ActionButton ariaLabel="Redo" icon={<ImRedo />} iconSize={IM_ICON_SIZE} />
+  </ActionTooltip>
+);
+// #endregion
+
+// #region Check Puzzle Button
+const CheckPuzzleButton = () => (
+  <ActionDialog
+    closeDialogButtonText="Okay"
+    dialogBodyText="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    dialogTitleText="Dialog Title"
+    dialogTrigger={
+      <ActionTooltip tooltipText="Check the current solution">
+        <Dialog.Trigger asChild>
+          <ActionButton
+            ariaLabel="Check Solution"
+            icon={<ImCheckmark />}
+            iconSize={IM_ICON_SIZE}
+          />
+        </Dialog.Trigger>
+      </ActionTooltip>
+    }
+  />
+);
+// #endregion
+
+// #region Restart Puzzle Button
+const RestartPuzzleButton = () => (
+  <ActionDialog
+    actionButtonText="Restart Puzzle"
+    closeDialogButtonText="Cancel"
+    dialogBodyText="Are you sure you want to restart the puzzle? All progress will be lost!"
+    dialogTitleText="Confirm Restart"
+    dialogTrigger={
+      <ActionTooltip tooltipText="Restart the puzzle">
+        <Dialog.Trigger asChild>
+          <ActionButton
+            ariaLabel="Restart the puzzle"
+            icon={<MdRestartAlt />}
+            iconSize={MD_ICON_SIZE}
+          />
+        </Dialog.Trigger>
+      </ActionTooltip>
+    }
+  />
+);
+// #endregion
+
 export const PuzzleActions = () => (
   <SimpleGrid
     columnGap={{ base: "0.5", lg: "3" }}
@@ -161,75 +244,10 @@ export const PuzzleActions = () => (
     maxWidth="12.75rem"
     rowGap={{ base: "0.5", md: "0.2875rem" }}
   >
-    <GridItem colSpan={{ base: 1, lg: 2 }}>
-      <ActionDialog
-        actionButtonText="New Puzzle"
-        closeDialogButtonText="Cancel"
-        dialogBodyText="Are you sure you want to start a new puzzle? All progress will be lost!"
-        dialogTitleText="Confirm New"
-        dialogTrigger={
-          <ActionTooltip tooltipText="Start a new puzzle">
-            <Dialog.Trigger asChild>
-              <ActionButton
-                ariaLabel="New Puzzle"
-                icon={<MdOutlineFiberNew />}
-                iconSize={MD_ICON_SIZE_ALT}
-              />
-            </Dialog.Trigger>
-          </ActionTooltip>
-        }
-      />
-    </GridItem>
-
-    <ActionTooltip tooltipText="Undo the last move">
-      <ActionButton
-        ariaLabel="Undo"
-        icon={<ImUndo />}
-        iconSize={IM_ICON_SIZE}
-      />
-    </ActionTooltip>
-
-    <ActionTooltip tooltipText="Redo the last undone move">
-      <ActionButton
-        ariaLabel="Redo"
-        icon={<ImRedo />}
-        iconSize={IM_ICON_SIZE}
-      />
-    </ActionTooltip>
-
-    <ActionDialog
-      closeDialogButtonText="Okay"
-      dialogBodyText="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-      dialogTitleText="Dialog Title"
-      dialogTrigger={
-        <ActionTooltip tooltipText="Check the current solution">
-          <Dialog.Trigger asChild>
-            <ActionButton
-              ariaLabel="Check Solution"
-              icon={<ImCheckmark />}
-              iconSize={IM_ICON_SIZE}
-            />
-          </Dialog.Trigger>
-        </ActionTooltip>
-      }
-    />
-
-    <ActionDialog
-      actionButtonText="Restart Puzzle"
-      closeDialogButtonText="Cancel"
-      dialogBodyText="Are you sure you want to restart the puzzle? All progress will be lost!"
-      dialogTitleText="Confirm Restart"
-      dialogTrigger={
-        <ActionTooltip tooltipText="Restart the puzzle">
-          <Dialog.Trigger asChild>
-            <ActionButton
-              ariaLabel="Restart the puzzle"
-              icon={<MdRestartAlt />}
-              iconSize={MD_ICON_SIZE}
-            />
-          </Dialog.Trigger>
-        </ActionTooltip>
-      }
-    />
+    <NewPuzzleButton />
+    <UndoButton />
+    <RedoButton />
+    <CheckPuzzleButton />
+    <RestartPuzzleButton />
   </SimpleGrid>
 );

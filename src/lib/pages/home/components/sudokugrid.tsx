@@ -7,7 +7,7 @@ import {
   type SquareProps,
 } from "@chakra-ui/react";
 
-import type { Cell, CellContent, SudokuBoard } from "..";
+import type { Cell, CellContent, SudokuBoardState } from "..";
 
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
@@ -108,7 +108,7 @@ const SudokuBox = ({ boxCells }: SudokuBoxProps) => (
 // #endregion
 
 type SudokuGridProps = {
-  currentSudokuBoard: SudokuBoard;
+  currentSudokuBoard: SudokuBoardState;
 };
 
 type CellsByBox = Array<Array<Cell>>;

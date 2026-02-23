@@ -11,10 +11,16 @@ import {
   Portal,
   SimpleGrid,
 } from "@chakra-ui/react";
-import type { ReactNode } from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { ImCheckmark, ImRedo, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 
+import {
+  buildSudokuBoardState,
+  type PuzzleHistory,
+  type RawSudokuBoard,
+  type SudokuBoardState,
+} from "..";
 import { Tooltip } from "./tooltip";
 
 // #region CSS Properties
@@ -132,9 +138,11 @@ const ActionDialog = ({
             </Dialog.ActionTrigger>
 
             {actionButtonText && (
-              <Button colorPalette="blue" onClick={onConfirm}>
-                {actionButtonText}
-              </Button>
+              <Dialog.ActionTrigger asChild>
+                <Button colorPalette="blue" onClick={onConfirm}>
+                  {actionButtonText}
+                </Button>
+              </Dialog.ActionTrigger>
             )}
           </Dialog.Footer>
 
@@ -210,7 +218,24 @@ const CheckSolutionButton = () => (
 // #endregion
 
 // #region Restart Puzzle Button
-const RestartPuzzleButton = () => (
+const getRestartedBoardState = (
+  initialRawSudokuBoard: RawSudokuBoard,
+): SudokuBoardState => {
+  const restartedBoardState = buildSudokuBoardState(initialRawSudokuBoard);
+  return restartedBoardState;
+};
+
+type RestartPuzzleButtonProps = {
+  initialRawSudokuBoard: RawSudokuBoard;
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+
+const RestartPuzzleButton = ({
+  initialRawSudokuBoard,
+  setCurrentSudokuBoard,
+  setPuzzleHistory,
+}: RestartPuzzleButtonProps) => (
   <ActionDialog
     actionButtonText="Restart Puzzle"
     closeDialogButtonText="Cancel"
@@ -227,11 +252,26 @@ const RestartPuzzleButton = () => (
         </Dialog.Trigger>
       </ActionTooltip>
     }
+    onConfirm={() => {
+      const restartedBoardState = getRestartedBoardState(initialRawSudokuBoard);
+      setCurrentSudokuBoard(restartedBoardState);
+      setPuzzleHistory([restartedBoardState]);
+    }}
   />
 );
 // #endregion
 
-export const PuzzleActions = () => (
+type PuzzleActionsProps = {
+  initialRawSudokuBoard: RawSudokuBoard;
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+
+export const PuzzleActions = ({
+  initialRawSudokuBoard,
+  setCurrentSudokuBoard,
+  setPuzzleHistory,
+}: PuzzleActionsProps) => (
   <SimpleGrid
     columnGap={{ base: "0.5", lg: "3" }}
     columns={{ base: 1, lg: 2 }}
@@ -242,6 +282,10 @@ export const PuzzleActions = () => (
     <UndoButton />
     <RedoButton />
     <CheckSolutionButton />
-    <RestartPuzzleButton />
+    <RestartPuzzleButton
+      initialRawSudokuBoard={initialRawSudokuBoard}
+      setCurrentSudokuBoard={setCurrentSudokuBoard}
+      setPuzzleHistory={setPuzzleHistory}
+    />
   </SimpleGrid>
 );

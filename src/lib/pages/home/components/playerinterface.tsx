@@ -2,22 +2,22 @@ import { Stack } from "@chakra-ui/react";
 import type { Dispatch, SetStateAction } from "react";
 
 import type { InputMode } from "..";
-import { InputModes } from "./inputmodes";
+import { InputModeRadioCard } from "./inputmodes";
 import { InputPad } from "./inputpad";
 import { PuzzleActions } from "./puzzleactions";
 
 type PlayerInterfaceProps = {
   inputMode: InputMode;
-  isMultiselectMode: boolean;
+  isInMultiselectMode: boolean;
   setInputMode: Dispatch<SetStateAction<InputMode>>;
-  setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
+  setIsInMultiselectMode: Dispatch<SetStateAction<boolean>>;
 };
 
 export const PlayerInterface = ({
   inputMode,
-  isMultiselectMode,
+  isInMultiselectMode,
   setInputMode,
-  setIsMultiselectMode,
+  setIsInMultiselectMode,
 }: PlayerInterfaceProps) => (
   <Stack
     alignItems="center"
@@ -28,9 +28,9 @@ export const PlayerInterface = ({
     <PuzzleActions />
     <InputPad
       inputMode={inputMode}
-      isMultiselectMode={isMultiselectMode}
-      setIsMultiselectMode={setIsMultiselectMode}
+      isInMultiselectMode={isInMultiselectMode}
+      setIsInMultiselectMode={setIsInMultiselectMode}
     />
-    <InputModes inputMode={inputMode} setInputMode={setInputMode} />
+    <InputModeRadioCard inputMode={inputMode} setInputMode={setInputMode} />
   </Stack>
 );

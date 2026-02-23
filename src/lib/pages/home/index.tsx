@@ -95,7 +95,6 @@ const Home = () => {
   const [_puzzleHistory, setPuzzleHistory] = useState<PuzzleHistory>([
     newPuzzle.sudokuBoardState,
   ]);
-  const [_selectedCells, _setSelectedCells] = useState();
 
   return (
     <Flex

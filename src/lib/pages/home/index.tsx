@@ -39,25 +39,15 @@ const PlayerInterface = ({
 
 type SudokuDigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 type StartingDigitCell = {
-  centerMarkups?: never;
-  colorMarkups?: never;
-  cornerMarkups?: never;
-  playerDigit?: never;
   startingDigit: SudokuDigit;
 };
 type PlayerDigitCell = {
-  centerMarkups?: never;
-  colorMarkups?: never;
-  cornerMarkups?: never;
   playerDigit: SudokuDigit | "";
-  startingDigit?: never;
 };
 type MarkupCell = {
   centerMarkups: Array<SudokuDigit>;
   colorMarkups: Array<ColorInput>;
   cornerMarkups: Array<SudokuDigit>;
-  playerDigit?: never;
-  startingDigit?: never;
 };
 export type CellContents = StartingDigitCell | PlayerDigitCell | MarkupCell;
 export type Cell = {

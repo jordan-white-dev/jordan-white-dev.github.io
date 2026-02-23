@@ -66,23 +66,21 @@ const ActionButton = ({
   icon,
   iconSize,
   ...props
-}: ActionButtonProps) => {
-  return (
-    <IconButton
-      aria-label={ariaLabel}
-      aspectRatio={{ lg: 2 / 1 }}
-      height={ICON_BUTTON_HEIGHT}
-      padding="0.25rem 0"
-      rounded={BUTTON_ROUNDED}
-      width={ICON_BUTTON_WIDTH}
-      {...props}
-    >
-      <Icon height={iconSize} width={iconSize}>
-        {icon}
-      </Icon>
-    </IconButton>
-  );
-};
+}: ActionButtonProps) => (
+  <IconButton
+    aria-label={ariaLabel}
+    aspectRatio={{ lg: 2 / 1 }}
+    height={ICON_BUTTON_HEIGHT}
+    padding="0.25rem 0"
+    rounded={BUTTON_ROUNDED}
+    width={ICON_BUTTON_WIDTH}
+    {...props}
+  >
+    <Icon height={iconSize} width={iconSize}>
+      {icon}
+    </Icon>
+  </IconButton>
+);
 // #endregion
 
 // #region Action Tooltip
@@ -91,13 +89,11 @@ type ActionTooltipProps = {
   tooltipText: string;
 };
 
-const ActionTooltip = ({ children, tooltipText }: ActionTooltipProps) => {
-  return (
-    <Tooltip content={tooltipText} positioning={{ placement: "left-start" }}>
-      {children}
-    </Tooltip>
-  );
-};
+const ActionTooltip = ({ children, tooltipText }: ActionTooltipProps) => (
+  <Tooltip content={tooltipText} positioning={{ placement: "left-start" }}>
+    {children}
+  </Tooltip>
+);
 // #endregion
 
 // #region Action Dialog

@@ -56,20 +56,18 @@ type ColorButtonProps = {
   tooltipText: string;
 };
 
-const ColorButton = ({ buttonColor, tooltipText }: ColorButtonProps) => {
-  return (
-    <GridItem colSpan={2} height={COLOR_SWATCH_SIZE} width={COLOR_SWATCH_SIZE}>
-      <Tooltip content={tooltipText}>
-        <ColorSwatch
-          height={COLOR_SWATCH_SIZE}
-          rounded="md"
-          value={buttonColor}
-          width={COLOR_SWATCH_SIZE}
-        />
-      </Tooltip>
-    </GridItem>
-  );
-};
+const ColorButton = ({ buttonColor, tooltipText }: ColorButtonProps) => (
+  <GridItem colSpan={2} height={COLOR_SWATCH_SIZE} width={COLOR_SWATCH_SIZE}>
+    <Tooltip content={tooltipText}>
+      <ColorSwatch
+        height={COLOR_SWATCH_SIZE}
+        rounded="md"
+        value={buttonColor}
+        width={COLOR_SWATCH_SIZE}
+      />
+    </Tooltip>
+  </GridItem>
+);
 // #endregion
 
 const ColorPad = () => (
@@ -94,24 +92,22 @@ type NumberButtonProps = {
   buttonValue: string;
 };
 
-const NumberButton = ({ buttonValue }: NumberButtonProps) => {
-  return (
-    <GridItem colSpan={2}>
-      <Square aspectRatio="square">
-        <IconButton
-          aspectRatio="square"
-          color="white"
-          colorPalette="blue"
-          rounded="md"
-          size={ICON_BUTTON_SIZE}
-          textStyle={ICON_BUTTON_TEXT_STYLE}
-        >
-          {buttonValue}
-        </IconButton>
-      </Square>
-    </GridItem>
-  );
-};
+const NumberButton = ({ buttonValue }: NumberButtonProps) => (
+  <GridItem colSpan={2}>
+    <Square aspectRatio="square">
+      <IconButton
+        aspectRatio="square"
+        color="white"
+        colorPalette="blue"
+        rounded="md"
+        size={ICON_BUTTON_SIZE}
+        textStyle={ICON_BUTTON_TEXT_STYLE}
+      >
+        {buttonValue}
+      </IconButton>
+    </Square>
+  </GridItem>
+);
 // #endregion
 
 const NumberPad = () => (
@@ -213,20 +209,18 @@ export const InputPad = ({
   inputMode,
   isMultiselectMode,
   setIsMultiselectMode,
-}: InputPadProps) => {
-  return (
-    <SimpleGrid
-      columns={6}
-      gap={{ base: "0.1874rem", sm: "1", md: "1.5" }}
-      height="fit-content"
-    >
-      {inputMode === "Color" ? <ColorPad /> : <NumberPad />}
+}: InputPadProps) => (
+  <SimpleGrid
+    columns={6}
+    gap={{ base: "0.1874rem", sm: "1", md: "1.5" }}
+    height="fit-content"
+  >
+    {inputMode === "Color" ? <ColorPad /> : <NumberPad />}
 
-      <MultiselectSwitch
-        isMultiselectMode={isMultiselectMode}
-        setIsMultiselectMode={setIsMultiselectMode}
-      />
-      <DeleteButton />
-    </SimpleGrid>
-  );
-};
+    <MultiselectSwitch
+      isMultiselectMode={isMultiselectMode}
+      setIsMultiselectMode={setIsMultiselectMode}
+    />
+    <DeleteButton />
+  </SimpleGrid>
+);

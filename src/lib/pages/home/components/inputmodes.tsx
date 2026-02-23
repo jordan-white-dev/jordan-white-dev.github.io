@@ -5,25 +5,27 @@ import type { InputMode } from "..";
 import { CenterSVG, ColorSVG, CornerSVG, DigitSVG } from "./svgs";
 import { Tooltip } from "./tooltip";
 
-// #region Input Mode Radio Card Item
-type InputModeRadioCardItemProps = {
+type InputModeItemProps = {
   icon: ReactNode;
   inputModeValue: InputMode;
   tooltipText: string;
   setInputMode: Dispatch<SetStateAction<InputMode>>;
 };
 
-export const InputModeRadioCardItem = ({
+export const InputModeItem = ({
   icon,
   inputModeValue,
   tooltipText,
-}: InputModeRadioCardItemProps) => {
+  setInputMode,
+  ...props
+}: InputModeItemProps) => {
   return (
     <RadioCard.Item
       alignItems="center"
       aria-label={tooltipText}
       padding="0"
       value={inputModeValue}
+      {...props}
     >
       <RadioCard.ItemHiddenInput />
       <Tooltip content={tooltipText} positioning={{ placement: "right-start" }}>
@@ -44,17 +46,13 @@ export const InputModeRadioCardItem = ({
     </RadioCard.Item>
   );
 };
-// #endregion
 
-type InputModeRadioCardProps = {
+type InputModesProps = {
   inputMode: InputMode;
   setInputMode: Dispatch<SetStateAction<InputMode>>;
 };
 
-export const InputModeRadioCard = ({
-  inputMode,
-  setInputMode,
-}: InputModeRadioCardProps) => {
+export const InputModes = ({ inputMode, setInputMode }: InputModesProps) => {
   return (
     <RadioCard.Root
       align="center"
@@ -69,25 +67,25 @@ export const InputModeRadioCard = ({
         gap={{ base: "0.229rem", sm: "1", md: "0.5833rem", lg: "3" }}
         minWidth={{ lg: "12.75rem" }}
       >
-        <InputModeRadioCardItem
+        <InputModeItem
           icon={<DigitSVG />}
           inputModeValue="Digit"
           tooltipText="Digit input mode"
           setInputMode={setInputMode}
         />
-        <InputModeRadioCardItem
+        <InputModeItem
           icon={<ColorSVG />}
           inputModeValue="Color"
           tooltipText="Color markup mode"
           setInputMode={setInputMode}
         />
-        <InputModeRadioCardItem
+        <InputModeItem
           icon={<CenterSVG />}
           inputModeValue="Center"
           tooltipText="Center markup mode"
           setInputMode={setInputMode}
         />
-        <InputModeRadioCardItem
+        <InputModeItem
           icon={<CornerSVG />}
           inputModeValue="Corner"
           tooltipText="Corner markup mode"

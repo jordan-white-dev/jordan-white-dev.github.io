@@ -9,7 +9,6 @@ import {
 
 import type { Cell, CellContents, SudokuBoard } from "..";
 
-// #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
   base: "31px",
   sm: "3.188rem", // 51px
@@ -42,22 +41,19 @@ const GRID_SIZE: SimpleGridProps["minWidth"] = {
 };
 const THIN_BORDER: SquareProps["border"] = "1px solid black";
 const THICK_BORDER: SquareProps["border"] = "2px solid black";
-// #endregion
 
-// #region Sudoku Cell
 type SudokuCellProps = {
-  cell: Cell;
+  sudokuCell: Cell;
 };
 
-const SudokuCell = ({ cell }: SudokuCellProps) => {
-  const getDisplayValue = (cellContents: CellContents): string => {
-    if (typeof cellContents === "string") {
-      return cellContents;
-    }
+const SudokuCell = ({ sudokuCell }: SudokuCellProps) => {
+  const getDisplayValue = (contents: CellContents): string => {
+    if ("startingDigit" in contents) return contents.startingDigit as string;
+    if ("playerDigit" in contents) return contents.playerDigit as string;
     return "";
   };
 
-  const displayValue = getDisplayValue(cell.cellContents);
+  const displayValue = getDisplayValue(sudokuCell.contents);
   return (
     <Square
       aspectRatio="square"
@@ -75,7 +71,7 @@ const SudokuCell = ({ cell }: SudokuCellProps) => {
         padding="0"
         textStyle={TEXT_STYLE}
         width={CELL_SIZE}
-        {...(cell.isSelected && {
+        {...(sudokuCell.isSelected && {
           outline: CELL_OUTLINE,
           outlineOffset: CELL_OUTLINE_OFFSET,
         })}
@@ -85,9 +81,7 @@ const SudokuCell = ({ cell }: SudokuCellProps) => {
     </Square>
   );
 };
-// #endregion
 
-// #region Sudoku Box
 type SudokuBoxProps = {
   boxCells: Array<Cell>;
 };
@@ -100,26 +94,24 @@ const SudokuBox = ({ boxCells }: SudokuBoxProps) => (
     height={BOX_SIZE}
     width={BOX_SIZE}
   >
-    {boxCells.map((cell) => (
-      <SudokuCell key={cell.cellNumber} cell={cell} />
+    {boxCells.map((sudokuCell) => (
+      <SudokuCell key={sudokuCell.cellNumber} sudokuCell={sudokuCell} />
     ))}
   </SimpleGrid>
 );
-// #endregion
 
 type SudokuGridProps = {
   currentSudokuBoard: SudokuBoard;
 };
 
-type CellsByBox = Array<Array<Cell>>;
-
 export const SudokuGrid = ({ currentSudokuBoard }: SudokuGridProps) => {
-  const emptyBoxes: CellsByBox = Array.from({ length: 9 }, () => []);
-
-  const sudokuBoxes = currentSudokuBoard.reduce<CellsByBox>((boxes, cell) => {
-    boxes[cell.boxNumber - 1].push(cell);
-    return boxes;
-  }, emptyBoxes);
+  const sudokuBoxes = Array.from({ length: 9 }, (_, i) =>
+    currentSudokuBoard
+      .filter((cell) => cell.boxNumber === i + 1)
+      .sort(
+        (a, b) => a.rowNumber - b.rowNumber || a.columnNumber - b.columnNumber,
+      ),
+  );
 
   return (
     <SimpleGrid

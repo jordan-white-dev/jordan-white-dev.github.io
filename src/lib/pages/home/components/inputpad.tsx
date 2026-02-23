@@ -17,19 +17,18 @@ import { GrCheckbox, GrMultiple } from "react-icons/gr";
 
 import type { InputMode } from "..";
 import {
-  MARKUP_COLOR_GRAY,
-  MARKUP_COLOR_GREEN,
-  MARKUP_COLOR_ORANGE,
-  MARKUP_COLOR_RED,
-  MARKUP_COLOR_SILVER,
-  MARKUP_COLOR_TAN,
-  MARKUP_COLOR_VIOLET,
-  MARKUP_COLOR_WHITE,
-  MARKUP_COLOR_YELLOW,
+  COLOR_INPUT_GRAY,
+  COLOR_INPUT_GREEN,
+  COLOR_INPUT_ORANGE,
+  COLOR_INPUT_RED,
+  COLOR_INPUT_SILVER,
+  COLOR_INPUT_TAN,
+  COLOR_INPUT_VIOLET,
+  COLOR_INPUT_WHITE,
+  COLOR_INPUT_YELLOW,
 } from "./svgs";
 import { Tooltip } from "./tooltip";
 
-// #region CSS Properties
 const COLOR_SWATCH_SIZE: IconProps["width"] = {
   base: "2.105rem",
   sm: "11",
@@ -46,17 +45,13 @@ const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
   sm: "3xl",
   md: "5xl",
 };
-// #endregion
 
-// #region Color Pad
-
-// #region Color Button
-type ColorButtonProps = {
+type ColorInputsProps = {
   buttonColor: string;
   tooltipText: string;
 };
 
-const ColorButton = ({ buttonColor, tooltipText }: ColorButtonProps) => {
+const ColorInput = ({ buttonColor, tooltipText }: ColorInputsProps) => {
   return (
     <GridItem colSpan={2} height={COLOR_SWATCH_SIZE} width={COLOR_SWATCH_SIZE}>
       <Tooltip content={tooltipText}>
@@ -70,31 +65,26 @@ const ColorButton = ({ buttonColor, tooltipText }: ColorButtonProps) => {
     </GridItem>
   );
 };
-// #endregion
 
-const ColorPad = () => (
+const ColorPadInputs = () => (
   <>
-    <ColorButton buttonColor={MARKUP_COLOR_GRAY} tooltipText="Gray" />
-    <ColorButton buttonColor={MARKUP_COLOR_SILVER} tooltipText="Silver" />
-    <ColorButton buttonColor={MARKUP_COLOR_WHITE} tooltipText="White" />
-    <ColorButton buttonColor={MARKUP_COLOR_VIOLET} tooltipText="Violet" />
-    <ColorButton buttonColor={MARKUP_COLOR_RED} tooltipText="Red" />
-    <ColorButton buttonColor={MARKUP_COLOR_TAN} tooltipText="Tan" />
-    <ColorButton buttonColor={MARKUP_COLOR_ORANGE} tooltipText="Orange" />
-    <ColorButton buttonColor={MARKUP_COLOR_YELLOW} tooltipText="Yellow" />
-    <ColorButton buttonColor={MARKUP_COLOR_GREEN} tooltipText="Green" />
+    <ColorInput buttonColor={COLOR_INPUT_GRAY} tooltipText="Gray" />
+    <ColorInput buttonColor={COLOR_INPUT_SILVER} tooltipText="Silver" />
+    <ColorInput buttonColor={COLOR_INPUT_WHITE} tooltipText="White" />
+    <ColorInput buttonColor={COLOR_INPUT_VIOLET} tooltipText="Violet" />
+    <ColorInput buttonColor={COLOR_INPUT_RED} tooltipText="Red" />
+    <ColorInput buttonColor={COLOR_INPUT_TAN} tooltipText="Tan" />
+    <ColorInput buttonColor={COLOR_INPUT_ORANGE} tooltipText="Orange" />
+    <ColorInput buttonColor={COLOR_INPUT_YELLOW} tooltipText="Yellow" />
+    <ColorInput buttonColor={COLOR_INPUT_GREEN} tooltipText="Green" />
   </>
 );
-// #endregion
 
-// #region Number Pad
-
-// #region Number Button
-type NumberButtonProps = {
+type NumberInputProps = {
   buttonValue: string;
 };
 
-const NumberButton = ({ buttonValue }: NumberButtonProps) => {
+const NumberInput = ({ buttonValue }: NumberInputProps) => {
   return (
     <GridItem colSpan={2}>
       <Square aspectRatio="square">
@@ -112,32 +102,29 @@ const NumberButton = ({ buttonValue }: NumberButtonProps) => {
     </GridItem>
   );
 };
-// #endregion
 
-const NumberPad = () => (
+const NumberPadInputs = () => (
   <>
-    <NumberButton buttonValue="1" />
-    <NumberButton buttonValue="2" />
-    <NumberButton buttonValue="3" />
-    <NumberButton buttonValue="4" />
-    <NumberButton buttonValue="5" />
-    <NumberButton buttonValue="6" />
-    <NumberButton buttonValue="7" />
-    <NumberButton buttonValue="8" />
-    <NumberButton buttonValue="9" />
+    <NumberInput buttonValue="1" />
+    <NumberInput buttonValue="2" />
+    <NumberInput buttonValue="3" />
+    <NumberInput buttonValue="4" />
+    <NumberInput buttonValue="5" />
+    <NumberInput buttonValue="6" />
+    <NumberInput buttonValue="7" />
+    <NumberInput buttonValue="8" />
+    <NumberInput buttonValue="9" />
   </>
 );
-// #endregion
 
-// #region Multiselect Switch
 type MultiselectSwitchProps = {
-  isInMultiselectMode: boolean;
-  setIsInMultiselectMode: Dispatch<SetStateAction<boolean>>;
+  isMultiselectMode: boolean;
+  setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
 };
 
 const MultiselectSwitch = ({
-  isInMultiselectMode,
-  setIsInMultiselectMode,
+  isMultiselectMode,
+  setIsMultiselectMode,
 }: MultiselectSwitchProps) => (
   <GridItem
     alignContent="center"
@@ -151,10 +138,10 @@ const MultiselectSwitch = ({
     <Tooltip content="Multiple cells can be selected while this is toggled">
       <Stack alignItems="center" direction="column" gap="1">
         <Switch.Root
-          checked={isInMultiselectMode}
+          checked={isMultiselectMode}
           colorPalette="blue"
           size="lg"
-          onCheckedChange={(e) => setIsInMultiselectMode(e.checked)}
+          onCheckedChange={(e) => setIsMultiselectMode(e.checked)}
         >
           <Switch.HiddenInput />
           <Switch.Control>
@@ -176,9 +163,7 @@ const MultiselectSwitch = ({
     </Tooltip>
   </GridItem>
 );
-// #endregion
 
-// #region Delete Button
 const DeleteButton = () => (
   <GridItem colSpan={3}>
     <Tooltip
@@ -201,18 +186,17 @@ const DeleteButton = () => (
     </Tooltip>
   </GridItem>
 );
-// #endregion
 
 type InputPadProps = {
   inputMode: InputMode;
-  isInMultiselectMode: boolean;
-  setIsInMultiselectMode: Dispatch<SetStateAction<boolean>>;
+  isMultiselectMode: boolean;
+  setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
 };
 
 export const InputPad = ({
   inputMode,
-  isInMultiselectMode,
-  setIsInMultiselectMode,
+  isMultiselectMode,
+  setIsMultiselectMode,
 }: InputPadProps) => {
   return (
     <SimpleGrid
@@ -220,11 +204,11 @@ export const InputPad = ({
       gap={{ base: "0.1874rem", sm: "1", md: "1.5" }}
       height="fit-content"
     >
-      {inputMode === "Color" ? <ColorPad /> : <NumberPad />}
+      {inputMode === "Color" ? <ColorPadInputs /> : <NumberPadInputs />}
 
       <MultiselectSwitch
-        isInMultiselectMode={isInMultiselectMode}
-        setIsInMultiselectMode={setIsInMultiselectMode}
+        isMultiselectMode={isMultiselectMode}
+        setIsMultiselectMode={setIsMultiselectMode}
       />
       <DeleteButton />
     </SimpleGrid>

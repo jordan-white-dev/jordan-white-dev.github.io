@@ -104,7 +104,11 @@ const Home = () => {
       fontFamily="sans-serif"
       gap={{ base: "4", md: "8" }}
     >
-      <SudokuGrid currentSudokuBoard={currentSudokuBoard} />
+      <SudokuGrid
+        currentSudokuBoard={currentSudokuBoard}
+        isMultiselectMode={isMultiselectMode}
+        setCurrentSudokuBoard={setCurrentSudokuBoard}
+      />
       <PlayerInterface
         initialRawSudokuBoard={initialRawSudokuBoard}
         inputMode={inputMode}

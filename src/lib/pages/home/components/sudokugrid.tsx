@@ -6,6 +6,7 @@ import {
   Square,
   type SquareProps,
 } from "@chakra-ui/react";
+import type { Dispatch, SetStateAction } from "react";
 
 import type { Cell, CellContent, SudokuBoardState } from "..";
 
@@ -47,17 +48,53 @@ const THICK_BORDER: SquareProps["border"] = "2px solid black";
 // #region Sudoku Cell
 type SudokuCellProps = {
   cell: Cell;
+  isMultiselectMode: boolean;
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
 };
 
-const SudokuCell = ({ cell }: SudokuCellProps) => {
+const SudokuCell = ({
+  cell,
+  isMultiselectMode,
+  setCurrentSudokuBoard,
+}: SudokuCellProps) => {
   const getDisplayValue = (cellContent: CellContent): string => {
     if (typeof cellContent === "string") {
       return cellContent;
     }
     return "";
   };
-
   const displayValue = getDisplayValue(cell.cellContent);
+
+  const handleCellSelection = () => {
+    setCurrentSudokuBoard((currentSudokuBoard) => {
+      const selectedCells = currentSudokuBoard.filter(
+        (boardCell) => boardCell.isSelected,
+      );
+
+      return currentSudokuBoard.map((boardCell) => {
+        const newIsSelectedForMultiselect =
+          boardCell.cellNumber === cell.cellNumber
+            ? !boardCell.isSelected
+            : boardCell.isSelected;
+
+        const isOnlySelectedCell =
+          selectedCells.length === 1 &&
+          selectedCells[0].cellNumber === cell.cellNumber;
+
+        const newIsSelectedForSingleSelect =
+          boardCell.cellNumber === cell.cellNumber
+            ? !isOnlySelectedCell
+            : false;
+
+        const newIsSelected = isMultiselectMode
+          ? newIsSelectedForMultiselect
+          : newIsSelectedForSingleSelect;
+
+        return { ...boardCell, isSelected: newIsSelected };
+      });
+    });
+  };
+
   return (
     <Square
       aspectRatio="square"
@@ -79,6 +116,7 @@ const SudokuCell = ({ cell }: SudokuCellProps) => {
           outline: CELL_OUTLINE,
           outlineOffset: CELL_OUTLINE_OFFSET,
         })}
+        onClick={handleCellSelection}
       >
         {displayValue}
       </Button>
@@ -90,9 +128,15 @@ const SudokuCell = ({ cell }: SudokuCellProps) => {
 // #region Sudoku Box
 type SudokuBoxProps = {
   boxCells: Array<Cell>;
+  isMultiselectMode: boolean;
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
 };
 
-const SudokuBox = ({ boxCells }: SudokuBoxProps) => (
+const SudokuBox = ({
+  boxCells,
+  isMultiselectMode,
+  setCurrentSudokuBoard,
+}: SudokuBoxProps) => (
   <SimpleGrid
     border={THICK_BORDER}
     columns={3}
@@ -101,7 +145,12 @@ const SudokuBox = ({ boxCells }: SudokuBoxProps) => (
     width={BOX_SIZE}
   >
     {boxCells.map((cell) => (
-      <SudokuCell key={cell.cellNumber} cell={cell} />
+      <SudokuCell
+        key={cell.cellNumber}
+        cell={cell}
+        isMultiselectMode={isMultiselectMode}
+        setCurrentSudokuBoard={setCurrentSudokuBoard}
+      />
     ))}
   </SimpleGrid>
 );
@@ -109,11 +158,17 @@ const SudokuBox = ({ boxCells }: SudokuBoxProps) => (
 
 type SudokuGridProps = {
   currentSudokuBoard: SudokuBoardState;
+  isMultiselectMode: boolean;
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
 };
 
 type CellsByBox = Array<Array<Cell>>;
 
-export const SudokuGrid = ({ currentSudokuBoard }: SudokuGridProps) => {
+export const SudokuGrid = ({
+  currentSudokuBoard,
+  isMultiselectMode,
+  setCurrentSudokuBoard,
+}: SudokuGridProps) => {
   const emptyBoxes: CellsByBox = Array.from({ length: 9 }, () => []);
 
   const sudokuBoxes = currentSudokuBoard.reduce<CellsByBox>((boxes, cell) => {
@@ -130,7 +185,12 @@ export const SudokuGrid = ({ currentSudokuBoard }: SudokuGridProps) => {
       minWidth={GRID_SIZE}
     >
       {sudokuBoxes.map((boxCells) => (
-        <SudokuBox key={`${boxCells[0].boxNumber}`} boxCells={boxCells} />
+        <SudokuBox
+          key={`${boxCells[0].boxNumber}`}
+          boxCells={boxCells}
+          isMultiselectMode={isMultiselectMode}
+          setCurrentSudokuBoard={setCurrentSudokuBoard}
+        />
       ))}
     </SimpleGrid>
   );

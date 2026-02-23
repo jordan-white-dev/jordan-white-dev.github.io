@@ -4,39 +4,44 @@ import { makepuzzle } from "sudoku";
 
 import { PlayerInterface } from "./components/playerinterface";
 import { SudokuGrid } from "./components/sudokugrid";
-import type { ColorInput } from "./components/svgs";
+import type { MarkupColor } from "./components/svgs";
 
+// #region Types
 type SudokuDigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
-type StartingDigitCell = {
+type StartingDigitCellContents = {
   startingDigit: SudokuDigit;
 };
-type PlayerDigitCell = {
+type PlayerDigitCellContents = {
   playerDigit: SudokuDigit | "";
 };
-type MarkupCell = {
+type MarkupCellContents = {
   centerMarkups: Array<SudokuDigit>;
-  colorMarkups: ColorInput;
+  colorMarkups: MarkupColor;
   cornerMarkups: Array<SudokuDigit>;
 };
-export type CellContents = StartingDigitCell | PlayerDigitCell | MarkupCell;
+export type CellContents =
+  | StartingDigitCellContents
+  | PlayerDigitCellContents
+  | MarkupCellContents;
 export type Cell = {
   boxNumber: number;
   cellNumber: number;
   columnNumber: number;
-  contents: CellContents;
+  cellContents: CellContents;
   isSelected: boolean;
   rowNumber: number;
 };
 export type SudokuBoard = Array<Cell>;
 
-type RawPuzzle = Array<number | null>;
+type RawSudokuBoard = Array<number | null>;
 
 export const inputModes = ["Digit", "Color", "Center", "Corner"] as const;
 export type InputMode = (typeof inputModes)[number];
+// #endregion
 
-const createBlankSudokuBoard = (): SudokuBoard => {
-  const cells: SudokuBoard = [];
-  const rawPuzzle: RawPuzzle = makepuzzle();
+const makeNewPuzzleSudokuBoard = (): SudokuBoard => {
+  const sudokuBoard: SudokuBoard = [];
+  const rawSudokuBoard: RawSudokuBoard = makepuzzle();
 
   for (let cellNumber = 1; cellNumber <= 81; cellNumber++) {
     const rowNumber = Math.floor((cellNumber - 1) / 9) + 1;
@@ -46,24 +51,24 @@ const createBlankSudokuBoard = (): SudokuBoard => {
       Math.floor((columnNumber - 1) / 3) +
       1;
 
-    const puzzleValue = rawPuzzle[cellNumber - 1];
+    const rawSudokuBoardCell = rawSudokuBoard[cellNumber - 1];
 
-    const contents: CellContents =
-      puzzleValue === null
+    const cellContents: CellContents =
+      rawSudokuBoardCell === null
         ? { playerDigit: "" }
-        : { startingDigit: (puzzleValue + 1).toString() as SudokuDigit };
+        : { startingDigit: (rawSudokuBoardCell + 1).toString() as SudokuDigit };
 
-    cells.push({
+    sudokuBoard.push({
       boxNumber,
       cellNumber,
       columnNumber,
-      contents,
+      cellContents,
       isSelected: false,
       rowNumber,
     });
   }
 
-  return cells;
+  return sudokuBoard;
 };
 
 const Home = () => {
@@ -71,7 +76,7 @@ const Home = () => {
   const [isMultiselectMode, setIsMultiselectMode] = useState<boolean>(false);
   // const [selectedCells, setSelectedCells] = useState();
   const [currentSudokuBoard, _setCurrentSudokuBoard] = useState(
-    createBlankSudokuBoard(),
+    makeNewPuzzleSudokuBoard(),
   );
   // const [movesHistory, setMovesHistory] = useState();
 

@@ -17,6 +17,7 @@ import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 
 import { Tooltip } from "./tooltip";
 
+// #region CSS Properties
 const ICON_BUTTON_HEIGHT: IconButtonProps["height"] = {
   base: "1.6757rem",
   sm: "2.25rem",
@@ -51,19 +52,21 @@ const BUTTON_ROUNDED: ButtonProps["rounded"] = {
   base: "sm",
   sm: "md",
 };
+// #endregion
 
-type ActionIconButtonProps = {
+// #region Action Button
+type ActionButtonProps = {
   ariaLabel: string;
   icon: ReactNode;
   iconSize: IconProps["width"];
 } & Omit<IconButtonProps, "aria-label">;
 
-const ActionIconButton = ({
+const ActionButton = ({
   ariaLabel,
   icon,
   iconSize,
   ...props
-}: ActionIconButtonProps) => {
+}: ActionButtonProps) => {
   return (
     <IconButton
       aria-label={ariaLabel}
@@ -80,7 +83,9 @@ const ActionIconButton = ({
     </IconButton>
   );
 };
+// #endregion
 
+// #region Action Tooltip
 type ActionTooltipProps = {
   children: ReactNode;
   tooltipText: string;
@@ -93,7 +98,9 @@ const ActionTooltip = ({ children, tooltipText }: ActionTooltipProps) => {
     </Tooltip>
   );
 };
+// #endregion
 
+// #region Action Dialog
 type ActionDialogProps = {
   actionButtonText?: string;
   closeDialogButtonText: string;
@@ -145,6 +152,7 @@ const ActionDialog = ({
     </Dialog.Root>
   );
 };
+// #endregion
 
 export const PuzzleActions = () => (
   <SimpleGrid
@@ -162,7 +170,7 @@ export const PuzzleActions = () => (
         dialogTrigger={
           <ActionTooltip tooltipText="Start a new puzzle">
             <Dialog.Trigger asChild>
-              <ActionIconButton
+              <ActionButton
                 ariaLabel="New Puzzle"
                 icon={<MdOutlineFiberNew />}
                 iconSize={MD_ICON_SIZE_ALT}
@@ -174,7 +182,7 @@ export const PuzzleActions = () => (
     </GridItem>
 
     <ActionTooltip tooltipText="Undo the last move">
-      <ActionIconButton
+      <ActionButton
         ariaLabel="Undo"
         icon={<ImUndo />}
         iconSize={IM_ICON_SIZE}
@@ -182,7 +190,7 @@ export const PuzzleActions = () => (
     </ActionTooltip>
 
     <ActionTooltip tooltipText="Redo the last undone move">
-      <ActionIconButton
+      <ActionButton
         ariaLabel="Redo"
         icon={<ImRedo />}
         iconSize={IM_ICON_SIZE}
@@ -196,7 +204,7 @@ export const PuzzleActions = () => (
       dialogTrigger={
         <ActionTooltip tooltipText="Check the current solution">
           <Dialog.Trigger asChild>
-            <ActionIconButton
+            <ActionButton
               ariaLabel="Check Solution"
               icon={<ImCheckmark />}
               iconSize={IM_ICON_SIZE}
@@ -214,7 +222,7 @@ export const PuzzleActions = () => (
       dialogTrigger={
         <ActionTooltip tooltipText="Restart the puzzle">
           <Dialog.Trigger asChild>
-            <ActionIconButton
+            <ActionButton
               ariaLabel="Restart the puzzle"
               icon={<MdRestartAlt />}
               iconSize={MD_ICON_SIZE}

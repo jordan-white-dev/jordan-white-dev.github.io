@@ -2,7 +2,7 @@ import { Stack } from "@chakra-ui/react";
 import type { Dispatch, SetStateAction } from "react";
 
 import type { InputMode } from "..";
-import { InputModes } from "./inputmodes";
+import { InputModeRadioCard } from "./inputmodes";
 import { InputPad } from "./inputpad";
 import { PuzzleActions } from "./puzzleactions";
 
@@ -31,6 +31,6 @@ export const PlayerInterface = ({
       isMultiselectMode={isMultiselectMode}
       setIsMultiselectMode={setIsMultiselectMode}
     />
-    <InputModes inputMode={inputMode} setInputMode={setInputMode} />
+    <InputModeRadioCard inputMode={inputMode} setInputMode={setInputMode} />
   </Stack>
 );

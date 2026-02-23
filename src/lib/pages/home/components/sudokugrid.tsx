@@ -9,6 +9,7 @@ import {
 
 import type { Cell, CellContents, SudokuBoard } from "..";
 
+// #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
   base: "31px",
   sm: "3.188rem", // 51px
@@ -41,19 +42,23 @@ const GRID_SIZE: SimpleGridProps["minWidth"] = {
 };
 const THIN_BORDER: SquareProps["border"] = "1px solid black";
 const THICK_BORDER: SquareProps["border"] = "2px solid black";
+// #endregion
 
+// #region Sudoku Cell
 type SudokuCellProps = {
-  sudokuCell: Cell;
+  cell: Cell;
 };
 
-const SudokuCell = ({ sudokuCell }: SudokuCellProps) => {
-  const getDisplayValue = (contents: CellContents): string => {
-    if ("startingDigit" in contents) return contents.startingDigit as string;
-    if ("playerDigit" in contents) return contents.playerDigit as string;
+const SudokuCell = ({ cell }: SudokuCellProps) => {
+  const getDisplayValue = (cellContents: CellContents): string => {
+    if ("startingDigit" in cellContents)
+      return cellContents.startingDigit as string;
+    if ("playerDigit" in cellContents)
+      return cellContents.playerDigit as string;
     return "";
   };
 
-  const displayValue = getDisplayValue(sudokuCell.contents);
+  const displayValue = getDisplayValue(cell.cellContents);
   return (
     <Square
       aspectRatio="square"
@@ -71,7 +76,7 @@ const SudokuCell = ({ sudokuCell }: SudokuCellProps) => {
         padding="0"
         textStyle={TEXT_STYLE}
         width={CELL_SIZE}
-        {...(sudokuCell.isSelected && {
+        {...(cell.isSelected && {
           outline: CELL_OUTLINE,
           outlineOffset: CELL_OUTLINE_OFFSET,
         })}
@@ -81,7 +86,9 @@ const SudokuCell = ({ sudokuCell }: SudokuCellProps) => {
     </Square>
   );
 };
+// #endregion
 
+// #region Sudoku Box
 type SudokuBoxProps = {
   boxCells: Array<Cell>;
 };
@@ -95,10 +102,11 @@ const SudokuBox = ({ boxCells }: SudokuBoxProps) => (
     width={BOX_SIZE}
   >
     {boxCells.map((sudokuCell) => (
-      <SudokuCell key={sudokuCell.cellNumber} sudokuCell={sudokuCell} />
+      <SudokuCell key={sudokuCell.cellNumber} cell={sudokuCell} />
     ))}
   </SimpleGrid>
 );
+// #endregion
 
 type SudokuGridProps = {
   currentSudokuBoard: SudokuBoard;

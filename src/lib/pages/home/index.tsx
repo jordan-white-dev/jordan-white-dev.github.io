@@ -29,7 +29,6 @@ export type PlayerDigitCellContent = { playerDigit: SudokuDigit | "" };
 type MarkupCellContent = {
   centerMarkups: Array<SudokuDigit> | "";
   cornerMarkups: Array<SudokuDigit> | "";
-  markupColor: MarkupColor;
 };
 export type CellContent =
   | StartingDigitCellContent
@@ -41,6 +40,7 @@ export type Cell = {
   cellNumber: number;
   columnNumber: number;
   isSelected: boolean;
+  markupColor: MarkupColor | "";
   rowNumber: number;
 };
 export type SudokuBoardState = Array<Cell>;
@@ -73,6 +73,7 @@ export const buildSudokuBoardState = (
       cellNumber,
       columnNumber,
       isSelected: false,
+      markupColor: "",
       rowNumber,
     });
   }

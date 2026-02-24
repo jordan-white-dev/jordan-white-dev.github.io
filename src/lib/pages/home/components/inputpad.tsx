@@ -78,10 +78,7 @@ const ColorButton = ({
         return boardCell.isSelected
           ? {
               ...boardCell,
-              cellContent: {
-                ...boardCell.cellContent,
-                markupColor: buttonColor,
-              },
+              markupColor: buttonColor,
             }
           : boardCell;
       });

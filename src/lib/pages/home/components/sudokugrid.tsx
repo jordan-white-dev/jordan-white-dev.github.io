@@ -71,9 +71,7 @@ const SudokuCell = ({
   const digitColor = "startingDigit" in cell.cellContent ? "black" : "#1d6ae5";
 
   const cellBackgroundColor =
-    "markupColor" in cell.cellContent
-      ? cell.cellContent.markupColor
-      : "transparent";
+    cell.markupColor !== "" ? cell.markupColor : "transparent";
 
   const handleCellSelection = () => {
     setCurrentSudokuBoard((currentSudokuBoard) => {

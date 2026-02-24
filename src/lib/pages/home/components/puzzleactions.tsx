@@ -63,19 +63,12 @@ const BUTTON_ROUNDED: ButtonProps["rounded"] = {
 
 // #region Action Button
 type ActionButtonProps = {
-  ariaLabel: string;
   icon: ReactNode;
   iconSize: IconProps["width"];
-} & Omit<IconButtonProps, "aria-label">;
+};
 
-const ActionButton = ({
-  ariaLabel,
-  icon,
-  iconSize,
-  ...props
-}: ActionButtonProps) => (
+const ActionButton = ({ icon, iconSize, ...props }: ActionButtonProps) => (
   <IconButton
-    aria-label={ariaLabel}
     aspectRatio={{ lg: 2 / 1 }}
     height={ICON_BUTTON_HEIGHT}
     padding="0.25rem 0"
@@ -179,7 +172,6 @@ const NewPuzzleButton = ({
         <ActionTooltip tooltipText="Start a new puzzle">
           <Dialog.Trigger asChild>
             <ActionButton
-              ariaLabel="New Puzzle"
               icon={<MdOutlineFiberNew />}
               iconSize={MD_ICON_SIZE_ALT}
             />
@@ -200,7 +192,7 @@ const NewPuzzleButton = ({
 // #region Undo Button
 const UndoButton = () => (
   <ActionTooltip tooltipText="Undo the last move">
-    <ActionButton ariaLabel="Undo" icon={<ImUndo />} iconSize={IM_ICON_SIZE} />
+    <ActionButton icon={<ImUndo />} iconSize={IM_ICON_SIZE} />
   </ActionTooltip>
 );
 // #endregion
@@ -208,7 +200,7 @@ const UndoButton = () => (
 // #region Redo Button
 const RedoButton = () => (
   <ActionTooltip tooltipText="Redo the last undone move">
-    <ActionButton ariaLabel="Redo" icon={<ImRedo />} iconSize={IM_ICON_SIZE} />
+    <ActionButton icon={<ImRedo />} iconSize={IM_ICON_SIZE} />
   </ActionTooltip>
 );
 // #endregion
@@ -222,11 +214,7 @@ const CheckSolutionButton = () => (
     dialogTrigger={
       <ActionTooltip tooltipText="Check the current solution">
         <Dialog.Trigger asChild>
-          <ActionButton
-            ariaLabel="Check Solution"
-            icon={<ImCheckmark />}
-            iconSize={IM_ICON_SIZE}
-          />
+          <ActionButton icon={<ImCheckmark />} iconSize={IM_ICON_SIZE} />
         </Dialog.Trigger>
       </ActionTooltip>
     }
@@ -261,11 +249,7 @@ const RestartPuzzleButton = ({
     dialogTrigger={
       <ActionTooltip tooltipText="Restart the puzzle">
         <Dialog.Trigger asChild>
-          <ActionButton
-            ariaLabel="Restart the puzzle"
-            icon={<MdRestartAlt />}
-            iconSize={MD_ICON_SIZE}
-          />
+          <ActionButton icon={<MdRestartAlt />} iconSize={MD_ICON_SIZE} />
         </Dialog.Trigger>
       </ActionTooltip>
     }

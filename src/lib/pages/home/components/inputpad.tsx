@@ -276,15 +276,14 @@ const MultiselectSwitch = ({
 );
 // #endregion
 
-// #region Delete Button
-const DeleteButton = () => (
+// #region Clear Button
+const ClearButton = () => (
   <GridItem colSpan={3}>
     <Tooltip
-      content="Delete content from the selected cells"
+      content="Clear the selected cells"
       positioning={{ placement: "bottom" }}
     >
       <IconButton
-        aria-label="Delete"
         color="white"
         colorPalette="blue"
         rounded="md"
@@ -341,6 +340,6 @@ export const InputPad = ({
       isMultiselectMode={isMultiselectMode}
       setIsMultiselectMode={setIsMultiselectMode}
     />
-    <DeleteButton />
+    <ClearButton />
   </SimpleGrid>
 );

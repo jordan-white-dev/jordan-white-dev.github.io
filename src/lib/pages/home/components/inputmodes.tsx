@@ -22,7 +22,6 @@ export const InputModeRadioCardItem = ({
 }: InputModeRadioCardItemProps) => (
   <RadioCard.Item
     alignItems="center"
-    aria-label={tooltipText}
     padding="0"
     value={inputModeValue}
     {...props}

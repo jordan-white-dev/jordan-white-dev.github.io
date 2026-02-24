@@ -75,14 +75,16 @@ const ColorButton = ({
   setPuzzleHistory,
 }: ColorButtonProps) => {
   const handleColorPadInput = () => {
-    const updatedSudokuBoard = currentSudokuBoard.map((boardCell) => {
-      return boardCell.isSelected
-        ? {
-            ...boardCell,
-            markupColor: buttonColor,
-          }
-        : boardCell;
-    });
+    const updatedSudokuBoard: SudokuBoardState = currentSudokuBoard.map(
+      (boardCell) => {
+        return boardCell.isSelected
+          ? {
+              ...boardCell,
+              markupColor: buttonColor,
+            }
+          : boardCell;
+      },
+    );
 
     setCurrentSudokuBoard(updatedSudokuBoard);
     setPuzzleHistory((currentPuzzleHistory) => [
@@ -161,19 +163,21 @@ const NumberButton = ({
   setPuzzleHistory,
 }: NumberButtonProps) => {
   const handleNumberPadInput = () => {
-    const updatedSudokuBoard = currentSudokuBoard.map((boardCell) => {
-      const isValidInputCell =
-        boardCell.isSelected && !("startingDigit" in boardCell.cellContent);
+    const updatedSudokuBoard: SudokuBoardState = currentSudokuBoard.map(
+      (boardCell) => {
+        const isValidInputCell =
+          boardCell.isSelected && !("startingDigit" in boardCell.cellContent);
 
-      return isValidInputCell
-        ? {
-            ...boardCell,
-            cellContent: {
-              playerDigit: buttonValue,
-            },
-          }
-        : boardCell;
-    });
+        return isValidInputCell
+          ? {
+              ...boardCell,
+              cellContent: {
+                playerDigit: buttonValue,
+              },
+            }
+          : boardCell;
+      },
+    );
 
     setCurrentSudokuBoard(updatedSudokuBoard);
     setPuzzleHistory((currentPuzzleHistory) => [
@@ -277,27 +281,65 @@ const MultiselectSwitch = ({
 // #endregion
 
 // #region Clear Button
-const ClearButton = () => (
-  <GridItem colSpan={3}>
-    <Tooltip
-      content="Clear the selected cells"
-      positioning={{ placement: "bottom" }}
-    >
-      <IconButton
-        color="white"
-        colorPalette="blue"
-        rounded="md"
-        size={ICON_BUTTON_SIZE}
-        textStyle={ICON_BUTTON_TEXT_STYLE}
-        width="full"
+type ClearButtonProps = {
+  currentSudokuBoard: SudokuBoardState;
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+
+const ClearButton = ({
+  currentSudokuBoard,
+  setCurrentSudokuBoard,
+  setPuzzleHistory,
+}: ClearButtonProps) => {
+  const handleClearButton = () => {
+    const updatedSudokuBoard: SudokuBoardState = currentSudokuBoard.map(
+      (boardCell) => {
+        const isValidInputCell =
+          boardCell.isSelected && !("startingDigit" in boardCell.cellContent);
+
+        return isValidInputCell
+          ? {
+              ...boardCell,
+              cellContent: {
+                playerDigit: "",
+              },
+              markupColor: "",
+            }
+          : boardCell;
+      },
+    );
+
+    setCurrentSudokuBoard(updatedSudokuBoard);
+    setPuzzleHistory((currentPuzzleHistory) => [
+      ...currentPuzzleHistory,
+      updatedSudokuBoard,
+    ]);
+  };
+
+  return (
+    <GridItem colSpan={3}>
+      <Tooltip
+        content="Clear the selected cells"
+        positioning={{ placement: "bottom" }}
       >
-        <Icon height={ICON_SIZE} width={ICON_SIZE}>
-          <FiDelete />
-        </Icon>
-      </IconButton>
-    </Tooltip>
-  </GridItem>
-);
+        <IconButton
+          color="white"
+          colorPalette="blue"
+          rounded="md"
+          size={ICON_BUTTON_SIZE}
+          textStyle={ICON_BUTTON_TEXT_STYLE}
+          width="full"
+          onClick={handleClearButton}
+        >
+          <Icon height={ICON_SIZE} width={ICON_SIZE}>
+            <FiDelete />
+          </Icon>
+        </IconButton>
+      </Tooltip>
+    </GridItem>
+  );
+};
 // #endregion
 
 type InputPadProps = {
@@ -340,6 +382,10 @@ export const InputPad = ({
       isMultiselectMode={isMultiselectMode}
       setIsMultiselectMode={setIsMultiselectMode}
     />
-    <ClearButton />
+    <ClearButton
+      currentSudokuBoard={currentSudokuBoard}
+      setCurrentSudokuBoard={setCurrentSudokuBoard}
+      setPuzzleHistory={setPuzzleHistory}
+    />
   </SimpleGrid>
 );

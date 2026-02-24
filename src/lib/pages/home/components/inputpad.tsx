@@ -61,6 +61,7 @@ const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
 // #region Color Button
 type ColorButtonProps = {
   buttonColor: MarkupColor;
+  currentSudokuBoard: SudokuBoardState;
   tooltipText: string;
   setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
@@ -68,28 +69,26 @@ type ColorButtonProps = {
 
 const ColorButton = ({
   buttonColor,
+  currentSudokuBoard,
   tooltipText,
   setCurrentSudokuBoard,
   setPuzzleHistory,
 }: ColorButtonProps) => {
   const handleColorPadInput = () => {
-    setCurrentSudokuBoard((currentSudokuBoard) => {
-      const updatedSudokuBoard = currentSudokuBoard.map((boardCell) => {
-        return boardCell.isSelected
-          ? {
-              ...boardCell,
-              markupColor: buttonColor,
-            }
-          : boardCell;
-      });
-
-      setPuzzleHistory((currentPuzzleHistory) => [
-        ...currentPuzzleHistory,
-        updatedSudokuBoard,
-      ]);
-
-      return updatedSudokuBoard;
+    const updatedSudokuBoard = currentSudokuBoard.map((boardCell) => {
+      return boardCell.isSelected
+        ? {
+            ...boardCell,
+            markupColor: buttonColor,
+          }
+        : boardCell;
     });
+
+    setCurrentSudokuBoard(updatedSudokuBoard);
+    setPuzzleHistory((currentPuzzleHistory) => [
+      ...currentPuzzleHistory,
+      updatedSudokuBoard,
+    ]);
   };
 
   return (
@@ -121,10 +120,12 @@ const colorButtonTooltipTexts = {
 };
 
 type ColorPadProps = {
+  currentSudokuBoard: SudokuBoardState;
   setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 const ColorPad = ({
+  currentSudokuBoard,
   setCurrentSudokuBoard,
   setPuzzleHistory,
 }: ColorPadProps) => (
@@ -132,6 +133,7 @@ const ColorPad = ({
     {markupColors.map((markupColor) => (
       <ColorButton
         buttonColor={markupColor}
+        currentSudokuBoard={currentSudokuBoard}
         key={markupColor}
         setCurrentSudokuBoard={setCurrentSudokuBoard}
         setPuzzleHistory={setPuzzleHistory}
@@ -147,38 +149,37 @@ const ColorPad = ({
 // #region Number Button
 type NumberButtonProps = {
   buttonValue: SudokuDigit;
+  currentSudokuBoard: SudokuBoardState;
   setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const NumberButton = ({
   buttonValue,
+  currentSudokuBoard,
   setCurrentSudokuBoard,
   setPuzzleHistory,
 }: NumberButtonProps) => {
   const handleNumberPadInput = () => {
-    setCurrentSudokuBoard((currentSudokuBoard) => {
-      const updatedSudokuBoard = currentSudokuBoard.map((boardCell) => {
-        const isValidInputCell =
-          boardCell.isSelected && !("startingDigit" in boardCell.cellContent);
+    const updatedSudokuBoard = currentSudokuBoard.map((boardCell) => {
+      const isValidInputCell =
+        boardCell.isSelected && !("startingDigit" in boardCell.cellContent);
 
-        return isValidInputCell
-          ? {
-              ...boardCell,
-              cellContent: {
-                playerDigit: buttonValue,
-              },
-            }
-          : boardCell;
-      });
-
-      setPuzzleHistory((currentPuzzleHistory) => [
-        ...currentPuzzleHistory,
-        updatedSudokuBoard,
-      ]);
-
-      return updatedSudokuBoard;
+      return isValidInputCell
+        ? {
+            ...boardCell,
+            cellContent: {
+              playerDigit: buttonValue,
+            },
+          }
+        : boardCell;
     });
+
+    setCurrentSudokuBoard(updatedSudokuBoard);
+    setPuzzleHistory((currentPuzzleHistory) => [
+      ...currentPuzzleHistory,
+      updatedSudokuBoard,
+    ]);
   };
 
   return (
@@ -202,19 +203,22 @@ const NumberButton = ({
 // #endregion
 
 type NumberPadProps = {
+  currentSudokuBoard: SudokuBoardState;
   setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const NumberPad = ({
+  currentSudokuBoard,
   setCurrentSudokuBoard,
   setPuzzleHistory,
 }: NumberPadProps) => (
   <>
     {sudokuDigits.map((digit) => (
       <NumberButton
-        key={digit}
         buttonValue={digit}
+        currentSudokuBoard={currentSudokuBoard}
+        key={digit}
         setCurrentSudokuBoard={setCurrentSudokuBoard}
         setPuzzleHistory={setPuzzleHistory}
       />
@@ -298,6 +302,7 @@ const DeleteButton = () => (
 // #endregion
 
 type InputPadProps = {
+  currentSudokuBoard: SudokuBoardState;
   inputMode: InputMode;
   isMultiselectMode: boolean;
   setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
@@ -306,6 +311,7 @@ type InputPadProps = {
 };
 
 export const InputPad = ({
+  currentSudokuBoard,
   inputMode,
   isMultiselectMode,
   setCurrentSudokuBoard,
@@ -319,11 +325,13 @@ export const InputPad = ({
   >
     {inputMode === "Color" ? (
       <ColorPad
+        currentSudokuBoard={currentSudokuBoard}
         setCurrentSudokuBoard={setCurrentSudokuBoard}
         setPuzzleHistory={setPuzzleHistory}
       />
     ) : (
       <NumberPad
+        currentSudokuBoard={currentSudokuBoard}
         setCurrentSudokuBoard={setCurrentSudokuBoard}
         setPuzzleHistory={setPuzzleHistory}
       />

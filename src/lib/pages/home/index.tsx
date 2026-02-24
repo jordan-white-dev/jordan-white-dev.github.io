@@ -121,6 +121,7 @@ const Home = () => {
         setCurrentSudokuBoard={setCurrentSudokuBoard}
       />
       <PlayerInterface
+        currentSudokuBoard={currentSudokuBoard}
         initialRawSudokuBoard={initialRawSudokuBoard}
         inputMode={inputMode}
         isMultiselectMode={isMultiselectMode}

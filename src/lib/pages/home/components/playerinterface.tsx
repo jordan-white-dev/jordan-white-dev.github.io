@@ -12,6 +12,7 @@ import { InputPad } from "./inputpad";
 import { PuzzleActions } from "./puzzleactions";
 
 type PlayerInterfaceProps = {
+  currentSudokuBoard: SudokuBoardState;
   initialRawSudokuBoard: RawSudokuBoard;
   inputMode: InputMode;
   isMultiselectMode: boolean;
@@ -23,6 +24,7 @@ type PlayerInterfaceProps = {
 };
 
 export const PlayerInterface = ({
+  currentSudokuBoard,
   initialRawSudokuBoard,
   inputMode,
   isMultiselectMode,
@@ -45,6 +47,7 @@ export const PlayerInterface = ({
       setPuzzleHistory={setPuzzleHistory}
     />
     <InputPad
+      currentSudokuBoard={currentSudokuBoard}
       inputMode={inputMode}
       isMultiselectMode={isMultiselectMode}
       setCurrentSudokuBoard={setCurrentSudokuBoard}

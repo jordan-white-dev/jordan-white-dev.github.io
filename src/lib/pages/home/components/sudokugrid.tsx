@@ -3,7 +3,6 @@ import {
   type ButtonProps,
   SimpleGrid,
   type SimpleGridProps,
-  Square,
   type SquareProps,
 } from "@chakra-ui/react";
 import type { Dispatch, SetStateAction } from "react";
@@ -12,7 +11,7 @@ import type { Cell, CellContent, SudokuBoardState } from "..";
 
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
-  base: "31px",
+  base: "33px",
   sm: "3.188rem", // 51px
   md: "5rem", // 80px
 };
@@ -71,6 +70,11 @@ const SudokuCell = ({
 
   const digitColor = "startingDigit" in cell.cellContent ? "black" : "#1d6ae5";
 
+  const cellBackgroundColor =
+    "markupColor" in cell.cellContent
+      ? cell.cellContent.markupColor
+      : "transparent";
+
   const handleCellSelection = () => {
     setCurrentSudokuBoard((currentSudokuBoard) => {
       const selectedCells = currentSudokuBoard.filter(
@@ -102,31 +106,24 @@ const SudokuCell = ({
   };
 
   return (
-    <Square
-      aspectRatio="square"
+    <Button
+      backgroundColor={cellBackgroundColor}
       border={THIN_BORDER}
-      minHeight={CELL_SIZE}
+      borderRadius="0"
+      color={digitColor}
+      height={CELL_SIZE}
       minWidth={CELL_SIZE}
+      padding="0"
+      textStyle={TEXT_STYLE}
+      width={CELL_SIZE}
+      {...(cell.isSelected && {
+        outline: CELL_OUTLINE,
+        outlineOffset: CELL_OUTLINE_OFFSET,
+      })}
+      onClick={handleCellSelection}
     >
-      <Button
-        backgroundColor="transparent"
-        borderRadius="0"
-        borderWidth="0"
-        color={digitColor}
-        height={CELL_SIZE}
-        minWidth={CELL_SIZE}
-        padding="0"
-        textStyle={TEXT_STYLE}
-        width={CELL_SIZE}
-        {...(cell.isSelected && {
-          outline: CELL_OUTLINE,
-          outlineOffset: CELL_OUTLINE_OFFSET,
-        })}
-        onClick={handleCellSelection}
-      >
-        {displayValue}
-      </Button>
-    </Square>
+      {displayValue}
+    </Button>
   );
 };
 // #endregion

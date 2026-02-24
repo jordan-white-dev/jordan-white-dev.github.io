@@ -24,12 +24,11 @@ export const sudokuDigits = [
   "9",
 ] as const;
 export type SudokuDigit = (typeof sudokuDigits)[number];
-// export type SudokuDigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 export type StartingDigitCellContent = { startingDigit: SudokuDigit };
 export type PlayerDigitCellContent = { playerDigit: SudokuDigit | "" };
 type MarkupCellContent = {
-  centerMarkups: Array<SudokuDigit>;
-  cornerMarkups: Array<SudokuDigit>;
+  centerMarkups: Array<SudokuDigit> | "";
+  cornerMarkups: Array<SudokuDigit> | "";
   markupColor: MarkupColor;
 };
 export type CellContent =

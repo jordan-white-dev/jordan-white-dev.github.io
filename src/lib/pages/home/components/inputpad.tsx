@@ -32,6 +32,8 @@ import {
   MARKUP_COLOR_VIOLET,
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_YELLOW,
+  type MarkupColor,
+  markupColors,
 } from "./svgs";
 import { Tooltip } from "./tooltip";
 
@@ -58,35 +60,87 @@ const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
 
 // #region Color Button
 type ColorButtonProps = {
-  buttonColor: string;
+  buttonColor: MarkupColor;
   tooltipText: string;
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const ColorButton = ({ buttonColor, tooltipText }: ColorButtonProps) => (
-  <GridItem colSpan={2} height={COLOR_SWATCH_SIZE} width={COLOR_SWATCH_SIZE}>
-    <Tooltip content={tooltipText}>
-      <ColorSwatch
-        height={COLOR_SWATCH_SIZE}
-        rounded="md"
-        value={buttonColor}
-        width={COLOR_SWATCH_SIZE}
-      />
-    </Tooltip>
-  </GridItem>
-);
+const ColorButton = ({
+  buttonColor,
+  tooltipText,
+  setCurrentSudokuBoard,
+  setPuzzleHistory,
+}: ColorButtonProps) => {
+  const handleColorPadInput = () => {
+    setCurrentSudokuBoard((currentSudokuBoard) => {
+      const updatedSudokuBoard = currentSudokuBoard.map((boardCell) => {
+        return boardCell.isSelected
+          ? {
+              ...boardCell,
+              cellContent: {
+                ...boardCell.cellContent,
+                markupColor: buttonColor,
+              },
+            }
+          : boardCell;
+      });
+
+      setPuzzleHistory((currentPuzzleHistory) => [
+        ...currentPuzzleHistory,
+        updatedSudokuBoard,
+      ]);
+
+      return updatedSudokuBoard;
+    });
+  };
+
+  return (
+    <GridItem colSpan={2} height={COLOR_SWATCH_SIZE} width={COLOR_SWATCH_SIZE}>
+      <Tooltip content={tooltipText}>
+        <ColorSwatch
+          height={COLOR_SWATCH_SIZE}
+          rounded="md"
+          value={buttonColor}
+          width={COLOR_SWATCH_SIZE}
+          onClick={handleColorPadInput}
+        />
+      </Tooltip>
+    </GridItem>
+  );
+};
 // #endregion
 
-const ColorPad = () => (
+const colorButtonTooltipTexts = {
+  [MARKUP_COLOR_GRAY]: "Gray",
+  [MARKUP_COLOR_SILVER]: "Silver",
+  [MARKUP_COLOR_WHITE]: "White",
+  [MARKUP_COLOR_VIOLET]: "Violet",
+  [MARKUP_COLOR_RED]: "Red",
+  [MARKUP_COLOR_TAN]: "Tan",
+  [MARKUP_COLOR_ORANGE]: "Orange",
+  [MARKUP_COLOR_YELLOW]: "Yellow",
+  [MARKUP_COLOR_GREEN]: "Green",
+};
+
+type ColorPadProps = {
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+const ColorPad = ({
+  setCurrentSudokuBoard,
+  setPuzzleHistory,
+}: ColorPadProps) => (
   <>
-    <ColorButton buttonColor={MARKUP_COLOR_GRAY} tooltipText="Gray" />
-    <ColorButton buttonColor={MARKUP_COLOR_SILVER} tooltipText="Silver" />
-    <ColorButton buttonColor={MARKUP_COLOR_WHITE} tooltipText="White" />
-    <ColorButton buttonColor={MARKUP_COLOR_VIOLET} tooltipText="Violet" />
-    <ColorButton buttonColor={MARKUP_COLOR_RED} tooltipText="Red" />
-    <ColorButton buttonColor={MARKUP_COLOR_TAN} tooltipText="Tan" />
-    <ColorButton buttonColor={MARKUP_COLOR_ORANGE} tooltipText="Orange" />
-    <ColorButton buttonColor={MARKUP_COLOR_YELLOW} tooltipText="Yellow" />
-    <ColorButton buttonColor={MARKUP_COLOR_GREEN} tooltipText="Green" />
+    {markupColors.map((markupColor) => (
+      <ColorButton
+        buttonColor={markupColor}
+        key={markupColor}
+        setCurrentSudokuBoard={setCurrentSudokuBoard}
+        setPuzzleHistory={setPuzzleHistory}
+        tooltipText={colorButtonTooltipTexts[markupColor]}
+      />
+    ))}
   </>
 );
 // #endregion
@@ -121,7 +175,10 @@ const NumberButton = ({
           : boardCell;
       });
 
-      setPuzzleHistory((history) => [...history, updatedSudokuBoard]);
+      setPuzzleHistory((currentPuzzleHistory) => [
+        ...currentPuzzleHistory,
+        updatedSudokuBoard,
+      ]);
 
       return updatedSudokuBoard;
     });
@@ -264,7 +321,10 @@ export const InputPad = ({
     height="fit-content"
   >
     {inputMode === "Color" ? (
-      <ColorPad />
+      <ColorPad
+        setCurrentSudokuBoard={setCurrentSudokuBoard}
+        setPuzzleHistory={setPuzzleHistory}
+      />
     ) : (
       <NumberPad
         setCurrentSudokuBoard={setCurrentSudokuBoard}

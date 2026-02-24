@@ -15,7 +15,13 @@ import type { Dispatch, SetStateAction } from "react";
 import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
 
-import type { InputMode } from "..";
+import {
+  type InputMode,
+  type PuzzleHistory,
+  type SudokuBoardState,
+  type SudokuDigit,
+  sudokuDigits,
+} from "..";
 import {
   MARKUP_COLOR_GRAY,
   MARKUP_COLOR_GREEN,
@@ -89,38 +95,76 @@ const ColorPad = () => (
 
 // #region Number Button
 type NumberButtonProps = {
-  buttonValue: string;
+  buttonValue: SudokuDigit;
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const NumberButton = ({ buttonValue }: NumberButtonProps) => (
-  <GridItem colSpan={2}>
-    <Square aspectRatio="square">
-      <IconButton
-        aspectRatio="square"
-        color="white"
-        colorPalette="blue"
-        rounded="md"
-        size={ICON_BUTTON_SIZE}
-        textStyle={ICON_BUTTON_TEXT_STYLE}
-      >
-        {buttonValue}
-      </IconButton>
-    </Square>
-  </GridItem>
-);
+const NumberButton = ({
+  buttonValue,
+  setCurrentSudokuBoard,
+  setPuzzleHistory,
+}: NumberButtonProps) => {
+  const handleNumberPadInput = () => {
+    setCurrentSudokuBoard((currentSudokuBoard) => {
+      const updatedSudokuBoard = currentSudokuBoard.map((boardCell) => {
+        const isValidInputCell =
+          boardCell.isSelected && !("startingDigit" in boardCell.cellContent);
+
+        return isValidInputCell
+          ? {
+              ...boardCell,
+              cellContent: {
+                playerDigit: buttonValue,
+              },
+            }
+          : boardCell;
+      });
+
+      setPuzzleHistory((history) => [...history, updatedSudokuBoard]);
+
+      return updatedSudokuBoard;
+    });
+  };
+
+  return (
+    <GridItem colSpan={2}>
+      <Square aspectRatio="square">
+        <IconButton
+          aspectRatio="square"
+          color="white"
+          colorPalette="blue"
+          rounded="md"
+          size={ICON_BUTTON_SIZE}
+          textStyle={ICON_BUTTON_TEXT_STYLE}
+          onClick={handleNumberPadInput}
+        >
+          {buttonValue}
+        </IconButton>
+      </Square>
+    </GridItem>
+  );
+};
 // #endregion
 
-const NumberPad = () => (
+type NumberPadProps = {
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+
+const NumberPad = ({
+  setCurrentSudokuBoard,
+  setPuzzleHistory,
+}: NumberPadProps) => (
   <>
-    <NumberButton buttonValue="1" />
-    <NumberButton buttonValue="2" />
-    <NumberButton buttonValue="3" />
-    <NumberButton buttonValue="4" />
-    <NumberButton buttonValue="5" />
-    <NumberButton buttonValue="6" />
-    <NumberButton buttonValue="7" />
-    <NumberButton buttonValue="8" />
-    <NumberButton buttonValue="9" />
+    {sudokuDigits.map((digit) => (
+      <NumberButton
+        key={digit}
+        buttonValue={digit}
+        setCurrentSudokuBoard={setCurrentSudokuBoard}
+        setPuzzleHistory={setPuzzleHistory}
+      />
+    ))}
   </>
 );
 // #endregion
@@ -202,20 +246,31 @@ const DeleteButton = () => (
 type InputPadProps = {
   inputMode: InputMode;
   isMultiselectMode: boolean;
+  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
   setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 export const InputPad = ({
   inputMode,
   isMultiselectMode,
+  setCurrentSudokuBoard,
   setIsMultiselectMode,
+  setPuzzleHistory,
 }: InputPadProps) => (
   <SimpleGrid
     columns={6}
     gap={{ base: "0.1874rem", sm: "1", md: "1.5" }}
     height="fit-content"
   >
-    {inputMode === "Color" ? <ColorPad /> : <NumberPad />}
+    {inputMode === "Color" ? (
+      <ColorPad />
+    ) : (
+      <NumberPad
+        setCurrentSudokuBoard={setCurrentSudokuBoard}
+        setPuzzleHistory={setPuzzleHistory}
+      />
+    )}
 
     <MultiselectSwitch
       isMultiselectMode={isMultiselectMode}

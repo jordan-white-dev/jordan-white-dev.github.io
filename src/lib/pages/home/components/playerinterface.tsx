@@ -47,7 +47,9 @@ export const PlayerInterface = ({
     <InputPad
       inputMode={inputMode}
       isMultiselectMode={isMultiselectMode}
+      setCurrentSudokuBoard={setCurrentSudokuBoard}
       setIsMultiselectMode={setIsMultiselectMode}
+      setPuzzleHistory={setPuzzleHistory}
     />
     <InputModeRadioCard inputMode={inputMode} setInputMode={setInputMode} />
   </Stack>

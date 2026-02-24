@@ -57,13 +57,19 @@ const SudokuCell = ({
   isMultiselectMode,
   setCurrentSudokuBoard,
 }: SudokuCellProps) => {
-  const getDisplayValue = (cellContent: CellContent): string => {
-    if (typeof cellContent === "string") {
-      return cellContent;
+  const getStartingOrPlayerDigitDisplayValue = (
+    cellContent: CellContent,
+  ): string => {
+    if ("startingDigit" in cellContent) {
+      return cellContent.startingDigit;
+    } else if ("playerDigit" in cellContent) {
+      return cellContent.playerDigit;
     }
     return "";
   };
-  const displayValue = getDisplayValue(cell.cellContent);
+  const displayValue = getStartingOrPlayerDigitDisplayValue(cell.cellContent);
+
+  const digitColor = "startingDigit" in cell.cellContent ? "black" : "#1d6ae5";
 
   const handleCellSelection = () => {
     setCurrentSudokuBoard((currentSudokuBoard) => {
@@ -106,7 +112,7 @@ const SudokuCell = ({
         backgroundColor="transparent"
         borderRadius="0"
         borderWidth="0"
-        color="black" // TODO: "#1d6ae5"
+        color={digitColor}
         height={CELL_SIZE}
         minWidth={CELL_SIZE}
         padding="0"

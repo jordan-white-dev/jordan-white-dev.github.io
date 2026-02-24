@@ -12,9 +12,21 @@ export type InputMode = (typeof inputModes)[number];
 
 export type RawSudokuBoard = Array<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | null>;
 
-type SudokuDigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
-type StartingDigitCellContent = SudokuDigit;
-type PlayerDigitCellContent = SudokuDigit | "";
+export const sudokuDigits = [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+] as const;
+export type SudokuDigit = (typeof sudokuDigits)[number];
+// export type SudokuDigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+export type StartingDigitCellContent = { startingDigit: SudokuDigit };
+export type PlayerDigitCellContent = { playerDigit: SudokuDigit | "" };
 type MarkupCellContent = {
   centerMarkups: Array<SudokuDigit>;
   cornerMarkups: Array<SudokuDigit>;
@@ -53,8 +65,8 @@ export const buildSudokuBoardState = (
 
     const cellContent: CellContent =
       rawSudokuBoardCell === null
-        ? ""
-        : ((rawSudokuBoardCell + 1).toString() as SudokuDigit);
+        ? { playerDigit: "" }
+        : { startingDigit: (rawSudokuBoardCell + 1).toString() as SudokuDigit };
 
     sudokuBoardState.push({
       boxNumber,

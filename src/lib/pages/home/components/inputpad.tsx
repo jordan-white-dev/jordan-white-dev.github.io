@@ -16,6 +16,7 @@ import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
 
 import {
+  type Cell,
   type InputMode,
   type PuzzleHistory,
   type SudokuBoardState,
@@ -295,18 +296,30 @@ const ClearButton = ({
   const handleClearButton = () => {
     const updatedSudokuBoard: SudokuBoardState = currentSudokuBoard.map(
       (boardCell) => {
-        const isValidInputCell =
-          boardCell.isSelected && !("startingDigit" in boardCell.cellContent);
+        const isNonStartingDigitCell = !(
+          "startingDigit" in boardCell.cellContent
+        );
 
-        return isValidInputCell
-          ? {
-              ...boardCell,
-              cellContent: {
-                playerDigit: "",
-              },
-              markupColor: "",
-            }
+        const newStartingDigitCell: Cell = {
+          ...boardCell,
+          markupColor: "",
+        };
+
+        const newNonStartingDigitCell: Cell = {
+          ...boardCell,
+          cellContent: {
+            playerDigit: "",
+          },
+          markupColor: "",
+        };
+
+        const newBoardCell = boardCell.isSelected
+          ? isNonStartingDigitCell
+            ? newNonStartingDigitCell
+            : newStartingDigitCell
           : boardCell;
+
+        return newBoardCell;
       },
     );
 

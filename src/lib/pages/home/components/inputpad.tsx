@@ -18,6 +18,7 @@ import { GrCheckbox, GrMultiple } from "react-icons/gr";
 import {
   type Cell,
   type InputMode,
+  type PlayerDigitCellContent,
   type PuzzleHistory,
   type SudokuBoardState,
   type SudokuDigit,
@@ -164,19 +165,42 @@ const NumberButton = ({
   setPuzzleHistory,
 }: NumberButtonProps) => {
   const handleNumberPadInput = () => {
+    const doAllSelectedCellsEqualTheNumberInput = currentSudokuBoard
+      .filter(
+        (
+          boardCell,
+        ): boardCell is Cell & { cellContent: PlayerDigitCellContent } =>
+          boardCell.isSelected && "playerDigit" in boardCell.cellContent,
+      )
+      .map((boardCell) => boardCell.cellContent.playerDigit)
+      .every((playerDigit) => playerDigit === buttonValue);
+
     const updatedSudokuBoard: SudokuBoardState = currentSudokuBoard.map(
       (boardCell) => {
         const isValidInputCell =
           boardCell.isSelected && !("startingDigit" in boardCell.cellContent);
 
-        return isValidInputCell
-          ? {
-              ...boardCell,
-              cellContent: {
-                playerDigit: buttonValue,
-              },
-            }
+        const newChangedToButtonValueCell: Cell = {
+          ...boardCell,
+          cellContent: {
+            playerDigit: buttonValue,
+          },
+        };
+
+        const newChangedToBlankValueCell: Cell = {
+          ...boardCell,
+          cellContent: {
+            playerDigit: "",
+          },
+        };
+
+        const newBoardCell = isValidInputCell
+          ? doAllSelectedCellsEqualTheNumberInput
+            ? newChangedToBlankValueCell
+            : newChangedToButtonValueCell
           : boardCell;
+
+        return newBoardCell;
       },
     );
 

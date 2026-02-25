@@ -41,6 +41,7 @@ export const PlayerInterface = ({
     minWidth={{ lg: "52" }}
   >
     <PuzzleActions
+      currentSudokuBoard={currentSudokuBoard}
       initialRawSudokuBoard={initialRawSudokuBoard}
       setCurrentSudokuBoard={setCurrentSudokuBoard}
       setInitialRawSudokuBoard={setInitialRawSudokuBoard}

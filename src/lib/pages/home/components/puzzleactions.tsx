@@ -17,6 +17,7 @@ import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 
 import {
   buildSudokuBoardState,
+  type Cell,
   getNewPuzzle,
   type PuzzleHistory,
   type RawSudokuBoard,
@@ -99,7 +100,9 @@ const ActionTooltip = ({ children, tooltipText }: ActionTooltipProps) => (
 // #region Action Dialog
 type ActionDialogProps = {
   actionButtonText?: string;
-  closeDialogButtonText: string;
+  closeButtonColorPalette?: ButtonProps["colorPalette"];
+  closeButtonText: string;
+  closeButtonVariant?: ButtonProps["variant"];
   dialogBodyText: string;
   dialogTitleText: string;
   dialogTrigger: ReactNode;
@@ -108,7 +111,9 @@ type ActionDialogProps = {
 
 const ActionDialog = ({
   actionButtonText,
-  closeDialogButtonText,
+  closeButtonColorPalette,
+  closeButtonText,
+  closeButtonVariant,
   dialogBodyText,
   dialogTitleText,
   dialogTrigger,
@@ -128,7 +133,14 @@ const ActionDialog = ({
 
           <Dialog.Footer>
             <Dialog.ActionTrigger asChild>
-              <Button variant="outline">{closeDialogButtonText}</Button>
+              <Button
+                colorPalette={
+                  closeButtonColorPalette ? closeButtonColorPalette : "gray"
+                }
+                variant={closeButtonVariant ? closeButtonVariant : "outline"}
+              >
+                {closeButtonText}
+              </Button>
             </Dialog.ActionTrigger>
 
             {actionButtonText && (
@@ -165,7 +177,7 @@ const NewPuzzleButton = ({
   <GridItem colSpan={{ base: 1, lg: 2 }}>
     <ActionDialog
       actionButtonText="New Puzzle"
-      closeDialogButtonText="Cancel"
+      closeButtonText="Cancel"
       dialogBodyText="Are you sure you want to start a new puzzle? All progress will be lost!"
       dialogTitleText="Confirm New"
       dialogTrigger={
@@ -206,20 +218,71 @@ const RedoButton = () => (
 // #endregion
 
 // #region Check Solution Button
-const CheckSolutionButton = () => (
-  <ActionDialog
-    closeDialogButtonText="Okay"
-    dialogBodyText="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    dialogTitleText="Dialog Title"
-    dialogTrigger={
-      <ActionTooltip tooltipText="Check the current solution">
-        <Dialog.Trigger asChild>
-          <ActionButton icon={<ImCheckmark />} iconSize={IM_ICON_SIZE} />
-        </Dialog.Trigger>
-      </ActionTooltip>
-    }
-  />
-);
+type CheckSolutionButtonProps = {
+  currentSudokuBoard: SudokuBoardState;
+};
+
+const getCellDigit = (cell: Cell): string | undefined => {
+  if ("startingDigit" in cell.cellContent)
+    return cell.cellContent.startingDigit;
+  if ("playerDigit" in cell.cellContent) return cell.cellContent.playerDigit;
+  return undefined;
+};
+
+const getIsSudokuSolved = (board: SudokuBoardState): boolean => {
+  const rows: Array<Set<string>> = Array.from({ length: 9 }, () => new Set());
+  const columns: Array<Set<string>> = Array.from(
+    { length: 9 },
+    () => new Set(),
+  );
+  const boxes: Array<Set<string>> = Array.from({ length: 9 }, () => new Set());
+
+  for (const cell of board) {
+    const digit = getCellDigit(cell);
+    if (!digit || digit === "") return false;
+
+    const rowIndex = cell.rowNumber - 1;
+    const columnIndex = cell.columnNumber - 1;
+    const boxIndex = cell.boxNumber - 1;
+
+    if (rows[rowIndex].has(digit)) return false;
+    if (columns[columnIndex].has(digit)) return false;
+    if (boxes[boxIndex].has(digit)) return false;
+
+    rows[rowIndex].add(digit);
+    columns[columnIndex].add(digit);
+    boxes[boxIndex].add(digit);
+  }
+
+  return true;
+};
+
+const CheckSolutionButton = ({
+  currentSudokuBoard,
+}: CheckSolutionButtonProps) => {
+  const isSudokuSolved = getIsSudokuSolved(currentSudokuBoard);
+
+  return (
+    <ActionDialog
+      closeButtonText="Okay"
+      closeButtonColorPalette={isSudokuSolved ? "blue" : "red"}
+      closeButtonVariant="solid"
+      dialogBodyText={
+        isSudokuSolved
+          ? "You solved the puzzle!"
+          : "That doesn't look quite right. Some digits are missing or incorrect."
+      }
+      dialogTitleText={isSudokuSolved ? "Congratulations" : "Try Again"}
+      dialogTrigger={
+        <ActionTooltip tooltipText="Check the current solution">
+          <Dialog.Trigger asChild>
+            <ActionButton icon={<ImCheckmark />} iconSize={IM_ICON_SIZE} />
+          </Dialog.Trigger>
+        </ActionTooltip>
+      }
+    />
+  );
+};
 // #endregion
 
 // #region Restart Puzzle Button
@@ -243,7 +306,7 @@ const RestartPuzzleButton = ({
 }: RestartPuzzleButtonProps) => (
   <ActionDialog
     actionButtonText="Restart Puzzle"
-    closeDialogButtonText="Cancel"
+    closeButtonText="Cancel"
     dialogBodyText="Are you sure you want to restart the puzzle? All progress will be lost!"
     dialogTitleText="Confirm Restart"
     dialogTrigger={
@@ -263,6 +326,7 @@ const RestartPuzzleButton = ({
 // #endregion
 
 type PuzzleActionsProps = {
+  currentSudokuBoard: SudokuBoardState;
   initialRawSudokuBoard: RawSudokuBoard;
   setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
   setInitialRawSudokuBoard: Dispatch<SetStateAction<RawSudokuBoard>>;
@@ -270,6 +334,7 @@ type PuzzleActionsProps = {
 };
 
 export const PuzzleActions = ({
+  currentSudokuBoard,
   initialRawSudokuBoard,
   setCurrentSudokuBoard,
   setInitialRawSudokuBoard,
@@ -288,7 +353,7 @@ export const PuzzleActions = ({
     />
     <UndoButton />
     <RedoButton />
-    <CheckSolutionButton />
+    <CheckSolutionButton currentSudokuBoard={currentSudokuBoard} />
     <RestartPuzzleButton
       initialRawSudokuBoard={initialRawSudokuBoard}
       setCurrentSudokuBoard={setCurrentSudokuBoard}

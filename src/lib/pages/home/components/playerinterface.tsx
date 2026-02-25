@@ -1,31 +1,31 @@
 import { Stack } from "@chakra-ui/react";
 import type { Dispatch, SetStateAction } from "react";
 
-import type { InputMode, PuzzleHistory, RawSudokuBoard } from "..";
+import type { InputMode, PuzzleHistory, RawBoardState } from "..";
 import { InputModeRadioCard } from "./inputmodes";
 import { InputPad } from "./inputpad";
 import { PuzzleActions } from "./puzzleactions";
 
 type PlayerInterfaceProps = {
-  initialRawSudokuBoard: RawSudokuBoard;
   inputMode: InputMode;
   isMultiselectMode: boolean;
   puzzleHistory: PuzzleHistory;
-  setInitialRawSudokuBoard: Dispatch<SetStateAction<RawSudokuBoard>>;
+  startingRawBoardState: RawBoardState;
   setInputMode: Dispatch<SetStateAction<InputMode>>;
   setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+  setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>;
 };
 
 export const PlayerInterface = ({
-  initialRawSudokuBoard,
   inputMode,
   isMultiselectMode,
   puzzleHistory,
-  setInitialRawSudokuBoard,
+  startingRawBoardState,
   setInputMode,
   setIsMultiselectMode,
   setPuzzleHistory,
+  setStartingRawBoardState,
 }: PlayerInterfaceProps) => (
   <Stack
     alignItems="center"
@@ -34,10 +34,10 @@ export const PlayerInterface = ({
     minWidth={{ lg: "52" }}
   >
     <PuzzleActions
-      initialRawSudokuBoard={initialRawSudokuBoard}
       puzzleHistory={puzzleHistory}
-      setInitialRawSudokuBoard={setInitialRawSudokuBoard}
+      startingRawBoardState={startingRawBoardState}
       setPuzzleHistory={setPuzzleHistory}
+      setStartingRawBoardState={setStartingRawBoardState}
     />
     <InputPad
       inputMode={inputMode}

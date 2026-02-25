@@ -64,7 +64,7 @@ export const InputModeRadioCard = ({
     defaultValue="digit"
     value={inputMode}
     variant="solid"
-    onValueChange={(e) => setInputMode(e.value as InputMode)}
+    onValueChange={(event) => setInputMode(event.value as InputMode)}
   >
     <SimpleGrid
       columns={{ base: 1, lg: 2 }}

@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react";
 import type { Dispatch, SetStateAction } from "react";
 
-import type { Cell, CellContent, PuzzleHistory, SudokuBoardState } from "..";
+import type { BoardState, CellContent, CellState, PuzzleHistory } from "..";
 
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
@@ -44,18 +44,18 @@ const THIN_BORDER: SquareProps["border"] = "1px solid black";
 const THICK_BORDER: SquareProps["border"] = "2px solid black";
 // #endregion
 
-// #region Sudoku Cell
-type SudokuCellProps = {
-  cell: Cell;
+// #region Cell
+type CellProps = {
+  cellState: CellState;
   isMultiselectMode: boolean;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const SudokuCell = ({
-  cell,
+const Cell = ({
+  cellState,
   isMultiselectMode,
   setPuzzleHistory,
-}: SudokuCellProps) => {
+}: CellProps) => {
   const getStartingOrPlayerDigitDisplayValue = (
     cellContent: CellContent,
   ): string => {
@@ -66,60 +66,68 @@ const SudokuCell = ({
     }
     return "";
   };
-  const displayValue = getStartingOrPlayerDigitDisplayValue(cell.cellContent);
+  const displayValue = getStartingOrPlayerDigitDisplayValue(
+    cellState.cellContent,
+  );
 
-  const digitColor = "startingDigit" in cell.cellContent ? "black" : "#1d6ae5";
+  const digitColor =
+    "startingDigit" in cellState.cellContent ? "black" : "#1d6ae5";
 
   const cellBackgroundColor =
-    cell.markupColor !== "" ? cell.markupColor : "transparent";
+    cellState.markupColor !== "" ? cellState.markupColor : "transparent";
 
   const handleCellSelection = () => {
     setPuzzleHistory((currentPuzzleHistory) => {
-      const currentSudokuBoardState =
-        currentPuzzleHistory.movesHistory[
-          currentPuzzleHistory.currentMoveNumber
+      const currentBoardState =
+        currentPuzzleHistory.boardStateHistory[
+          currentPuzzleHistory.currentBoardStateIndex
         ];
 
-      const selectedCells = currentSudokuBoardState.filter(
-        (boardCell) => boardCell.isSelected,
+      const selectedCells = currentBoardState.filter(
+        (cellState) => cellState.isSelected,
       );
 
-      const currentSudokuBoardStateUpdatedWithSelections: SudokuBoardState =
-        currentSudokuBoardState.map((boardCell) => {
-          const newIsSelectedForMultiselect =
-            boardCell.cellNumber === cell.cellNumber
-              ? !boardCell.isSelected
-              : boardCell.isSelected;
-
+      const currentBoardStateUpdatedWithSelections: BoardState =
+        currentBoardState.map((currentCellState) => {
           const isOnlySelectedCell =
             selectedCells.length === 1 &&
-            selectedCells[0].cellNumber === cell.cellNumber;
+            selectedCells[0].cellNumber === cellState.cellNumber;
 
-          const newIsSelectedForSingleSelect =
-            boardCell.cellNumber === cell.cellNumber
+          const isSelectedInSingleSelectMode =
+            currentCellState.cellNumber === cellState.cellNumber
               ? !isOnlySelectedCell
               : false;
 
-          const newIsSelected = isMultiselectMode
-            ? newIsSelectedForMultiselect
-            : newIsSelectedForSingleSelect;
+          const isSelectedInMultiselectMode =
+            currentCellState.cellNumber === cellState.cellNumber
+              ? !currentCellState.isSelected
+              : currentCellState.isSelected;
 
-          return { ...boardCell, isSelected: newIsSelected };
+          const newIsSelected = isMultiselectMode
+            ? isSelectedInMultiselectMode
+            : isSelectedInSingleSelectMode;
+
+          const newCellState = {
+            ...currentCellState,
+            isSelected: newIsSelected,
+          };
+
+          return newCellState;
         });
 
-      const updatedMovesHistory = currentPuzzleHistory.movesHistory.map(
+      const newBoardStateHistory = currentPuzzleHistory.boardStateHistory.map(
         (boardState, index) =>
-          index === currentPuzzleHistory.currentMoveNumber
-            ? currentSudokuBoardStateUpdatedWithSelections
+          index === currentPuzzleHistory.currentBoardStateIndex
+            ? currentBoardStateUpdatedWithSelections
             : boardState,
       );
 
-      const updatedPuzzleHistory: PuzzleHistory = {
-        currentMoveNumber: currentPuzzleHistory.currentMoveNumber,
-        movesHistory: updatedMovesHistory,
+      const newPuzzleHistory: PuzzleHistory = {
+        currentBoardStateIndex: currentPuzzleHistory.currentBoardStateIndex,
+        boardStateHistory: newBoardStateHistory,
       };
 
-      return updatedPuzzleHistory;
+      return newPuzzleHistory;
     });
   };
 
@@ -134,7 +142,7 @@ const SudokuCell = ({
       padding="0"
       textStyle={TEXT_STYLE}
       width={CELL_SIZE}
-      {...(cell.isSelected && {
+      {...(cellState.isSelected && {
         outline: CELL_OUTLINE,
         outlineOffset: CELL_OUTLINE_OFFSET,
       })}
@@ -146,18 +154,14 @@ const SudokuCell = ({
 };
 // #endregion
 
-// #region Sudoku Box
-type SudokuBoxProps = {
-  boxCells: Array<Cell>;
+// #region Box
+type BoxProps = {
+  cellStates: Array<CellState>;
   isMultiselectMode: boolean;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const SudokuBox = ({
-  boxCells,
-  isMultiselectMode,
-  setPuzzleHistory,
-}: SudokuBoxProps) => (
+const Box = ({ cellStates, isMultiselectMode, setPuzzleHistory }: BoxProps) => (
   <SimpleGrid
     border={THICK_BORDER}
     columns={3}
@@ -165,11 +169,11 @@ const SudokuBox = ({
     height={BOX_SIZE}
     width={BOX_SIZE}
   >
-    {boxCells.map((cell) => (
-      <SudokuCell
-        key={cell.cellNumber}
-        cell={cell}
+    {cellStates.map((cellState) => (
+      <Cell
+        cellState={cellState}
         isMultiselectMode={isMultiselectMode}
+        key={cellState.cellNumber}
         setPuzzleHistory={setPuzzleHistory}
       />
     ))}
@@ -177,27 +181,33 @@ const SudokuBox = ({
 );
 // #endregion
 
-type SudokuGridProps = {
-  puzzleHistory: PuzzleHistory;
+type CellStatesGroupedByBox = Array<Array<CellState>>;
+type BoardProps = {
   isMultiselectMode: boolean;
+  puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-type CellsByBox = Array<Array<Cell>>;
-
-export const SudokuGrid = ({
+export const Board = ({
   isMultiselectMode,
   puzzleHistory,
   setPuzzleHistory,
-}: SudokuGridProps) => {
-  const emptyBoxes: CellsByBox = Array.from({ length: 9 }, () => []);
+}: BoardProps) => {
+  const emptyBoxes: CellStatesGroupedByBox = Array.from(
+    { length: 9 },
+    () => [],
+  );
 
-  const sudokuBoxes = puzzleHistory.movesHistory[
-    puzzleHistory.currentMoveNumber
-  ].reduce<CellsByBox>((boxes, cell) => {
-    boxes[cell.boxNumber - 1].push(cell);
-    return boxes;
-  }, emptyBoxes);
+  const currentBoardState =
+    puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
+
+  const cellStatesGroupedByBox = currentBoardState.reduce(
+    (boxes, cellState) => {
+      boxes[cellState.boxNumber - 1].push(cellState);
+      return boxes;
+    },
+    emptyBoxes,
+  );
 
   return (
     <SimpleGrid
@@ -207,11 +217,11 @@ export const SudokuGrid = ({
       minHeight={GRID_SIZE}
       minWidth={GRID_SIZE}
     >
-      {sudokuBoxes.map((boxCells) => (
-        <SudokuBox
-          key={`${boxCells[0].boxNumber}`}
-          boxCells={boxCells}
+      {cellStatesGroupedByBox.map((cellStates) => (
+        <Box
+          cellStates={cellStates}
           isMultiselectMode={isMultiselectMode}
+          key={`${cellStates[0].boxNumber}`}
           setPuzzleHistory={setPuzzleHistory}
         />
       ))}

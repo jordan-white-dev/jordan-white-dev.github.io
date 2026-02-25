@@ -16,11 +16,11 @@ import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
 
 import {
-  type Cell,
+  type BoardState,
+  type CellState,
   type InputMode,
-  type PlayerDigitCellContent,
+  type PlayerDigit,
   type PuzzleHistory,
-  type SudokuBoardState,
   type SudokuDigit,
   sudokuDigits,
 } from "..";
@@ -62,57 +62,60 @@ const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
 
 // #region Color Button
 type ColorButtonProps = {
-  buttonColor: MarkupColor;
+  markupColor: MarkupColor;
   puzzleHistory: PuzzleHistory;
   tooltipText: string;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const ColorButton = ({
-  buttonColor,
+  markupColor,
   puzzleHistory,
   tooltipText,
   setPuzzleHistory,
 }: ColorButtonProps) => {
   const handleColorPadInput = () => {
-    const currentSudokuBoard =
-      puzzleHistory.movesHistory[puzzleHistory.currentMoveNumber];
+    const currentBoardState =
+      puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-    const doAllSelectedCellsEqualTheMarkupColor = currentSudokuBoard
-      .filter((boardCell) => boardCell.isSelected)
-      .map((boardCell) => boardCell.markupColor)
-      .every((markupColor) => markupColor === buttonColor);
+    const doAllSelectedCellsHaveTheMarkupColor = currentBoardState
+      .filter((cellState) => cellState.isSelected)
+      .map((cellState) => cellState.markupColor)
+      .every((color) => color === markupColor);
 
-    const updatedSudokuBoard: SudokuBoardState = currentSudokuBoard.map(
-      (boardCell) => {
-        const newBlankColorCell: Cell = {
-          ...boardCell,
-          markupColor: "",
-        };
+    const newBoardState: BoardState = currentBoardState.map((cellState) => {
+      const newBlankColorCellState: CellState = {
+        ...cellState,
+        markupColor: "",
+      };
 
-        const newButtonColorCell: Cell = {
-          ...boardCell,
-          markupColor: buttonColor,
-        };
+      const newMarkupColorCellState: CellState = {
+        ...cellState,
+        markupColor,
+      };
 
-        return boardCell.isSelected
-          ? doAllSelectedCellsEqualTheMarkupColor
-            ? newBlankColorCell
-            : newButtonColorCell
-          : boardCell;
-      },
-    );
+      return cellState.isSelected
+        ? doAllSelectedCellsHaveTheMarkupColor
+          ? newBlankColorCellState
+          : newMarkupColorCellState
+        : cellState;
+    });
 
     setPuzzleHistory((currentPuzzleHistory) => {
-      const nextMoveNumber = currentPuzzleHistory.currentMoveNumber + 1;
+      const newBoardStateIndex =
+        currentPuzzleHistory.currentBoardStateIndex + 1;
 
-      return {
-        currentMoveNumber: nextMoveNumber,
-        movesHistory: [
-          ...currentPuzzleHistory.movesHistory.slice(0, nextMoveNumber),
-          updatedSudokuBoard,
-        ],
+      const newBoardStateHistory = [
+        ...currentPuzzleHistory.boardStateHistory.slice(0, newBoardStateIndex),
+        newBoardState,
+      ];
+
+      const newPuzzleHistory = {
+        currentBoardStateIndex: newBoardStateIndex,
+        boardStateHistory: newBoardStateHistory,
       };
+
+      return newPuzzleHistory;
     });
   };
 
@@ -122,7 +125,7 @@ const ColorButton = ({
         <ColorSwatch
           height={COLOR_SWATCH_SIZE}
           rounded="md"
-          value={buttonColor}
+          value={markupColor}
           width={COLOR_SWATCH_SIZE}
           onClick={handleColorPadInput}
         />
@@ -132,7 +135,7 @@ const ColorButton = ({
 };
 // #endregion
 
-const colorButtonTooltipTexts = {
+const colorPadTooltipTexts = {
   [MARKUP_COLOR_GRAY]: "Gray",
   [MARKUP_COLOR_SILVER]: "Silver",
   [MARKUP_COLOR_WHITE]: "White",
@@ -152,11 +155,11 @@ const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => (
   <>
     {markupColors.map((markupColor) => (
       <ColorButton
-        buttonColor={markupColor}
         key={markupColor}
+        markupColor={markupColor}
         puzzleHistory={puzzleHistory}
+        tooltipText={colorPadTooltipTexts[markupColor]}
         setPuzzleHistory={setPuzzleHistory}
-        tooltipText={colorButtonTooltipTexts[markupColor]}
       />
     ))}
   </>
@@ -167,69 +170,70 @@ const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => (
 
 // #region Number Button
 type NumberButtonProps = {
-  buttonValue: SudokuDigit;
+  displayValue: SudokuDigit;
   puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const NumberButton = ({
-  buttonValue,
+  displayValue,
   puzzleHistory,
   setPuzzleHistory,
 }: NumberButtonProps) => {
   const handleNumberPadInput = () => {
-    const currentSudokuBoard =
-      puzzleHistory.movesHistory[puzzleHistory.currentMoveNumber];
+    const currentBoardState =
+      puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-    const doAllSelectedCellsEqualTheNumberInput = currentSudokuBoard
+    const doAllSelectedCellsEqualTheNumberInput = currentBoardState
       .filter(
-        (
-          boardCell,
-        ): boardCell is Cell & { cellContent: PlayerDigitCellContent } =>
-          boardCell.isSelected && "playerDigit" in boardCell.cellContent,
+        (cellState): cellState is CellState & { cellContent: PlayerDigit } =>
+          cellState.isSelected && "playerDigit" in cellState.cellContent,
       )
-      .map((boardCell) => boardCell.cellContent.playerDigit)
-      .every((playerDigit) => playerDigit === buttonValue);
+      .map((cellState) => cellState.cellContent.playerDigit)
+      .every((playerDigit) => playerDigit === displayValue);
 
-    const updatedSudokuBoard: SudokuBoardState = currentSudokuBoard.map(
-      (boardCell) => {
-        const isValidInputCell =
-          boardCell.isSelected && !("startingDigit" in boardCell.cellContent);
+    const newBoardState: BoardState = currentBoardState.map((cellState) => {
+      const isValidInputCell =
+        cellState.isSelected && !("startingDigit" in cellState.cellContent);
 
-        const newButtonValueCell: Cell = {
-          ...boardCell,
-          cellContent: {
-            playerDigit: buttonValue,
-          },
-        };
+      const newDisplayValueCellState: CellState = {
+        ...cellState,
+        cellContent: {
+          playerDigit: displayValue,
+        },
+      };
 
-        const newBlankValueCell: Cell = {
-          ...boardCell,
-          cellContent: {
-            playerDigit: "",
-          },
-        };
+      const newBlankValueCellState: CellState = {
+        ...cellState,
+        cellContent: {
+          playerDigit: "",
+        },
+      };
 
-        const newBoardCell = isValidInputCell
-          ? doAllSelectedCellsEqualTheNumberInput
-            ? newBlankValueCell
-            : newButtonValueCell
-          : boardCell;
+      const newCellState = isValidInputCell
+        ? doAllSelectedCellsEqualTheNumberInput
+          ? newBlankValueCellState
+          : newDisplayValueCellState
+        : cellState;
 
-        return newBoardCell;
-      },
-    );
+      return newCellState;
+    });
 
     setPuzzleHistory((currentPuzzleHistory) => {
-      const nextMoveNumber = currentPuzzleHistory.currentMoveNumber + 1;
+      const newBoardStateIndex =
+        currentPuzzleHistory.currentBoardStateIndex + 1;
 
-      return {
-        currentMoveNumber: nextMoveNumber,
-        movesHistory: [
-          ...currentPuzzleHistory.movesHistory.slice(0, nextMoveNumber),
-          updatedSudokuBoard,
-        ],
+      const newBoardStateHistory = [
+        ...currentPuzzleHistory.boardStateHistory.slice(0, newBoardStateIndex),
+        newBoardState,
+      ];
+
+      const newPuzzleHistory = {
+        currentBoardStateIndex: newBoardStateIndex,
+        boardStateHistory: newBoardStateHistory,
       };
+
+      return newPuzzleHistory;
     });
   };
 
@@ -245,7 +249,7 @@ const NumberButton = ({
           textStyle={ICON_BUTTON_TEXT_STYLE}
           onClick={handleNumberPadInput}
         >
-          {buttonValue}
+          {displayValue}
         </IconButton>
       </Square>
     </GridItem>
@@ -262,7 +266,7 @@ const NumberPad = ({ puzzleHistory, setPuzzleHistory }: NumberPadProps) => (
   <>
     {sudokuDigits.map((digit) => (
       <NumberButton
-        buttonValue={digit}
+        displayValue={digit}
         key={digit}
         puzzleHistory={puzzleHistory}
         setPuzzleHistory={setPuzzleHistory}
@@ -297,7 +301,7 @@ const MultiselectSwitch = ({
           checked={isMultiselectMode}
           colorPalette="blue"
           size="lg"
-          onCheckedChange={(e) => setIsMultiselectMode(e.checked)}
+          onCheckedChange={(event) => setIsMultiselectMode(event.checked)}
         >
           <Switch.HiddenInput />
           <Switch.Control>
@@ -329,48 +333,51 @@ type ClearButtonProps = {
 
 const ClearButton = ({ puzzleHistory, setPuzzleHistory }: ClearButtonProps) => {
   const handleClearButton = () => {
-    const currentSudokuBoard =
-      puzzleHistory.movesHistory[puzzleHistory.currentMoveNumber];
+    const currentBoardState =
+      puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-    const updatedSudokuBoard: SudokuBoardState = currentSudokuBoard.map(
-      (boardCell) => {
-        const isNonStartingDigitCell = !(
-          "startingDigit" in boardCell.cellContent
-        );
+    const newBoardState: BoardState = currentBoardState.map((cellState) => {
+      const isNonStartingDigitCell = !(
+        "startingDigit" in cellState.cellContent
+      );
 
-        const newStartingDigitCell: Cell = {
-          ...boardCell,
-          markupColor: "",
-        };
+      const newStartingDigitCellState: CellState = {
+        ...cellState,
+        markupColor: "",
+      };
 
-        const newNonStartingDigitCell: Cell = {
-          ...boardCell,
-          cellContent: {
-            playerDigit: "",
-          },
-          markupColor: "",
-        };
+      const newPlayerDigitCellState: CellState = {
+        ...cellState,
+        cellContent: {
+          playerDigit: "",
+        },
+        markupColor: "",
+      };
 
-        const newBoardCell = boardCell.isSelected
-          ? isNonStartingDigitCell
-            ? newNonStartingDigitCell
-            : newStartingDigitCell
-          : boardCell;
+      const newCellState = cellState.isSelected
+        ? isNonStartingDigitCell
+          ? newPlayerDigitCellState
+          : newStartingDigitCellState
+        : cellState;
 
-        return newBoardCell;
-      },
-    );
+      return newCellState;
+    });
 
     setPuzzleHistory((currentPuzzleHistory) => {
-      const nextMoveNumber = currentPuzzleHistory.currentMoveNumber + 1;
+      const newBoardStateIndex =
+        currentPuzzleHistory.currentBoardStateIndex + 1;
 
-      return {
-        currentMoveNumber: nextMoveNumber,
-        movesHistory: [
-          ...currentPuzzleHistory.movesHistory.slice(0, nextMoveNumber),
-          updatedSudokuBoard,
-        ],
+      const newBoardStateHistory = [
+        ...currentPuzzleHistory.boardStateHistory.slice(0, newBoardStateIndex),
+        newBoardState,
+      ];
+
+      const newPuzzleHistory = {
+        currentBoardStateIndex: newBoardStateIndex,
+        boardStateHistory: newBoardStateHistory,
       };
+
+      return newPuzzleHistory;
     });
   };
 

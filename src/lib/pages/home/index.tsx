@@ -2,15 +2,17 @@ import { Flex } from "@chakra-ui/react";
 import { useState } from "react";
 import { makepuzzle } from "sudoku";
 
+import { Board } from "./components/board";
 import { PlayerInterface } from "./components/playerinterface";
-import { SudokuGrid } from "./components/sudokugrid";
 import type { MarkupColor } from "./components/svgs";
 
 // #region Types
 export const inputModes = ["Digit", "Color", "Center", "Corner"] as const;
 export type InputMode = (typeof inputModes)[number];
 
-export type RawSudokuBoard = Array<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | null>;
+export type RawStartingDigit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type RawCellState = RawStartingDigit | null;
+export type RawBoardState = Array<RawCellState>;
 
 export const sudokuDigits = [
   "1",
@@ -24,17 +26,16 @@ export const sudokuDigits = [
   "9",
 ] as const;
 export type SudokuDigit = (typeof sudokuDigits)[number];
-export type StartingDigitCellContent = { startingDigit: SudokuDigit };
-export type PlayerDigitCellContent = { playerDigit: SudokuDigit | "" };
-type MarkupCellContent = {
+
+export type StartingDigit = { startingDigit: SudokuDigit };
+export type PlayerDigit = { playerDigit: SudokuDigit | "" };
+type MarkupDigits = {
   centerMarkups: Array<SudokuDigit> | "";
   cornerMarkups: Array<SudokuDigit> | "";
 };
-export type CellContent =
-  | StartingDigitCellContent
-  | PlayerDigitCellContent
-  | MarkupCellContent;
-export type Cell = {
+export type CellContent = StartingDigit | PlayerDigit | MarkupDigits;
+
+export type CellState = {
   boxNumber: number;
   cellContent: CellContent;
   cellNumber: number;
@@ -43,17 +44,18 @@ export type Cell = {
   markupColor: MarkupColor | "";
   rowNumber: number;
 };
-export type SudokuBoardState = Array<Cell>;
+
+export type BoardState = Array<CellState>;
+
 export type PuzzleHistory = {
-  currentMoveNumber: number;
-  movesHistory: Array<SudokuBoardState>;
+  currentBoardStateIndex: number;
+  boardStateHistory: Array<BoardState>;
 };
 // #endregion
 
-export const buildSudokuBoardState = (
-  rawSudokuBoard: RawSudokuBoard,
-): SudokuBoardState => {
-  const sudokuBoardState: SudokuBoardState = [];
+// #region Board State
+export const buildBoardState = (rawBoardState: RawBoardState): BoardState => {
+  const boardState: BoardState = [];
 
   for (let cellNumber = 1; cellNumber <= 81; cellNumber++) {
     const rowNumber = Math.floor((cellNumber - 1) / 9) + 1;
@@ -63,14 +65,20 @@ export const buildSudokuBoardState = (
       Math.floor((columnNumber - 1) / 3) +
       1;
 
-    const rawSudokuBoardCell = rawSudokuBoard[cellNumber - 1];
+    const rawCellState = rawBoardState[cellNumber - 1];
+
+    const blankPlayerDigitCellContent: PlayerDigit = { playerDigit: "" };
+
+    const getStartingDigitCellContent = (rawCellState: RawStartingDigit) => ({
+      startingDigit: (rawCellState + 1).toString() as SudokuDigit,
+    });
 
     const cellContent: CellContent =
-      rawSudokuBoardCell === null
-        ? { playerDigit: "" }
-        : { startingDigit: (rawSudokuBoardCell + 1).toString() as SudokuDigit };
+      rawCellState === null
+        ? blankPlayerDigitCellContent
+        : getStartingDigitCellContent(rawCellState);
 
-    sudokuBoardState.push({
+    const cellState: CellState = {
       boxNumber,
       cellContent,
       cellNumber,
@@ -78,35 +86,39 @@ export const buildSudokuBoardState = (
       isSelected: false,
       markupColor: "",
       rowNumber,
-    });
+    };
+
+    boardState.push(cellState);
   }
 
-  return sudokuBoardState;
+  return boardState;
 };
 
-export const getNewPuzzle = (): {
-  initialRawSudokuBoard: RawSudokuBoard;
-  sudokuBoardState: SudokuBoardState;
-} => {
-  const initialRawSudokuBoard: RawSudokuBoard = makepuzzle();
-  const sudokuBoardState: SudokuBoardState = buildSudokuBoardState(
-    initialRawSudokuBoard,
-  );
-
-  return { initialRawSudokuBoard, sudokuBoardState };
+type StartingBoardStates = {
+  rawBoardState: RawBoardState;
+  boardState: BoardState;
 };
+
+export const getNewStartingBoardStates = (): StartingBoardStates => {
+  const rawBoardState: RawBoardState = makepuzzle();
+  const boardState: BoardState = buildBoardState(rawBoardState);
+
+  const startingBoardStates = { rawBoardState, boardState };
+
+  return startingBoardStates;
+};
+// #endregion
 
 const Home = () => {
-  const newPuzzle = getNewPuzzle();
-
-  const [initialRawSudokuBoard, setInitialRawSudokuBoard] = useState(
-    newPuzzle.initialRawSudokuBoard,
+  const newStartingBoardStates = getNewStartingBoardStates();
+  const [startingRawBoardState, setStartingRawBoardState] = useState(
+    newStartingBoardStates.rawBoardState,
   );
   const [inputMode, setInputMode] = useState<InputMode>("Digit");
-  const [isMultiselectMode, setIsMultiselectMode] = useState<boolean>(false);
+  const [isMultiselectMode, setIsMultiselectMode] = useState(false);
   const [puzzleHistory, setPuzzleHistory] = useState<PuzzleHistory>({
-    currentMoveNumber: 0,
-    movesHistory: [newPuzzle.sudokuBoardState],
+    currentBoardStateIndex: 0,
+    boardStateHistory: [newStartingBoardStates.boardState],
   });
 
   return (
@@ -116,20 +128,20 @@ const Home = () => {
       fontFamily="sans-serif"
       gap={{ base: "4", md: "8" }}
     >
-      <SudokuGrid
+      <Board
         isMultiselectMode={isMultiselectMode}
         puzzleHistory={puzzleHistory}
         setPuzzleHistory={setPuzzleHistory}
       />
       <PlayerInterface
-        initialRawSudokuBoard={initialRawSudokuBoard}
         inputMode={inputMode}
         isMultiselectMode={isMultiselectMode}
         puzzleHistory={puzzleHistory}
-        setInitialRawSudokuBoard={setInitialRawSudokuBoard}
+        startingRawBoardState={startingRawBoardState}
         setInputMode={setInputMode}
         setIsMultiselectMode={setIsMultiselectMode}
         setPuzzleHistory={setPuzzleHistory}
+        setStartingRawBoardState={setStartingRawBoardState}
       />
     </Flex>
   );

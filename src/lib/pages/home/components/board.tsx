@@ -8,6 +8,7 @@ import {
 import type { Dispatch, SetStateAction } from "react";
 
 import type { BoardState, CellContent, CellState, PuzzleHistory } from "..";
+import { type MarkupColor, markupColors } from "./svgs";
 
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
@@ -73,8 +74,25 @@ const Cell = ({
   const digitColor =
     "startingDigit" in cellState.cellContent ? "black" : "#1d6ae5";
 
-  const cellBackgroundColor =
-    cellState.markupColors[0] !== "" ? cellState.markupColors : "transparent";
+  const getCellBackground = (
+    cellMarkupColors: Array<MarkupColor> | [""],
+  ): string => {
+    const filteredColors = cellMarkupColors.filter(
+      (markupColor) => markupColor !== "",
+    );
+    if (filteredColors.length === 0) return "transparent";
+
+    const sortedColors = markupColors.filter((markupColor) =>
+      filteredColors.includes(markupColor),
+    );
+
+    const sliceDegree = 360 / sortedColors.length;
+    const gradientParts = sortedColors.map(
+      (color, index) =>
+        `${color} ${index * sliceDegree}deg ${(index + 1) * sliceDegree}deg`,
+    );
+    return `conic-gradient(${gradientParts.join(", ")})`;
+  };
 
   const handleCellSelection = () => {
     setPuzzleHistory((currentPuzzleHistory) => {
@@ -133,7 +151,7 @@ const Cell = ({
 
   return (
     <Button
-      backgroundColor={cellBackgroundColor}
+      background={getCellBackground(cellState.markupColors)}
       border={THIN_BORDER}
       borderRadius="0"
       color={digitColor}

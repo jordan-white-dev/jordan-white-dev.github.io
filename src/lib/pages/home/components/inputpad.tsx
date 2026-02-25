@@ -80,25 +80,45 @@ const ColorButton = ({
 
     const doAllSelectedCellsHaveTheMarkupColor = currentBoardState
       .filter((cellState) => cellState.isSelected)
-      .map((cellState) => cellState.markupColors[0])
-      .every((color) => color === markupColor);
+      .every((cellState) =>
+        cellState.markupColors
+          .filter((markupColor) => markupColor !== "")
+          .includes(markupColor),
+      );
 
     const newBoardState: BoardState = currentBoardState.map((cellState) => {
-      const newBlankColorCellState: CellState = {
-        ...cellState,
-        markupColors: [""],
-      };
+      if (!cellState.isSelected) return cellState;
 
-      const newMarkupColorCellState: CellState = {
-        ...cellState,
-        markupColors: [markupColor],
-      };
+      const currentMarkupColors = cellState.markupColors.filter(
+        (markupColor) => markupColor !== "",
+      );
 
-      return cellState.isSelected
-        ? doAllSelectedCellsHaveTheMarkupColor
-          ? newBlankColorCellState
-          : newMarkupColorCellState
-        : cellState;
+      if (doAllSelectedCellsHaveTheMarkupColor) {
+        const markupColorsAfterRemoveCheck: Array<MarkupColor> =
+          currentMarkupColors.filter((color) => color !== markupColor);
+
+        const cellStateAfterRemoveCheck: CellState = {
+          ...cellState,
+          markupColors:
+            markupColorsAfterRemoveCheck.length > 0
+              ? markupColorsAfterRemoveCheck
+              : [""],
+        };
+
+        return cellStateAfterRemoveCheck;
+      } else {
+        const markupColorsAfterAddCheck: Array<MarkupColor> =
+          currentMarkupColors.includes(markupColor)
+            ? currentMarkupColors
+            : [...currentMarkupColors, markupColor];
+
+        const cellStateAfterAddCheck: CellState = {
+          ...cellState,
+          markupColors: markupColorsAfterAddCheck,
+        };
+
+        return cellStateAfterAddCheck;
+      }
     });
 
     setPuzzleHistory((currentPuzzleHistory) => {

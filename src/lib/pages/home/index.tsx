@@ -41,7 +41,7 @@ export type CellState = {
   cellNumber: number;
   columnNumber: number;
   isSelected: boolean;
-  markupColors: Array<MarkupColor | "">;
+  markupColors: [""] | Array<MarkupColor>;
   rowNumber: number;
 };
 

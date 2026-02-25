@@ -63,20 +63,21 @@ const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
 // #region Color Button
 type ColorButtonProps = {
   buttonColor: MarkupColor;
-  currentSudokuBoard: SudokuBoardState;
+  puzzleHistory: PuzzleHistory;
   tooltipText: string;
-  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const ColorButton = ({
   buttonColor,
-  currentSudokuBoard,
+  puzzleHistory,
   tooltipText,
-  setCurrentSudokuBoard,
   setPuzzleHistory,
 }: ColorButtonProps) => {
   const handleColorPadInput = () => {
+    const currentSudokuBoard =
+      puzzleHistory.movesHistory[puzzleHistory.currentMoveNumber];
+
     const doAllSelectedCellsEqualTheMarkupColor = currentSudokuBoard
       .filter((boardCell) => boardCell.isSelected)
       .map((boardCell) => boardCell.markupColor)
@@ -102,7 +103,6 @@ const ColorButton = ({
       },
     );
 
-    setCurrentSudokuBoard(updatedSudokuBoard);
     setPuzzleHistory((currentPuzzleHistory) => {
       const nextMoveNumber = currentPuzzleHistory.currentMoveNumber + 1;
 
@@ -145,22 +145,16 @@ const colorButtonTooltipTexts = {
 };
 
 type ColorPadProps = {
-  currentSudokuBoard: SudokuBoardState;
-  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
-const ColorPad = ({
-  currentSudokuBoard,
-  setCurrentSudokuBoard,
-  setPuzzleHistory,
-}: ColorPadProps) => (
+const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => (
   <>
     {markupColors.map((markupColor) => (
       <ColorButton
         buttonColor={markupColor}
-        currentSudokuBoard={currentSudokuBoard}
         key={markupColor}
-        setCurrentSudokuBoard={setCurrentSudokuBoard}
+        puzzleHistory={puzzleHistory}
         setPuzzleHistory={setPuzzleHistory}
         tooltipText={colorButtonTooltipTexts[markupColor]}
       />
@@ -174,18 +168,19 @@ const ColorPad = ({
 // #region Number Button
 type NumberButtonProps = {
   buttonValue: SudokuDigit;
-  currentSudokuBoard: SudokuBoardState;
-  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const NumberButton = ({
   buttonValue,
-  currentSudokuBoard,
-  setCurrentSudokuBoard,
+  puzzleHistory,
   setPuzzleHistory,
 }: NumberButtonProps) => {
   const handleNumberPadInput = () => {
+    const currentSudokuBoard =
+      puzzleHistory.movesHistory[puzzleHistory.currentMoveNumber];
+
     const doAllSelectedCellsEqualTheNumberInput = currentSudokuBoard
       .filter(
         (
@@ -225,7 +220,6 @@ const NumberButton = ({
       },
     );
 
-    setCurrentSudokuBoard(updatedSudokuBoard);
     setPuzzleHistory((currentPuzzleHistory) => {
       const nextMoveNumber = currentPuzzleHistory.currentMoveNumber + 1;
 
@@ -260,23 +254,17 @@ const NumberButton = ({
 // #endregion
 
 type NumberPadProps = {
-  currentSudokuBoard: SudokuBoardState;
-  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const NumberPad = ({
-  currentSudokuBoard,
-  setCurrentSudokuBoard,
-  setPuzzleHistory,
-}: NumberPadProps) => (
+const NumberPad = ({ puzzleHistory, setPuzzleHistory }: NumberPadProps) => (
   <>
     {sudokuDigits.map((digit) => (
       <NumberButton
         buttonValue={digit}
-        currentSudokuBoard={currentSudokuBoard}
         key={digit}
-        setCurrentSudokuBoard={setCurrentSudokuBoard}
+        puzzleHistory={puzzleHistory}
         setPuzzleHistory={setPuzzleHistory}
       />
     ))}
@@ -335,17 +323,15 @@ const MultiselectSwitch = ({
 
 // #region Clear Button
 type ClearButtonProps = {
-  currentSudokuBoard: SudokuBoardState;
-  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const ClearButton = ({
-  currentSudokuBoard,
-  setCurrentSudokuBoard,
-  setPuzzleHistory,
-}: ClearButtonProps) => {
+const ClearButton = ({ puzzleHistory, setPuzzleHistory }: ClearButtonProps) => {
   const handleClearButton = () => {
+    const currentSudokuBoard =
+      puzzleHistory.movesHistory[puzzleHistory.currentMoveNumber];
+
     const updatedSudokuBoard: SudokuBoardState = currentSudokuBoard.map(
       (boardCell) => {
         const isNonStartingDigitCell = !(
@@ -375,7 +361,6 @@ const ClearButton = ({
       },
     );
 
-    setCurrentSudokuBoard(updatedSudokuBoard);
     setPuzzleHistory((currentPuzzleHistory) => {
       const nextMoveNumber = currentPuzzleHistory.currentMoveNumber + 1;
 
@@ -415,19 +400,17 @@ const ClearButton = ({
 // #endregion
 
 type InputPadProps = {
-  currentSudokuBoard: SudokuBoardState;
   inputMode: InputMode;
   isMultiselectMode: boolean;
-  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  puzzleHistory: PuzzleHistory;
   setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 export const InputPad = ({
-  currentSudokuBoard,
   inputMode,
   isMultiselectMode,
-  setCurrentSudokuBoard,
+  puzzleHistory,
   setIsMultiselectMode,
   setPuzzleHistory,
 }: InputPadProps) => (
@@ -438,14 +421,12 @@ export const InputPad = ({
   >
     {inputMode === "Color" ? (
       <ColorPad
-        currentSudokuBoard={currentSudokuBoard}
-        setCurrentSudokuBoard={setCurrentSudokuBoard}
+        puzzleHistory={puzzleHistory}
         setPuzzleHistory={setPuzzleHistory}
       />
     ) : (
       <NumberPad
-        currentSudokuBoard={currentSudokuBoard}
-        setCurrentSudokuBoard={setCurrentSudokuBoard}
+        puzzleHistory={puzzleHistory}
         setPuzzleHistory={setPuzzleHistory}
       />
     )}
@@ -455,8 +436,7 @@ export const InputPad = ({
       setIsMultiselectMode={setIsMultiselectMode}
     />
     <ClearButton
-      currentSudokuBoard={currentSudokuBoard}
-      setCurrentSudokuBoard={setCurrentSudokuBoard}
+      puzzleHistory={puzzleHistory}
       setPuzzleHistory={setPuzzleHistory}
     />
   </SimpleGrid>

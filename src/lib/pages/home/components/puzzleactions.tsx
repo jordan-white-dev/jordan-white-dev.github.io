@@ -66,15 +66,22 @@ const BUTTON_ROUNDED: ButtonProps["rounded"] = {
 type ActionButtonProps = {
   icon: ReactNode;
   iconSize: IconProps["width"];
+  onClick?: () => void;
 };
 
-const ActionButton = ({ icon, iconSize, ...props }: ActionButtonProps) => (
+const ActionButton = ({
+  icon,
+  iconSize,
+  onClick,
+  ...props
+}: ActionButtonProps) => (
   <IconButton
     aspectRatio={{ lg: 2 / 1 }}
     height={ICON_BUTTON_HEIGHT}
     padding="0.25rem 0"
     rounded={BUTTON_ROUNDED}
     width={ICON_BUTTON_WIDTH}
+    onClick={onClick}
     {...props}
   >
     <Icon height={iconSize} width={iconSize}>
@@ -164,65 +171,116 @@ const ActionDialog = ({
 
 // #region New Puzzle Button
 type NewPuzzleButtonProps = {
-  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
   setInitialRawSudokuBoard: Dispatch<SetStateAction<RawSudokuBoard>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const NewPuzzleButton = ({
-  setCurrentSudokuBoard,
   setInitialRawSudokuBoard,
   setPuzzleHistory,
-}: NewPuzzleButtonProps) => (
-  <GridItem colSpan={{ base: 1, lg: 2 }}>
-    <ActionDialog
-      actionButtonText="New Puzzle"
-      closeButtonText="Cancel"
-      dialogBodyText="Are you sure you want to start a new puzzle? All progress will be lost!"
-      dialogTitleText="Confirm New"
-      dialogTrigger={
-        <ActionTooltip tooltipText="Start a new puzzle">
-          <Dialog.Trigger asChild>
-            <ActionButton
-              icon={<MdOutlineFiberNew />}
-              iconSize={MD_ICON_SIZE_ALT}
-            />
-          </Dialog.Trigger>
-        </ActionTooltip>
-      }
-      onConfirm={() => {
-        const newPuzzle = getNewPuzzle();
-        setInitialRawSudokuBoard(newPuzzle.initialRawSudokuBoard);
-        setCurrentSudokuBoard(newPuzzle.sudokuBoardState);
-        setPuzzleHistory({
-          currentMoveNumber: 0,
-          movesHistory: [newPuzzle.sudokuBoardState],
-        });
-      }}
-    />
-  </GridItem>
-);
+}: NewPuzzleButtonProps) => {
+  const handleNewPuzzleConfirmation = () => {
+    const newPuzzle = getNewPuzzle();
+    setInitialRawSudokuBoard(newPuzzle.initialRawSudokuBoard);
+    setPuzzleHistory({
+      currentMoveNumber: 0,
+      movesHistory: [newPuzzle.sudokuBoardState],
+    });
+  };
+
+  return (
+    <GridItem colSpan={{ base: 1, lg: 2 }}>
+      <ActionDialog
+        actionButtonText="New Puzzle"
+        closeButtonText="Cancel"
+        dialogBodyText="Are you sure you want to start a new puzzle? All progress will be lost!"
+        dialogTitleText="Confirm New"
+        dialogTrigger={
+          <ActionTooltip tooltipText="Start a new puzzle">
+            <Dialog.Trigger asChild>
+              <ActionButton
+                icon={<MdOutlineFiberNew />}
+                iconSize={MD_ICON_SIZE_ALT}
+              />
+            </Dialog.Trigger>
+          </ActionTooltip>
+        }
+        onConfirm={handleNewPuzzleConfirmation}
+      />
+    </GridItem>
+  );
+};
 // #endregion
 
 // #region Undo Button
-const UndoButton = () => (
-  <ActionTooltip tooltipText="Undo the last move">
-    <ActionButton icon={<ImUndo />} iconSize={IM_ICON_SIZE} />
-  </ActionTooltip>
-);
+type UndoButtonProps = {
+  puzzleHistory: PuzzleHistory;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+
+const UndoButton = ({ puzzleHistory, setPuzzleHistory }: UndoButtonProps) => {
+  const handleUndoButton = () => {
+    if (
+      puzzleHistory.movesHistory.length > 1 &&
+      puzzleHistory.currentMoveNumber > 0
+    ) {
+      setPuzzleHistory((currentPuzzleHistory) => {
+        return {
+          ...currentPuzzleHistory,
+          currentMoveNumber: currentPuzzleHistory.currentMoveNumber - 1,
+        };
+      });
+    }
+  };
+
+  return (
+    <ActionTooltip tooltipText="Undo the last move">
+      <ActionButton
+        icon={<ImUndo />}
+        iconSize={IM_ICON_SIZE}
+        onClick={handleUndoButton}
+      />
+    </ActionTooltip>
+  );
+};
 // #endregion
 
 // #region Redo Button
-const RedoButton = () => (
-  <ActionTooltip tooltipText="Redo the last undone move">
-    <ActionButton icon={<ImRedo />} iconSize={IM_ICON_SIZE} />
-  </ActionTooltip>
-);
+type RedoButtonProps = {
+  puzzleHistory: PuzzleHistory;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+
+const RedoButton = ({ puzzleHistory, setPuzzleHistory }: RedoButtonProps) => {
+  const handleRedoButton = () => {
+    if (
+      puzzleHistory.currentMoveNumber <
+      puzzleHistory.movesHistory.length - 1
+    ) {
+      setPuzzleHistory((currentPuzzleHistory) => {
+        return {
+          ...currentPuzzleHistory,
+          currentMoveNumber: currentPuzzleHistory.currentMoveNumber + 1,
+        };
+      });
+    }
+  };
+
+  return (
+    <ActionTooltip tooltipText="Redo the last undone move">
+      <ActionButton
+        icon={<ImRedo />}
+        iconSize={IM_ICON_SIZE}
+        onClick={handleRedoButton}
+      />
+    </ActionTooltip>
+  );
+};
 // #endregion
 
 // #region Check Solution Button
 type CheckSolutionButtonProps = {
-  currentSudokuBoard: SudokuBoardState;
+  puzzleHistory: PuzzleHistory;
 };
 
 const getCellDigit = (cell: Cell): string | undefined => {
@@ -260,10 +318,10 @@ const getIsSudokuSolved = (board: SudokuBoardState): boolean => {
   return true;
 };
 
-const CheckSolutionButton = ({
-  currentSudokuBoard,
-}: CheckSolutionButtonProps) => {
-  const isSudokuSolved = getIsSudokuSolved(currentSudokuBoard);
+const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
+  const isSudokuSolved = getIsSudokuSolved(
+    puzzleHistory.movesHistory[puzzleHistory.currentMoveNumber],
+  );
 
   return (
     <ActionDialog
@@ -298,13 +356,11 @@ const getRestartedBoardState = (
 
 type RestartPuzzleButtonProps = {
   initialRawSudokuBoard: RawSudokuBoard;
-  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const RestartPuzzleButton = ({
   initialRawSudokuBoard,
-  setCurrentSudokuBoard,
   setPuzzleHistory,
 }: RestartPuzzleButtonProps) => (
   <ActionDialog
@@ -321,7 +377,6 @@ const RestartPuzzleButton = ({
     }
     onConfirm={() => {
       const restartedBoardState = getRestartedBoardState(initialRawSudokuBoard);
-      setCurrentSudokuBoard(restartedBoardState);
       setPuzzleHistory({
         currentMoveNumber: 0,
         movesHistory: [restartedBoardState],
@@ -332,17 +387,15 @@ const RestartPuzzleButton = ({
 // #endregion
 
 type PuzzleActionsProps = {
-  currentSudokuBoard: SudokuBoardState;
   initialRawSudokuBoard: RawSudokuBoard;
-  setCurrentSudokuBoard: Dispatch<SetStateAction<SudokuBoardState>>;
+  puzzleHistory: PuzzleHistory;
   setInitialRawSudokuBoard: Dispatch<SetStateAction<RawSudokuBoard>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 export const PuzzleActions = ({
-  currentSudokuBoard,
   initialRawSudokuBoard,
-  setCurrentSudokuBoard,
+  puzzleHistory,
   setInitialRawSudokuBoard,
   setPuzzleHistory,
 }: PuzzleActionsProps) => (
@@ -353,16 +406,20 @@ export const PuzzleActions = ({
     rowGap={{ base: "0.5", md: "0.2875rem" }}
   >
     <NewPuzzleButton
-      setCurrentSudokuBoard={setCurrentSudokuBoard}
       setInitialRawSudokuBoard={setInitialRawSudokuBoard}
       setPuzzleHistory={setPuzzleHistory}
     />
-    <UndoButton />
-    <RedoButton />
-    <CheckSolutionButton currentSudokuBoard={currentSudokuBoard} />
+    <UndoButton
+      puzzleHistory={puzzleHistory}
+      setPuzzleHistory={setPuzzleHistory}
+    />
+    <RedoButton
+      puzzleHistory={puzzleHistory}
+      setPuzzleHistory={setPuzzleHistory}
+    />
+    <CheckSolutionButton puzzleHistory={puzzleHistory} />
     <RestartPuzzleButton
       initialRawSudokuBoard={initialRawSudokuBoard}
-      setCurrentSudokuBoard={setCurrentSudokuBoard}
       setPuzzleHistory={setPuzzleHistory}
     />
   </SimpleGrid>

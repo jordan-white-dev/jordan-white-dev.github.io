@@ -104,10 +104,7 @@ const Home = () => {
   );
   const [inputMode, setInputMode] = useState<InputMode>("Digit");
   const [isMultiselectMode, setIsMultiselectMode] = useState<boolean>(false);
-  const [currentSudokuBoard, setCurrentSudokuBoard] = useState(
-    newPuzzle.sudokuBoardState,
-  );
-  const [_puzzleHistory, setPuzzleHistory] = useState<PuzzleHistory>({
+  const [puzzleHistory, setPuzzleHistory] = useState<PuzzleHistory>({
     currentMoveNumber: 0,
     movesHistory: [newPuzzle.sudokuBoardState],
   });
@@ -120,16 +117,15 @@ const Home = () => {
       gap={{ base: "4", md: "8" }}
     >
       <SudokuGrid
-        currentSudokuBoard={currentSudokuBoard}
         isMultiselectMode={isMultiselectMode}
-        setCurrentSudokuBoard={setCurrentSudokuBoard}
+        puzzleHistory={puzzleHistory}
+        setPuzzleHistory={setPuzzleHistory}
       />
       <PlayerInterface
-        currentSudokuBoard={currentSudokuBoard}
         initialRawSudokuBoard={initialRawSudokuBoard}
         inputMode={inputMode}
         isMultiselectMode={isMultiselectMode}
-        setCurrentSudokuBoard={setCurrentSudokuBoard}
+        puzzleHistory={puzzleHistory}
         setInitialRawSudokuBoard={setInitialRawSudokuBoard}
         setInputMode={setInputMode}
         setIsMultiselectMode={setIsMultiselectMode}

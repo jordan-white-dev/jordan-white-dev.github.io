@@ -194,7 +194,10 @@ const NewPuzzleButton = ({
         const newPuzzle = getNewPuzzle();
         setInitialRawSudokuBoard(newPuzzle.initialRawSudokuBoard);
         setCurrentSudokuBoard(newPuzzle.sudokuBoardState);
-        setPuzzleHistory([newPuzzle.sudokuBoardState]);
+        setPuzzleHistory({
+          currentMoveNumber: 0,
+          movesHistory: [newPuzzle.sudokuBoardState],
+        });
       }}
     />
   </GridItem>
@@ -319,7 +322,10 @@ const RestartPuzzleButton = ({
     onConfirm={() => {
       const restartedBoardState = getRestartedBoardState(initialRawSudokuBoard);
       setCurrentSudokuBoard(restartedBoardState);
-      setPuzzleHistory([restartedBoardState]);
+      setPuzzleHistory({
+        currentMoveNumber: 0,
+        movesHistory: [restartedBoardState],
+      });
     }}
   />
 );

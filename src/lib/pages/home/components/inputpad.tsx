@@ -103,10 +103,17 @@ const ColorButton = ({
     );
 
     setCurrentSudokuBoard(updatedSudokuBoard);
-    setPuzzleHistory((currentPuzzleHistory) => [
-      ...currentPuzzleHistory,
-      updatedSudokuBoard,
-    ]);
+    setPuzzleHistory((currentPuzzleHistory) => {
+      const nextMoveNumber = currentPuzzleHistory.currentMoveNumber + 1;
+
+      return {
+        currentMoveNumber: nextMoveNumber,
+        movesHistory: [
+          ...currentPuzzleHistory.movesHistory.slice(0, nextMoveNumber),
+          updatedSudokuBoard,
+        ],
+      };
+    });
   };
 
   return (
@@ -219,10 +226,17 @@ const NumberButton = ({
     );
 
     setCurrentSudokuBoard(updatedSudokuBoard);
-    setPuzzleHistory((currentPuzzleHistory) => [
-      ...currentPuzzleHistory,
-      updatedSudokuBoard,
-    ]);
+    setPuzzleHistory((currentPuzzleHistory) => {
+      const nextMoveNumber = currentPuzzleHistory.currentMoveNumber + 1;
+
+      return {
+        currentMoveNumber: nextMoveNumber,
+        movesHistory: [
+          ...currentPuzzleHistory.movesHistory.slice(0, nextMoveNumber),
+          updatedSudokuBoard,
+        ],
+      };
+    });
   };
 
   return (
@@ -362,10 +376,17 @@ const ClearButton = ({
     );
 
     setCurrentSudokuBoard(updatedSudokuBoard);
-    setPuzzleHistory((currentPuzzleHistory) => [
-      ...currentPuzzleHistory,
-      updatedSudokuBoard,
-    ]);
+    setPuzzleHistory((currentPuzzleHistory) => {
+      const nextMoveNumber = currentPuzzleHistory.currentMoveNumber + 1;
+
+      return {
+        currentMoveNumber: nextMoveNumber,
+        movesHistory: [
+          ...currentPuzzleHistory.movesHistory.slice(0, nextMoveNumber),
+          updatedSudokuBoard,
+        ],
+      };
+    });
   };
 
   return (

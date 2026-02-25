@@ -44,7 +44,10 @@ export type Cell = {
   rowNumber: number;
 };
 export type SudokuBoardState = Array<Cell>;
-export type PuzzleHistory = Array<SudokuBoardState>;
+export type PuzzleHistory = {
+  currentMoveNumber: number;
+  movesHistory: Array<SudokuBoardState>;
+};
 // #endregion
 
 export const buildSudokuBoardState = (
@@ -104,9 +107,10 @@ const Home = () => {
   const [currentSudokuBoard, setCurrentSudokuBoard] = useState(
     newPuzzle.sudokuBoardState,
   );
-  const [_puzzleHistory, setPuzzleHistory] = useState<PuzzleHistory>([
-    newPuzzle.sudokuBoardState,
-  ]);
+  const [_puzzleHistory, setPuzzleHistory] = useState<PuzzleHistory>({
+    currentMoveNumber: 0,
+    movesHistory: [newPuzzle.sudokuBoardState],
+  });
 
   return (
     <Flex

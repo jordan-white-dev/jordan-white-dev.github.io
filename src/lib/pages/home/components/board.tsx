@@ -74,7 +74,7 @@ const Cell = ({
     "startingDigit" in cellState.cellContent ? "black" : "#1d6ae5";
 
   const cellBackgroundColor =
-    cellState.markupColor !== "" ? cellState.markupColor : "transparent";
+    cellState.markupColors[0] !== "" ? cellState.markupColors : "transparent";
 
   const handleCellSelection = () => {
     setPuzzleHistory((currentPuzzleHistory) => {

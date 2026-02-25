@@ -80,18 +80,18 @@ const ColorButton = ({
 
     const doAllSelectedCellsHaveTheMarkupColor = currentBoardState
       .filter((cellState) => cellState.isSelected)
-      .map((cellState) => cellState.markupColor)
+      .map((cellState) => cellState.markupColors[0])
       .every((color) => color === markupColor);
 
     const newBoardState: BoardState = currentBoardState.map((cellState) => {
       const newBlankColorCellState: CellState = {
         ...cellState,
-        markupColor: "",
+        markupColors: [""],
       };
 
       const newMarkupColorCellState: CellState = {
         ...cellState,
-        markupColor,
+        markupColors: [markupColor],
       };
 
       return cellState.isSelected
@@ -343,7 +343,7 @@ const ClearButton = ({ puzzleHistory, setPuzzleHistory }: ClearButtonProps) => {
 
       const newStartingDigitCellState: CellState = {
         ...cellState,
-        markupColor: "",
+        markupColors: [""],
       };
 
       const newPlayerDigitCellState: CellState = {
@@ -351,7 +351,7 @@ const ClearButton = ({ puzzleHistory, setPuzzleHistory }: ClearButtonProps) => {
         cellContent: {
           playerDigit: "",
         },
-        markupColor: "",
+        markupColors: [""],
       };
 
       const newCellState = cellState.isSelected

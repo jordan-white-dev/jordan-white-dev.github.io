@@ -41,7 +41,7 @@ export type CellState = {
   cellNumber: number;
   columnNumber: number;
   isSelected: boolean;
-  markupColor: MarkupColor | "";
+  markupColors: Array<MarkupColor | "">;
   rowNumber: number;
 };
 
@@ -84,7 +84,7 @@ export const buildBoardState = (rawBoardState: RawBoardState): BoardState => {
       cellNumber,
       columnNumber,
       isSelected: false,
-      markupColor: "",
+      markupColors: [""],
       rowNumber,
     };
 

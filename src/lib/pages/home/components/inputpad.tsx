@@ -77,13 +77,27 @@ const ColorButton = ({
   setPuzzleHistory,
 }: ColorButtonProps) => {
   const handleColorPadInput = () => {
+    const doAllSelectedCellsEqualTheMarkupColor = currentSudokuBoard
+      .filter((boardCell) => boardCell.isSelected)
+      .map((boardCell) => boardCell.markupColor)
+      .every((markupColor) => markupColor === buttonColor);
+
     const updatedSudokuBoard: SudokuBoardState = currentSudokuBoard.map(
       (boardCell) => {
+        const newBlankColorCell: Cell = {
+          ...boardCell,
+          markupColor: "",
+        };
+
+        const newButtonColorCell: Cell = {
+          ...boardCell,
+          markupColor: buttonColor,
+        };
+
         return boardCell.isSelected
-          ? {
-              ...boardCell,
-              markupColor: buttonColor,
-            }
+          ? doAllSelectedCellsEqualTheMarkupColor
+            ? newBlankColorCell
+            : newButtonColorCell
           : boardCell;
       },
     );
@@ -180,14 +194,14 @@ const NumberButton = ({
         const isValidInputCell =
           boardCell.isSelected && !("startingDigit" in boardCell.cellContent);
 
-        const newChangedToButtonValueCell: Cell = {
+        const newButtonValueCell: Cell = {
           ...boardCell,
           cellContent: {
             playerDigit: buttonValue,
           },
         };
 
-        const newChangedToBlankValueCell: Cell = {
+        const newBlankValueCell: Cell = {
           ...boardCell,
           cellContent: {
             playerDigit: "",
@@ -196,8 +210,8 @@ const NumberButton = ({
 
         const newBoardCell = isValidInputCell
           ? doAllSelectedCellsEqualTheNumberInput
-            ? newChangedToBlankValueCell
-            : newChangedToButtonValueCell
+            ? newBlankValueCell
+            : newButtonValueCell
           : boardCell;
 
         return newBoardCell;

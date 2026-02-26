@@ -302,7 +302,7 @@ const getDigitDisplayValue = (cellState: CellState): string | undefined => {
     return undefined;
 };
 
-const getIsSudokuSolved = (boardState: BoardState): boolean => {
+const getIsPuzzleSolved = (boardState: BoardState): boolean => {
   const rows: Array<Set<string>> = Array.from({ length: 9 }, () => new Set());
   const columns: Array<Set<string>> = Array.from(
     { length: 9 },
@@ -331,21 +331,21 @@ const getIsSudokuSolved = (boardState: BoardState): boolean => {
 };
 
 const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
-  const isSudokuSolved = getIsSudokuSolved(
+  const isPuzzleSolved = getIsPuzzleSolved(
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex],
   );
 
   return (
     <ActionDialog
       closeButtonText="Okay"
-      closeButtonColorPalette={isSudokuSolved ? "blue" : "red"}
+      closeButtonColorPalette={isPuzzleSolved ? "blue" : "red"}
       closeButtonVariant="solid"
       dialogBodyText={
-        isSudokuSolved
+        isPuzzleSolved
           ? "You solved the puzzle!"
           : "That doesn't look quite right. Some digits are missing or incorrect."
       }
-      dialogTitleText={isSudokuSolved ? "Congratulations" : "Try Again"}
+      dialogTitleText={isPuzzleSolved ? "Congratulations" : "Try Again"}
       dialogTrigger={
         <ActionTooltip tooltipText="Check the current solution">
           <Dialog.Trigger asChild>

@@ -239,38 +239,55 @@ const handleDigitInput = (
   const currentBoardState =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-  const doAllSelectedCellsEqualTheNumberInput = currentBoardState
+  const currentlySelectedCells = currentBoardState.filter(
+    (cellState) => cellState.isSelected,
+  );
+
+  const existingPlayerDigitsInSelectedCells = currentBoardState
     .filter(
       (cellState): cellState is CellState & { cellContent: PlayerDigit } =>
         cellState.isSelected && "playerDigit" in cellState.cellContent,
     )
-    .map((cellState) => cellState.cellContent.playerDigit)
-    .every((playerDigit) => playerDigit === buttonValue);
+    .map((cellState) => cellState.cellContent.playerDigit);
+
+  const areAllSelectedCellsPlayerDigits =
+    existingPlayerDigitsInSelectedCells.length ===
+    currentlySelectedCells.length;
+
+  const doAllSelectedCellsEqualTheNumberInput =
+    existingPlayerDigitsInSelectedCells.length > 0 &&
+    existingPlayerDigitsInSelectedCells.every(
+      (playerDigit) => playerDigit === buttonValue,
+    );
 
   const newBoardState: BoardState = currentBoardState.map((cellState) => {
     const isValidInputCell =
       cellState.isSelected && !("startingDigit" in cellState.cellContent);
     if (!isValidInputCell) return cellState;
 
-    const newPlayerDigitCellState: CellState = {
-      ...cellState,
-      cellContent: {
-        playerDigit: buttonValue,
-      },
-    };
+    if (
+      "playerDigit" in cellState.cellContent &&
+      areAllSelectedCellsPlayerDigits &&
+      doAllSelectedCellsEqualTheNumberInput
+    ) {
+      const newBlankValueCellState: CellState = {
+        ...cellState,
+        cellContent: {
+          playerDigit: "",
+        },
+      };
 
-    const newBlankValueCellState: CellState = {
-      ...cellState,
-      cellContent: {
-        playerDigit: "",
-      },
-    };
+      return newBlankValueCellState;
+    } else {
+      const newPlayerDigitCellState: CellState = {
+        ...cellState,
+        cellContent: {
+          playerDigit: buttonValue,
+        },
+      };
 
-    const newCellState = doAllSelectedCellsEqualTheNumberInput
-      ? newBlankValueCellState
-      : newPlayerDigitCellState;
-
-    return newCellState;
+      return newPlayerDigitCellState;
+    }
   });
 
   handleSetPuzzleHistory(newBoardState, setPuzzleHistory);

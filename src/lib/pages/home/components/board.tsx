@@ -26,10 +26,35 @@ const CELL_OUTLINE_OFFSET: ButtonProps["outlineOffset"] = {
   sm: "-6px",
   md: "-9px",
 };
-const TEXT_STYLE: ButtonProps["textStyle"] = {
+const DIGIT_TEXT_STYLE: ButtonProps["textStyle"] = {
   base: "2xl",
   sm: "4xl",
   md: "6xl",
+};
+const CENTER_TEXT_STYLE_LENGTH_5_OR_LESS: ButtonProps["fontSize"] = {
+  base: "0.625rem",
+  sm: "0.875rem",
+  md: "1.35rem",
+};
+const CENTER_TEXT_STYLE_LENGTH_6: ButtonProps["fontSize"] = {
+  base: "0.5rem",
+  sm: "0.75rem",
+  md: "1.15rem",
+};
+const CENTER_TEXT_STYLE_LENGTH_7: ButtonProps["fontSize"] = {
+  base: "0.4rem",
+  sm: "0.625rem",
+  md: "1rem",
+};
+const CENTER_TEXT_STYLE_LENGTH_8: ButtonProps["fontSize"] = {
+  base: "0.375rem",
+  sm: "0.55rem",
+  md: "0.875rem",
+};
+const CENTER_TEXT_STYLE_LENGTH_9: ButtonProps["fontSize"] = {
+  base: "0.345rem",
+  sm: "0.475rem",
+  md: "0.775rem",
 };
 const BOX_SIZE: SimpleGridProps["width"] = {
   base: "6.438rem", // 103px
@@ -63,7 +88,7 @@ const Cell = ({
     } else if ("playerDigit" in cellContent) {
       return cellContent.playerDigit;
     } else if ("centerMarkups" in cellContent) {
-      return cellContent.centerMarkups.join("");
+      return cellContent.centerMarkups.sort().join("");
     }
     return "";
   };
@@ -147,6 +172,30 @@ const Cell = ({
     });
   };
 
+  const getFontSize = (): ButtonProps["fontSize"] => {
+    if (
+      "playerDigit" in cellState.cellContent ||
+      "startingDigit" in cellState.cellContent
+    ) {
+      return DIGIT_TEXT_STYLE;
+    } else if ("centerMarkups" in cellState.cellContent) {
+      const centerMarkupsLength = cellState.cellContent.centerMarkups.length;
+
+      switch (centerMarkupsLength) {
+        case 9:
+          return CENTER_TEXT_STYLE_LENGTH_9;
+        case 8:
+          return CENTER_TEXT_STYLE_LENGTH_8;
+        case 7:
+          return CENTER_TEXT_STYLE_LENGTH_7;
+        case 6:
+          return CENTER_TEXT_STYLE_LENGTH_6;
+        default:
+          return CENTER_TEXT_STYLE_LENGTH_5_OR_LESS;
+      }
+    }
+  };
+
   return (
     <Button
       background={getCellBackground(cellState.markupColors)}
@@ -156,7 +205,7 @@ const Cell = ({
       height={CELL_SIZE}
       minWidth={CELL_SIZE}
       padding="0"
-      textStyle={TEXT_STYLE}
+      fontSize={getFontSize()}
       width={CELL_SIZE}
       {...(cellState.isSelected && {
         outline: CELL_OUTLINE,

@@ -19,6 +19,7 @@ import {
   type BoardState,
   type CellState,
   type InputMode,
+  type MarkupDigits,
   type PlayerDigit,
   type PuzzleHistory,
   type SudokuDigit,
@@ -58,9 +59,113 @@ const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
 };
 // #endregion
 
+// #region Puzzle History
+const handleSetPuzzleHistory = (
+  newBoardState: BoardState,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  setPuzzleHistory((currentPuzzleHistory) => {
+    const newBoardStateIndex = currentPuzzleHistory.currentBoardStateIndex + 1;
+
+    const newBoardStateHistory = [
+      ...currentPuzzleHistory.boardStateHistory.slice(0, newBoardStateIndex),
+      newBoardState,
+    ];
+
+    const newPuzzleHistory = {
+      currentBoardStateIndex: newBoardStateIndex,
+      boardStateHistory: newBoardStateHistory,
+    };
+
+    return newPuzzleHistory;
+  });
+};
+// #endregion
+
 // #region Color Pad
 
 // #region Color Button
+
+// #region Color Pad Input
+const getUpdatedMarkupColorsCellStateAfterRemoveCheck = (
+  markupColor: MarkupColor,
+  cellState: CellState,
+  currentMarkupColors: Array<MarkupColor>,
+) => {
+  const markupColorsCellContentAfterRemoveCheck: Array<MarkupColor> =
+    currentMarkupColors.filter((color) => color !== markupColor);
+
+  const markupColorsCellStateAfterRemoveCheck: CellState = {
+    ...cellState,
+    markupColors:
+      markupColorsCellContentAfterRemoveCheck.length > 0
+        ? markupColorsCellContentAfterRemoveCheck
+        : [""],
+  };
+
+  return markupColorsCellStateAfterRemoveCheck;
+};
+
+const getUpdatedMarkupColorsCellStateAfterAddCheck = (
+  markupColor: MarkupColor,
+  cellState: CellState,
+  currentMarkupColors: Array<MarkupColor>,
+) => {
+  const markupColorsCellContentAfterAddCheck: Array<MarkupColor> =
+    currentMarkupColors.includes(markupColor)
+      ? currentMarkupColors
+      : [...currentMarkupColors, markupColor];
+
+  const markupColorsCellStateAfterAddCheck: CellState = {
+    ...cellState,
+    markupColors: markupColorsCellContentAfterAddCheck,
+  };
+
+  return markupColorsCellStateAfterAddCheck;
+};
+
+const handleColorPadInput = (
+  markupColor: MarkupColor,
+  puzzleHistory: PuzzleHistory,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  const currentBoardState =
+    puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
+
+  const doAllSelectedCellsHaveTheMarkupColorInput = currentBoardState
+    .filter((cellState) => cellState.isSelected)
+    .every((cellState) =>
+      cellState.markupColors
+        .filter((markupColor) => markupColor !== "")
+        .includes(markupColor),
+    );
+
+  const newBoardState: BoardState = currentBoardState.map((cellState) => {
+    if (!cellState.isSelected) return cellState;
+
+    const currentMarkupColors = cellState.markupColors.filter(
+      (markupColor) => markupColor !== "",
+    );
+
+    if (doAllSelectedCellsHaveTheMarkupColorInput) {
+      return getUpdatedMarkupColorsCellStateAfterRemoveCheck(
+        markupColor,
+        cellState,
+        currentMarkupColors,
+      );
+    } else {
+      return getUpdatedMarkupColorsCellStateAfterAddCheck(
+        markupColor,
+        cellState,
+        currentMarkupColors,
+      );
+    }
+  });
+
+  handleSetPuzzleHistory(newBoardState, setPuzzleHistory);
+};
+// #endregion
+
 type ColorButtonProps = {
   markupColor: MarkupColor;
   puzzleHistory: PuzzleHistory;
@@ -73,86 +178,21 @@ const ColorButton = ({
   puzzleHistory,
   tooltipText,
   setPuzzleHistory,
-}: ColorButtonProps) => {
-  const handleColorPadInput = () => {
-    const currentBoardState =
-      puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
-
-    const doAllSelectedCellsHaveTheMarkupColor = currentBoardState
-      .filter((cellState) => cellState.isSelected)
-      .every((cellState) =>
-        cellState.markupColors
-          .filter((markupColor) => markupColor !== "")
-          .includes(markupColor),
-      );
-
-    const newBoardState: BoardState = currentBoardState.map((cellState) => {
-      if (!cellState.isSelected) return cellState;
-
-      const currentMarkupColors = cellState.markupColors.filter(
-        (markupColor) => markupColor !== "",
-      );
-
-      if (doAllSelectedCellsHaveTheMarkupColor) {
-        const markupColorsAfterRemoveCheck: Array<MarkupColor> =
-          currentMarkupColors.filter((color) => color !== markupColor);
-
-        const cellStateAfterRemoveCheck: CellState = {
-          ...cellState,
-          markupColors:
-            markupColorsAfterRemoveCheck.length > 0
-              ? markupColorsAfterRemoveCheck
-              : [""],
-        };
-
-        return cellStateAfterRemoveCheck;
-      } else {
-        const markupColorsAfterAddCheck: Array<MarkupColor> =
-          currentMarkupColors.includes(markupColor)
-            ? currentMarkupColors
-            : [...currentMarkupColors, markupColor];
-
-        const cellStateAfterAddCheck: CellState = {
-          ...cellState,
-          markupColors: markupColorsAfterAddCheck,
-        };
-
-        return cellStateAfterAddCheck;
-      }
-    });
-
-    setPuzzleHistory((currentPuzzleHistory) => {
-      const newBoardStateIndex =
-        currentPuzzleHistory.currentBoardStateIndex + 1;
-
-      const newBoardStateHistory = [
-        ...currentPuzzleHistory.boardStateHistory.slice(0, newBoardStateIndex),
-        newBoardState,
-      ];
-
-      const newPuzzleHistory = {
-        currentBoardStateIndex: newBoardStateIndex,
-        boardStateHistory: newBoardStateHistory,
-      };
-
-      return newPuzzleHistory;
-    });
-  };
-
-  return (
-    <GridItem colSpan={2} height={COLOR_SWATCH_SIZE} width={COLOR_SWATCH_SIZE}>
-      <Tooltip content={tooltipText}>
-        <ColorSwatch
-          height={COLOR_SWATCH_SIZE}
-          rounded="md"
-          value={markupColor}
-          width={COLOR_SWATCH_SIZE}
-          onClick={handleColorPadInput}
-        />
-      </Tooltip>
-    </GridItem>
-  );
-};
+}: ColorButtonProps) => (
+  <GridItem colSpan={2} height={COLOR_SWATCH_SIZE} width={COLOR_SWATCH_SIZE}>
+    <Tooltip content={tooltipText}>
+      <ColorSwatch
+        height={COLOR_SWATCH_SIZE}
+        rounded="md"
+        value={markupColor}
+        width={COLOR_SWATCH_SIZE}
+        onClick={() =>
+          handleColorPadInput(markupColor, puzzleHistory, setPuzzleHistory)
+        }
+      />
+    </Tooltip>
+  </GridItem>
+);
 // #endregion
 
 const colorPadTooltipTexts = {
@@ -188,110 +228,280 @@ const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => (
 
 // #region Number Pad
 
-// #region Number Button
-type NumberButtonProps = {
-  displayValue: SudokuDigit;
-  puzzleHistory: PuzzleHistory;
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
-};
+// #region Digit Number Button
 
-const NumberButton = ({
-  displayValue,
-  puzzleHistory,
-  setPuzzleHistory,
-}: NumberButtonProps) => {
-  const handleNumberPadInput = () => {
-    const currentBoardState =
-      puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
+// #region Digit Input
+const handleDigitInput = (
+  buttonValue: SudokuDigit,
+  puzzleHistory: PuzzleHistory,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  const currentBoardState =
+    puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-    const doAllSelectedCellsEqualTheNumberInput = currentBoardState
-      .filter(
-        (cellState): cellState is CellState & { cellContent: PlayerDigit } =>
-          cellState.isSelected && "playerDigit" in cellState.cellContent,
-      )
-      .map((cellState) => cellState.cellContent.playerDigit)
-      .every((playerDigit) => playerDigit === displayValue);
+  const doAllSelectedCellsEqualTheNumberInput = currentBoardState
+    .filter(
+      (cellState): cellState is CellState & { cellContent: PlayerDigit } =>
+        cellState.isSelected && "playerDigit" in cellState.cellContent,
+    )
+    .map((cellState) => cellState.cellContent.playerDigit)
+    .every((playerDigit) => playerDigit === buttonValue);
 
-    const newBoardState: BoardState = currentBoardState.map((cellState) => {
-      const isValidInputCell =
-        cellState.isSelected && !("startingDigit" in cellState.cellContent);
+  const newBoardState: BoardState = currentBoardState.map((cellState) => {
+    const isValidInputCell =
+      cellState.isSelected && !("startingDigit" in cellState.cellContent);
+    if (!isValidInputCell) return cellState;
 
-      const newDisplayValueCellState: CellState = {
-        ...cellState,
-        cellContent: {
-          playerDigit: displayValue,
-        },
-      };
+    const newPlayerDigitCellState: CellState = {
+      ...cellState,
+      cellContent: {
+        playerDigit: buttonValue,
+      },
+    };
 
-      const newBlankValueCellState: CellState = {
-        ...cellState,
-        cellContent: {
-          playerDigit: "",
-        },
-      };
+    const newBlankValueCellState: CellState = {
+      ...cellState,
+      cellContent: {
+        playerDigit: "",
+      },
+    };
 
-      const newCellState = isValidInputCell
-        ? doAllSelectedCellsEqualTheNumberInput
-          ? newBlankValueCellState
-          : newDisplayValueCellState
-        : cellState;
+    const newCellState = doAllSelectedCellsEqualTheNumberInput
+      ? newBlankValueCellState
+      : newPlayerDigitCellState;
 
-      return newCellState;
-    });
+    return newCellState;
+  });
 
-    setPuzzleHistory((currentPuzzleHistory) => {
-      const newBoardStateIndex =
-        currentPuzzleHistory.currentBoardStateIndex + 1;
-
-      const newBoardStateHistory = [
-        ...currentPuzzleHistory.boardStateHistory.slice(0, newBoardStateIndex),
-        newBoardState,
-      ];
-
-      const newPuzzleHistory = {
-        currentBoardStateIndex: newBoardStateIndex,
-        boardStateHistory: newBoardStateHistory,
-      };
-
-      return newPuzzleHistory;
-    });
-  };
-
-  return (
-    <GridItem colSpan={2}>
-      <Square aspectRatio="square">
-        <IconButton
-          aspectRatio="square"
-          color="white"
-          colorPalette="blue"
-          rounded="md"
-          size={ICON_BUTTON_SIZE}
-          textStyle={ICON_BUTTON_TEXT_STYLE}
-          onClick={handleNumberPadInput}
-        >
-          {displayValue}
-        </IconButton>
-      </Square>
-    </GridItem>
-  );
+  handleSetPuzzleHistory(newBoardState, setPuzzleHistory);
 };
 // #endregion
 
-type NumberPadProps = {
+type DigitNumberButtonProps = {
+  buttonValue: SudokuDigit;
   puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const NumberPad = ({ puzzleHistory, setPuzzleHistory }: NumberPadProps) => (
+const DigitNumberButton = ({
+  buttonValue,
+  puzzleHistory,
+  setPuzzleHistory,
+}: DigitNumberButtonProps) => (
+  <GridItem colSpan={2}>
+    <Square aspectRatio="square">
+      <IconButton
+        aspectRatio="square"
+        color="white"
+        colorPalette="blue"
+        rounded="md"
+        size={ICON_BUTTON_SIZE}
+        textStyle={ICON_BUTTON_TEXT_STYLE}
+        onClick={() =>
+          handleDigitInput(buttonValue, puzzleHistory, setPuzzleHistory)
+        }
+      >
+        {buttonValue}
+      </IconButton>
+    </Square>
+  </GridItem>
+);
+// #endregion
+
+// #region Center Number Button
+
+// #region Center Markup Input
+const getUpdatedCenterMarkupsCellStateAfterRemoveCheck = (
+  buttonValue: SudokuDigit,
+  cellState: CellState,
+  currentCenterMarkups: Array<SudokuDigit>,
+): CellState => {
+  if (!("centerMarkups" in cellState.cellContent)) return cellState;
+
+  const updatedCenterMarkupsCellContentAfterRemoveCheck: MarkupDigits = {
+    centerMarkups: currentCenterMarkups.filter(
+      (centerMarkup) => centerMarkup !== buttonValue,
+    ),
+    cornerMarkups: cellState.cellContent.cornerMarkups,
+  };
+
+  const blankCenterMarkupsCellContent: MarkupDigits = {
+    centerMarkups: [""],
+    cornerMarkups: cellState.cellContent.cornerMarkups,
+  };
+
+  const updatedCenterMarkupsCellStateAfterRemoveCheck: CellState = {
+    ...cellState,
+    cellContent:
+      updatedCenterMarkupsCellContentAfterRemoveCheck.centerMarkups.length > 0
+        ? updatedCenterMarkupsCellContentAfterRemoveCheck
+        : blankCenterMarkupsCellContent,
+  };
+
+  return updatedCenterMarkupsCellStateAfterRemoveCheck;
+};
+
+const getUpdatedCenterMarkupsCellStateAfterAddCheck = (
+  buttonValue: SudokuDigit,
+  cellState: CellState,
+  currentCenterMarkups: Array<SudokuDigit>,
+) => {
+  if (!("centerMarkups" in cellState.cellContent)) return cellState;
+
+  const updatedCenterMarkupsCellContentAfterAddCheck: MarkupDigits = {
+    centerMarkups: currentCenterMarkups.includes(buttonValue)
+      ? currentCenterMarkups
+      : [...currentCenterMarkups, buttonValue],
+    cornerMarkups: cellState.cellContent.cornerMarkups,
+  };
+
+  const updatedCenterMarkupsCellStateAfterAddCheck: CellState = {
+    ...cellState,
+    cellContent: updatedCenterMarkupsCellContentAfterAddCheck,
+  };
+
+  return updatedCenterMarkupsCellStateAfterAddCheck;
+};
+
+const getNewCenterMarkupDigitsCellState = (
+  buttonValue: SudokuDigit,
+  cellState: CellState,
+) => {
+  const newMarkupDigitsCellContent: MarkupDigits = {
+    centerMarkups: [buttonValue],
+    cornerMarkups: [""],
+  };
+
+  const newCenterMarkupDigitsCellState: CellState = {
+    ...cellState,
+    cellContent: newMarkupDigitsCellContent,
+  };
+
+  return newCenterMarkupDigitsCellState;
+};
+
+const handleCenterMarkupInput = (
+  buttonValue: SudokuDigit,
+  puzzleHistory: PuzzleHistory,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  const currentBoardState =
+    puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
+
+  const selectedCellStatesWithExistingMarkupDigitsCellContent =
+    currentBoardState.filter(
+      (cellState): cellState is CellState & { cellContent: MarkupDigits } =>
+        cellState.isSelected && "centerMarkups" in cellState.cellContent,
+    );
+
+  const doAllSelectedCellsHaveTheCenterMarkupInput =
+    selectedCellStatesWithExistingMarkupDigitsCellContent.length > 0 &&
+    selectedCellStatesWithExistingMarkupDigitsCellContent.every((cellState) =>
+      cellState.cellContent.centerMarkups
+        .filter((centerMarkup) => centerMarkup !== "")
+        .includes(buttonValue),
+    );
+
+  const newBoardState: BoardState = currentBoardState.map((cellState) => {
+    const isNotAStartingDigit = !("startingDigit" in cellState.cellContent);
+    const isABlankPlayerDigit =
+      "playerDigit" in cellState.cellContent &&
+      cellState.cellContent.playerDigit === "";
+    const isValidInputCell =
+      cellState.isSelected &&
+      isNotAStartingDigit &&
+      (isABlankPlayerDigit || "centerMarkups" in cellState.cellContent);
+
+    if (!isValidInputCell) return cellState;
+
+    if ("centerMarkups" in cellState.cellContent) {
+      const currentCenterMarkups = cellState.cellContent.centerMarkups.filter(
+        (centerMarkup) => centerMarkup !== "",
+      );
+
+      if (doAllSelectedCellsHaveTheCenterMarkupInput)
+        return getUpdatedCenterMarkupsCellStateAfterRemoveCheck(
+          buttonValue,
+          cellState,
+          currentCenterMarkups,
+        );
+      else
+        return getUpdatedCenterMarkupsCellStateAfterAddCheck(
+          buttonValue,
+          cellState,
+          currentCenterMarkups,
+        );
+    } else if ("playerDigit" in cellState.cellContent) {
+      return getNewCenterMarkupDigitsCellState(buttonValue, cellState);
+    }
+
+    return cellState;
+  });
+
+  handleSetPuzzleHistory(newBoardState, setPuzzleHistory);
+};
+// #endregion
+
+type CenterNumberButtonProps = {
+  buttonValue: SudokuDigit;
+  puzzleHistory: PuzzleHistory;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+
+const CenterNumberButton = ({
+  buttonValue,
+  puzzleHistory,
+  setPuzzleHistory,
+}: CenterNumberButtonProps) => (
+  <GridItem colSpan={2}>
+    <Square aspectRatio="square">
+      <IconButton
+        aspectRatio="square"
+        color="white"
+        colorPalette="blue"
+        rounded="md"
+        size={ICON_BUTTON_SIZE}
+        textStyle={ICON_BUTTON_TEXT_STYLE}
+        onClick={() =>
+          handleCenterMarkupInput(buttonValue, puzzleHistory, setPuzzleHistory)
+        }
+      >
+        {buttonValue}
+      </IconButton>
+    </Square>
+  </GridItem>
+);
+// #endregion
+
+type NumberPadProps = {
+  inputMode: InputMode;
+  puzzleHistory: PuzzleHistory;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+
+const NumberPad = ({
+  inputMode,
+  puzzleHistory,
+  setPuzzleHistory,
+}: NumberPadProps) => (
   <>
-    {sudokuDigits.map((digit) => (
-      <NumberButton
-        displayValue={digit}
-        key={digit}
-        puzzleHistory={puzzleHistory}
-        setPuzzleHistory={setPuzzleHistory}
-      />
-    ))}
+    {sudokuDigits.map((digit) => {
+      return inputMode === "Digit" ? (
+        <DigitNumberButton
+          buttonValue={digit}
+          key={digit}
+          puzzleHistory={puzzleHistory}
+          setPuzzleHistory={setPuzzleHistory}
+        />
+      ) : (
+        <CenterNumberButton
+          buttonValue={digit}
+          key={digit}
+          puzzleHistory={puzzleHistory}
+          setPuzzleHistory={setPuzzleHistory}
+        />
+      );
+    })}
   </>
 );
 // #endregion
@@ -346,84 +556,69 @@ const MultiselectSwitch = ({
 // #endregion
 
 // #region Clear Button
+const handleClearButton = (
+  puzzleHistory: PuzzleHistory,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  const currentBoardState =
+    puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
+
+  const newBoardState: BoardState = currentBoardState.map((cellState) => {
+    const isNotAClearableCell = !cellState.isSelected;
+    if (isNotAClearableCell) return cellState;
+
+    const isNotAStartingDigit = !("startingDigit" in cellState.cellContent);
+
+    const newStartingDigitCellState: CellState = {
+      ...cellState,
+      markupColors: [""],
+    };
+
+    const newPlayerDigitCellState: CellState = {
+      ...cellState,
+      cellContent: {
+        playerDigit: "",
+      },
+      markupColors: [""],
+    };
+
+    const newCellState = isNotAStartingDigit
+      ? newPlayerDigitCellState
+      : newStartingDigitCellState;
+
+    return newCellState;
+  });
+
+  handleSetPuzzleHistory(newBoardState, setPuzzleHistory);
+};
+
 type ClearButtonProps = {
   puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const ClearButton = ({ puzzleHistory, setPuzzleHistory }: ClearButtonProps) => {
-  const handleClearButton = () => {
-    const currentBoardState =
-      puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
-
-    const newBoardState: BoardState = currentBoardState.map((cellState) => {
-      const isNonStartingDigitCell = !(
-        "startingDigit" in cellState.cellContent
-      );
-
-      const newStartingDigitCellState: CellState = {
-        ...cellState,
-        markupColors: [""],
-      };
-
-      const newPlayerDigitCellState: CellState = {
-        ...cellState,
-        cellContent: {
-          playerDigit: "",
-        },
-        markupColors: [""],
-      };
-
-      const newCellState = cellState.isSelected
-        ? isNonStartingDigitCell
-          ? newPlayerDigitCellState
-          : newStartingDigitCellState
-        : cellState;
-
-      return newCellState;
-    });
-
-    setPuzzleHistory((currentPuzzleHistory) => {
-      const newBoardStateIndex =
-        currentPuzzleHistory.currentBoardStateIndex + 1;
-
-      const newBoardStateHistory = [
-        ...currentPuzzleHistory.boardStateHistory.slice(0, newBoardStateIndex),
-        newBoardState,
-      ];
-
-      const newPuzzleHistory = {
-        currentBoardStateIndex: newBoardStateIndex,
-        boardStateHistory: newBoardStateHistory,
-      };
-
-      return newPuzzleHistory;
-    });
-  };
-
-  return (
-    <GridItem colSpan={3}>
-      <Tooltip
-        content="Clear the selected cells"
-        positioning={{ placement: "bottom" }}
+const ClearButton = ({ puzzleHistory, setPuzzleHistory }: ClearButtonProps) => (
+  <GridItem colSpan={3}>
+    <Tooltip
+      content="Clear the selected cells"
+      positioning={{ placement: "bottom" }}
+    >
+      <IconButton
+        color="white"
+        colorPalette="blue"
+        rounded="md"
+        size={ICON_BUTTON_SIZE}
+        textStyle={ICON_BUTTON_TEXT_STYLE}
+        width="full"
+        onClick={() => handleClearButton(puzzleHistory, setPuzzleHistory)}
       >
-        <IconButton
-          color="white"
-          colorPalette="blue"
-          rounded="md"
-          size={ICON_BUTTON_SIZE}
-          textStyle={ICON_BUTTON_TEXT_STYLE}
-          width="full"
-          onClick={handleClearButton}
-        >
-          <Icon height={ICON_SIZE} width={ICON_SIZE}>
-            <FiDelete />
-          </Icon>
-        </IconButton>
-      </Tooltip>
-    </GridItem>
-  );
-};
+        <Icon height={ICON_SIZE} width={ICON_SIZE}>
+          <FiDelete />
+        </Icon>
+      </IconButton>
+    </Tooltip>
+  </GridItem>
+);
 // #endregion
 
 type InputPadProps = {
@@ -453,6 +648,7 @@ export const InputPad = ({
       />
     ) : (
       <NumberPad
+        inputMode={inputMode}
         puzzleHistory={puzzleHistory}
         setPuzzleHistory={setPuzzleHistory}
       />

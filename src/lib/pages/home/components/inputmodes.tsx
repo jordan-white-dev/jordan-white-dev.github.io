@@ -86,7 +86,7 @@ export const InputModeRadioCard = ({
         setInputMode={setInputMode}
       />
       <InputModeRadioCardItem
-        disabled={true}
+        disabled={false}
         icon={<CenterSVG />}
         inputModeValue="Center"
         tooltipText="Center markup mode"

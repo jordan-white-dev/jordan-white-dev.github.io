@@ -57,19 +57,17 @@ const Cell = ({
   isMultiselectMode,
   setPuzzleHistory,
 }: CellProps) => {
-  const getStartingOrPlayerDigitDisplayValue = (
-    cellContent: CellContent,
-  ): string => {
+  const getDisplayValue = (cellContent: CellContent): string => {
     if ("startingDigit" in cellContent) {
       return cellContent.startingDigit;
     } else if ("playerDigit" in cellContent) {
       return cellContent.playerDigit;
+    } else if ("centerMarkups" in cellContent) {
+      return cellContent.centerMarkups.join("");
     }
     return "";
   };
-  const displayValue = getStartingOrPlayerDigitDisplayValue(
-    cellState.cellContent,
-  );
+  const displayValue = getDisplayValue(cellState.cellContent);
 
   const digitColor =
     "startingDigit" in cellState.cellContent ? "black" : "#1d6ae5";

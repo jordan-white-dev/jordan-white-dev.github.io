@@ -29,9 +29,9 @@ export type SudokuDigit = (typeof sudokuDigits)[number];
 
 export type StartingDigit = { startingDigit: SudokuDigit };
 export type PlayerDigit = { playerDigit: SudokuDigit | "" };
-type MarkupDigits = {
-  centerMarkups: Array<SudokuDigit> | "";
-  cornerMarkups: Array<SudokuDigit> | "";
+export type MarkupDigits = {
+  centerMarkups: [""] | Array<SudokuDigit>;
+  cornerMarkups: [""] | Array<SudokuDigit>;
 };
 export type CellContent = StartingDigit | PlayerDigit | MarkupDigits;
 

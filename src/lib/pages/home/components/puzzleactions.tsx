@@ -62,6 +62,23 @@ const BUTTON_ROUNDED: ButtonProps["rounded"] = {
 };
 // #endregion
 
+// #region Puzzle History
+const handleSetPuzzleHistory = (
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+  boardStateIndexChange: number,
+) => {
+  setPuzzleHistory((currentPuzzleHistory) => {
+    const newPuzzleHistory = {
+      ...currentPuzzleHistory,
+      currentBoardStateIndex:
+        currentPuzzleHistory.currentBoardStateIndex + boardStateIndexChange,
+    };
+
+    return newPuzzleHistory;
+  });
+};
+// #endregion
+
 // #region Action Button
 type ActionButtonProps = {
   icon: ReactNode;
@@ -225,15 +242,7 @@ const UndoButton = ({ puzzleHistory, setPuzzleHistory }: UndoButtonProps) => {
       puzzleHistory.boardStateHistory.length > 1 &&
       puzzleHistory.currentBoardStateIndex > 0
     ) {
-      setPuzzleHistory((currentPuzzleHistory) => {
-        const newPuzzleHistory = {
-          ...currentPuzzleHistory,
-          currentBoardStateIndex:
-            currentPuzzleHistory.currentBoardStateIndex - 1,
-        };
-
-        return newPuzzleHistory;
-      });
+      handleSetPuzzleHistory(setPuzzleHistory, -1);
     }
   };
 
@@ -261,15 +270,7 @@ const RedoButton = ({ puzzleHistory, setPuzzleHistory }: RedoButtonProps) => {
       puzzleHistory.currentBoardStateIndex <
       puzzleHistory.boardStateHistory.length - 1
     ) {
-      setPuzzleHistory((currentPuzzleHistory) => {
-        const newPuzzleHistory = {
-          ...currentPuzzleHistory,
-          currentBoardStateIndex:
-            currentPuzzleHistory.currentBoardStateIndex + 1,
-        };
-
-        return newPuzzleHistory;
-      });
+      handleSetPuzzleHistory(setPuzzleHistory, 1);
     }
   };
 

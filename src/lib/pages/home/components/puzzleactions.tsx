@@ -187,6 +187,19 @@ const ActionDialog = ({
 // #endregion
 
 // #region New Puzzle Button
+const handleNewPuzzleConfirmation = (
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+  setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>,
+) => {
+  const newStartingBoardStates = getNewStartingBoardStates();
+  setStartingRawBoardState(newStartingBoardStates.rawBoardState);
+  const newPuzzleHistory = {
+    currentBoardStateIndex: 0,
+    boardStateHistory: [newStartingBoardStates.boardState],
+  };
+  setPuzzleHistory(newPuzzleHistory);
+};
+
 type NewPuzzleButtonProps = {
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
   setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>;
@@ -195,95 +208,87 @@ type NewPuzzleButtonProps = {
 const NewPuzzleButton = ({
   setPuzzleHistory,
   setStartingRawBoardState,
-}: NewPuzzleButtonProps) => {
-  const handleNewPuzzleConfirmation = () => {
-    const newStartingBoardStates = getNewStartingBoardStates();
-    setStartingRawBoardState(newStartingBoardStates.rawBoardState);
-    const newPuzzleHistory = {
-      currentBoardStateIndex: 0,
-      boardStateHistory: [newStartingBoardStates.boardState],
-    };
-    setPuzzleHistory(newPuzzleHistory);
-  };
-
-  return (
-    <GridItem colSpan={{ base: 1, lg: 2 }}>
-      <ActionDialog
-        actionButtonText="New Puzzle"
-        closeButtonText="Cancel"
-        dialogBodyText="Are you sure you want to start a new puzzle? All progress will be lost!"
-        dialogTitleText="Confirm New"
-        dialogTrigger={
-          <ActionTooltip tooltipText="Start a new puzzle">
-            <Dialog.Trigger asChild>
-              <ActionButton
-                icon={<MdOutlineFiberNew />}
-                iconSize={MD_ICON_SIZE_ALT}
-              />
-            </Dialog.Trigger>
-          </ActionTooltip>
-        }
-        onConfirm={handleNewPuzzleConfirmation}
-      />
-    </GridItem>
-  );
-};
+}: NewPuzzleButtonProps) => (
+  <GridItem colSpan={{ base: 1, lg: 2 }}>
+    <ActionDialog
+      actionButtonText="New Puzzle"
+      closeButtonText="Cancel"
+      dialogBodyText="Are you sure you want to start a new puzzle? All progress will be lost!"
+      dialogTitleText="Confirm New"
+      dialogTrigger={
+        <ActionTooltip tooltipText="Start a new puzzle">
+          <Dialog.Trigger asChild>
+            <ActionButton
+              icon={<MdOutlineFiberNew />}
+              iconSize={MD_ICON_SIZE_ALT}
+            />
+          </Dialog.Trigger>
+        </ActionTooltip>
+      }
+      onConfirm={() =>
+        handleNewPuzzleConfirmation(setPuzzleHistory, setStartingRawBoardState)
+      }
+    />
+  </GridItem>
+);
 // #endregion
 
 // #region Undo Button
+const handleUndoButton = (
+  puzzleHistory: PuzzleHistory,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  if (
+    puzzleHistory.boardStateHistory.length > 1 &&
+    puzzleHistory.currentBoardStateIndex > 0
+  ) {
+    handleSetPuzzleHistory(setPuzzleHistory, -1);
+  }
+};
+
 type UndoButtonProps = {
   puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const UndoButton = ({ puzzleHistory, setPuzzleHistory }: UndoButtonProps) => {
-  const handleUndoButton = () => {
-    if (
-      puzzleHistory.boardStateHistory.length > 1 &&
-      puzzleHistory.currentBoardStateIndex > 0
-    ) {
-      handleSetPuzzleHistory(setPuzzleHistory, -1);
-    }
-  };
-
-  return (
-    <ActionTooltip tooltipText="Undo the last move">
-      <ActionButton
-        icon={<ImUndo />}
-        iconSize={IM_ICON_SIZE}
-        onClick={handleUndoButton}
-      />
-    </ActionTooltip>
-  );
-};
+const UndoButton = ({ puzzleHistory, setPuzzleHistory }: UndoButtonProps) => (
+  <ActionTooltip tooltipText="Undo the last move">
+    <ActionButton
+      icon={<ImUndo />}
+      iconSize={IM_ICON_SIZE}
+      onClick={() => handleUndoButton(puzzleHistory, setPuzzleHistory)}
+    />
+  </ActionTooltip>
+);
 // #endregion
 
 // #region Redo Button
+const handleRedoButton = (
+  puzzleHistory: PuzzleHistory,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  if (
+    puzzleHistory.currentBoardStateIndex <
+    puzzleHistory.boardStateHistory.length - 1
+  ) {
+    handleSetPuzzleHistory(setPuzzleHistory, 1);
+  }
+};
+
 type RedoButtonProps = {
   puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const RedoButton = ({ puzzleHistory, setPuzzleHistory }: RedoButtonProps) => {
-  const handleRedoButton = () => {
-    if (
-      puzzleHistory.currentBoardStateIndex <
-      puzzleHistory.boardStateHistory.length - 1
-    ) {
-      handleSetPuzzleHistory(setPuzzleHistory, 1);
-    }
-  };
-
-  return (
-    <ActionTooltip tooltipText="Redo the last undone move">
-      <ActionButton
-        icon={<ImRedo />}
-        iconSize={IM_ICON_SIZE}
-        onClick={handleRedoButton}
-      />
-    </ActionTooltip>
-  );
-};
+const RedoButton = ({ puzzleHistory, setPuzzleHistory }: RedoButtonProps) => (
+  <ActionTooltip tooltipText="Redo the last undone move">
+    <ActionButton
+      icon={<ImRedo />}
+      iconSize={IM_ICON_SIZE}
+      onClick={() => handleRedoButton(puzzleHistory, setPuzzleHistory)}
+    />
+  </ActionTooltip>
+);
 // #endregion
 
 // #region Check Solution Button
@@ -367,6 +372,18 @@ const getRestartedBoardState = (
   return restartedBoardState;
 };
 
+const handleRestartPuzzleConfirmation = (
+  startingRawBoardState: RawBoardState,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  const restartedBoardState = getRestartedBoardState(startingRawBoardState);
+  const newPuzzleHistory = {
+    currentBoardStateIndex: 0,
+    boardStateHistory: [restartedBoardState],
+  };
+  setPuzzleHistory(newPuzzleHistory);
+};
+
 type RestartPuzzleButtonProps = {
   startingRawBoardState: RawBoardState;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
@@ -375,33 +392,24 @@ type RestartPuzzleButtonProps = {
 const RestartPuzzleButton = ({
   startingRawBoardState,
   setPuzzleHistory,
-}: RestartPuzzleButtonProps) => {
-  const handleRestartPuzzleConfirmation = () => {
-    const restartedBoardState = getRestartedBoardState(startingRawBoardState);
-    const newPuzzleHistory = {
-      currentBoardStateIndex: 0,
-      boardStateHistory: [restartedBoardState],
-    };
-    setPuzzleHistory(newPuzzleHistory);
-  };
-
-  return (
-    <ActionDialog
-      actionButtonText="Restart Puzzle"
-      closeButtonText="Cancel"
-      dialogBodyText="Are you sure you want to restart the puzzle? All progress will be lost!"
-      dialogTitleText="Confirm Restart"
-      dialogTrigger={
-        <ActionTooltip tooltipText="Restart the puzzle">
-          <Dialog.Trigger asChild>
-            <ActionButton icon={<MdRestartAlt />} iconSize={MD_ICON_SIZE} />
-          </Dialog.Trigger>
-        </ActionTooltip>
-      }
-      onConfirm={handleRestartPuzzleConfirmation}
-    />
-  );
-};
+}: RestartPuzzleButtonProps) => (
+  <ActionDialog
+    actionButtonText="Restart Puzzle"
+    closeButtonText="Cancel"
+    dialogBodyText="Are you sure you want to restart the puzzle? All progress will be lost!"
+    dialogTitleText="Confirm Restart"
+    dialogTrigger={
+      <ActionTooltip tooltipText="Restart the puzzle">
+        <Dialog.Trigger asChild>
+          <ActionButton icon={<MdRestartAlt />} iconSize={MD_ICON_SIZE} />
+        </Dialog.Trigger>
+      </ActionTooltip>
+    }
+    onConfirm={() =>
+      handleRestartPuzzleConfirmation(startingRawBoardState, setPuzzleHistory)
+    }
+  />
+);
 // #endregion
 
 type PuzzleActionsProps = {

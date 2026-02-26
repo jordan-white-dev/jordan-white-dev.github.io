@@ -211,6 +211,7 @@ type ColorPadProps = {
   puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
+
 const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => (
   <>
     {markupColors.map((markupColor) => (

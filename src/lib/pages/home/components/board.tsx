@@ -71,6 +71,120 @@ const THICK_BORDER: SquareProps["border"] = "2px solid black";
 // #endregion
 
 // #region Cell
+const getDisplayValue = (cellContent: CellContent): string => {
+  if ("startingDigit" in cellContent) {
+    return cellContent.startingDigit;
+  } else if ("playerDigit" in cellContent) {
+    return cellContent.playerDigit;
+  } else if ("centerMarkups" in cellContent) {
+    return cellContent.centerMarkups.sort().join("");
+  }
+  return "";
+};
+
+const getCellBackground = (
+  cellMarkupColors: Array<MarkupColor> | [""],
+): string => {
+  const filteredColors = cellMarkupColors.filter(
+    (markupColor) => markupColor !== "",
+  );
+  if (filteredColors.length === 0) return "transparent";
+
+  const sortedColors = markupColors.filter((markupColor) =>
+    filteredColors.includes(markupColor),
+  );
+
+  const sliceDegree = 360 / sortedColors.length;
+  const gradientParts = sortedColors.map(
+    (color, index) =>
+      `${color} ${index * sliceDegree}deg ${(index + 1) * sliceDegree}deg`,
+  );
+  return `conic-gradient(${gradientParts.join(", ")})`;
+};
+
+const handleCellSelection = (
+  cellState: CellState,
+  isMultiselectMode: boolean,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  setPuzzleHistory((currentPuzzleHistory) => {
+    const currentBoardState =
+      currentPuzzleHistory.boardStateHistory[
+        currentPuzzleHistory.currentBoardStateIndex
+      ];
+
+    const selectedCells = currentBoardState.filter(
+      (cellState) => cellState.isSelected,
+    );
+
+    const currentBoardStateUpdatedWithSelections: BoardState =
+      currentBoardState.map((currentCellState) => {
+        const isOnlySelectedCell =
+          selectedCells.length === 1 &&
+          selectedCells[0].cellNumber === cellState.cellNumber;
+
+        const isSelectedInSingleSelectMode =
+          currentCellState.cellNumber === cellState.cellNumber
+            ? !isOnlySelectedCell
+            : false;
+
+        const isSelectedInMultiselectMode =
+          currentCellState.cellNumber === cellState.cellNumber
+            ? !currentCellState.isSelected
+            : currentCellState.isSelected;
+
+        const newIsSelected = isMultiselectMode
+          ? isSelectedInMultiselectMode
+          : isSelectedInSingleSelectMode;
+
+        const newCellState = {
+          ...currentCellState,
+          isSelected: newIsSelected,
+        };
+
+        return newCellState;
+      });
+
+    const newBoardStateHistory = currentPuzzleHistory.boardStateHistory.map(
+      (boardState, index) =>
+        index === currentPuzzleHistory.currentBoardStateIndex
+          ? currentBoardStateUpdatedWithSelections
+          : boardState,
+    );
+
+    const newPuzzleHistory: PuzzleHistory = {
+      currentBoardStateIndex: currentPuzzleHistory.currentBoardStateIndex,
+      boardStateHistory: newBoardStateHistory,
+    };
+
+    return newPuzzleHistory;
+  });
+};
+
+const getFontSize = (cellState: CellState): ButtonProps["fontSize"] => {
+  if (
+    "playerDigit" in cellState.cellContent ||
+    "startingDigit" in cellState.cellContent
+  ) {
+    return DIGIT_TEXT_STYLE;
+  } else if ("centerMarkups" in cellState.cellContent) {
+    const centerMarkupsLength = cellState.cellContent.centerMarkups.length;
+
+    switch (centerMarkupsLength) {
+      case 9:
+        return CENTER_TEXT_STYLE_LENGTH_9;
+      case 8:
+        return CENTER_TEXT_STYLE_LENGTH_8;
+      case 7:
+        return CENTER_TEXT_STYLE_LENGTH_7;
+      case 6:
+        return CENTER_TEXT_STYLE_LENGTH_6;
+      default:
+        return CENTER_TEXT_STYLE_LENGTH_5_OR_LESS;
+    }
+  }
+};
+
 type CellProps = {
   cellState: CellState;
   isMultiselectMode: boolean;
@@ -81,142 +195,28 @@ const Cell = ({
   cellState,
   isMultiselectMode,
   setPuzzleHistory,
-}: CellProps) => {
-  const getDisplayValue = (cellContent: CellContent): string => {
-    if ("startingDigit" in cellContent) {
-      return cellContent.startingDigit;
-    } else if ("playerDigit" in cellContent) {
-      return cellContent.playerDigit;
-    } else if ("centerMarkups" in cellContent) {
-      return cellContent.centerMarkups.sort().join("");
+}: CellProps) => (
+  <Button
+    background={getCellBackground(cellState.markupColors)}
+    border={THIN_BORDER}
+    borderRadius="0"
+    color={"startingDigit" in cellState.cellContent ? "black" : "#1d6ae5"}
+    height={CELL_SIZE}
+    minWidth={CELL_SIZE}
+    padding="0"
+    fontSize={getFontSize(cellState)}
+    width={CELL_SIZE}
+    {...(cellState.isSelected && {
+      outline: CELL_OUTLINE,
+      outlineOffset: CELL_OUTLINE_OFFSET,
+    })}
+    onClick={() =>
+      handleCellSelection(cellState, isMultiselectMode, setPuzzleHistory)
     }
-    return "";
-  };
-  const displayValue = getDisplayValue(cellState.cellContent);
-
-  const digitColor =
-    "startingDigit" in cellState.cellContent ? "black" : "#1d6ae5";
-
-  const getCellBackground = (
-    cellMarkupColors: Array<MarkupColor> | [""],
-  ): string => {
-    const filteredColors = cellMarkupColors.filter(
-      (markupColor) => markupColor !== "",
-    );
-    if (filteredColors.length === 0) return "transparent";
-
-    const sortedColors = markupColors.filter((markupColor) =>
-      filteredColors.includes(markupColor),
-    );
-
-    const sliceDegree = 360 / sortedColors.length;
-    const gradientParts = sortedColors.map(
-      (color, index) =>
-        `${color} ${index * sliceDegree}deg ${(index + 1) * sliceDegree}deg`,
-    );
-    return `conic-gradient(${gradientParts.join(", ")})`;
-  };
-
-  const handleCellSelection = () => {
-    setPuzzleHistory((currentPuzzleHistory) => {
-      const currentBoardState =
-        currentPuzzleHistory.boardStateHistory[
-          currentPuzzleHistory.currentBoardStateIndex
-        ];
-
-      const selectedCells = currentBoardState.filter(
-        (cellState) => cellState.isSelected,
-      );
-
-      const currentBoardStateUpdatedWithSelections: BoardState =
-        currentBoardState.map((currentCellState) => {
-          const isOnlySelectedCell =
-            selectedCells.length === 1 &&
-            selectedCells[0].cellNumber === cellState.cellNumber;
-
-          const isSelectedInSingleSelectMode =
-            currentCellState.cellNumber === cellState.cellNumber
-              ? !isOnlySelectedCell
-              : false;
-
-          const isSelectedInMultiselectMode =
-            currentCellState.cellNumber === cellState.cellNumber
-              ? !currentCellState.isSelected
-              : currentCellState.isSelected;
-
-          const newIsSelected = isMultiselectMode
-            ? isSelectedInMultiselectMode
-            : isSelectedInSingleSelectMode;
-
-          const newCellState = {
-            ...currentCellState,
-            isSelected: newIsSelected,
-          };
-
-          return newCellState;
-        });
-
-      const newBoardStateHistory = currentPuzzleHistory.boardStateHistory.map(
-        (boardState, index) =>
-          index === currentPuzzleHistory.currentBoardStateIndex
-            ? currentBoardStateUpdatedWithSelections
-            : boardState,
-      );
-
-      const newPuzzleHistory: PuzzleHistory = {
-        currentBoardStateIndex: currentPuzzleHistory.currentBoardStateIndex,
-        boardStateHistory: newBoardStateHistory,
-      };
-
-      return newPuzzleHistory;
-    });
-  };
-
-  const getFontSize = (): ButtonProps["fontSize"] => {
-    if (
-      "playerDigit" in cellState.cellContent ||
-      "startingDigit" in cellState.cellContent
-    ) {
-      return DIGIT_TEXT_STYLE;
-    } else if ("centerMarkups" in cellState.cellContent) {
-      const centerMarkupsLength = cellState.cellContent.centerMarkups.length;
-
-      switch (centerMarkupsLength) {
-        case 9:
-          return CENTER_TEXT_STYLE_LENGTH_9;
-        case 8:
-          return CENTER_TEXT_STYLE_LENGTH_8;
-        case 7:
-          return CENTER_TEXT_STYLE_LENGTH_7;
-        case 6:
-          return CENTER_TEXT_STYLE_LENGTH_6;
-        default:
-          return CENTER_TEXT_STYLE_LENGTH_5_OR_LESS;
-      }
-    }
-  };
-
-  return (
-    <Button
-      background={getCellBackground(cellState.markupColors)}
-      border={THIN_BORDER}
-      borderRadius="0"
-      color={digitColor}
-      height={CELL_SIZE}
-      minWidth={CELL_SIZE}
-      padding="0"
-      fontSize={getFontSize()}
-      width={CELL_SIZE}
-      {...(cellState.isSelected && {
-        outline: CELL_OUTLINE,
-        outlineOffset: CELL_OUTLINE_OFFSET,
-      })}
-      onClick={handleCellSelection}
-    >
-      {displayValue}
-    </Button>
-  );
-};
+  >
+    {getDisplayValue(cellState.cellContent)}
+  </Button>
+);
 // #endregion
 
 // #region Box
@@ -246,19 +246,8 @@ const Box = ({ cellStates, isMultiselectMode, setPuzzleHistory }: BoxProps) => (
 );
 // #endregion
 
-type CellStatesGroupedByBox = Array<Array<CellState>>;
-type BoardProps = {
-  isMultiselectMode: boolean;
-  puzzleHistory: PuzzleHistory;
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
-};
-
-export const Board = ({
-  isMultiselectMode,
-  puzzleHistory,
-  setPuzzleHistory,
-}: BoardProps) => {
-  const emptyBoxes: CellStatesGroupedByBox = Array.from(
+const getCellStatesGroupedByBox = (puzzleHistory: PuzzleHistory) => {
+  const emptyBoxes: Array<Array<CellState>> = Array.from(
     { length: 9 },
     () => [],
   );
@@ -274,22 +263,34 @@ export const Board = ({
     emptyBoxes,
   );
 
-  return (
-    <SimpleGrid
-      border={THICK_BORDER}
-      columns={3}
-      gap="0"
-      minHeight={GRID_SIZE}
-      minWidth={GRID_SIZE}
-    >
-      {cellStatesGroupedByBox.map((cellStates) => (
-        <Box
-          cellStates={cellStates}
-          isMultiselectMode={isMultiselectMode}
-          key={`${cellStates[0].boxNumber}`}
-          setPuzzleHistory={setPuzzleHistory}
-        />
-      ))}
-    </SimpleGrid>
-  );
+  return cellStatesGroupedByBox;
 };
+
+type BoardProps = {
+  isMultiselectMode: boolean;
+  puzzleHistory: PuzzleHistory;
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+};
+
+export const Board = ({
+  isMultiselectMode,
+  puzzleHistory,
+  setPuzzleHistory,
+}: BoardProps) => (
+  <SimpleGrid
+    border={THICK_BORDER}
+    columns={3}
+    gap="0"
+    minHeight={GRID_SIZE}
+    minWidth={GRID_SIZE}
+  >
+    {getCellStatesGroupedByBox(puzzleHistory).map((cellStates) => (
+      <Box
+        cellStates={cellStates}
+        isMultiselectMode={isMultiselectMode}
+        key={`${cellStates[0].boxNumber}`}
+        setPuzzleHistory={setPuzzleHistory}
+      />
+    ))}
+  </SimpleGrid>
+);

@@ -1,11 +1,12 @@
 import {
   Button,
   type ButtonProps,
+  Float,
   SimpleGrid,
   type SimpleGridProps,
   type SquareProps,
 } from "@chakra-ui/react";
-import type { Dispatch, SetStateAction } from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import type {
   BoardState,
@@ -76,7 +77,7 @@ const THICK_BORDER: SquareProps["border"] = "2px solid black";
 // #endregion
 
 // #region Cell
-const getDisplayValue = (cellContent: CellContent): string => {
+const getNonCornerDisplayValue = (cellContent: CellContent): string => {
   if ("startingDigit" in cellContent) {
     return cellContent.startingDigit;
   } else if ("playerDigit" in cellContent) {
@@ -85,6 +86,80 @@ const getDisplayValue = (cellContent: CellContent): string => {
     return cellContent.centerMarkups.sort().join("");
   }
   return "";
+};
+
+const getCornerMarkups = (cellContent: CellContent): Array<string> => {
+  if ("cornerMarkups" in cellContent && cellContent.cornerMarkups[0] !== "") {
+    const sortedCornerMarkups = cellContent.cornerMarkups.sort();
+    return sortedCornerMarkups;
+  } else return [""];
+};
+
+const floatPlacements = [
+  "top-start",
+  "top-center",
+  "top-end",
+  "middle-start",
+  "middle-center",
+  "middle-end",
+  "bottom-start",
+  "bottom-center",
+  "bottom-end",
+] as const;
+
+type FloatPlacement = (typeof floatPlacements)[number];
+
+const floatPlacementOrdersByMarkupAmount: Record<
+  number,
+  ReadonlyArray<number>
+> = {
+  1: [0],
+  2: [0, 2],
+  3: [0, 2, 6],
+  4: [0, 2, 6, 8],
+  5: [0, 1, 2, 6, 8],
+  6: [0, 1, 2, 6, 7, 8],
+  7: [0, 1, 2, 3, 6, 7, 8],
+  8: [0, 1, 2, 3, 5, 6, 7, 8],
+  9: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+};
+
+const getFloatPlacement = (
+  cornerMarkupsLength: number,
+  cornerMarkupsIndex: number,
+): FloatPlacement => {
+  const floatPlacementOrder =
+    floatPlacementOrdersByMarkupAmount[cornerMarkupsLength] ??
+    floatPlacementOrdersByMarkupAmount[9];
+  return floatPlacements[floatPlacementOrder[cornerMarkupsIndex]];
+};
+
+const getCornerMarkupFloats = (
+  cornerMarkups: Array<string>,
+): Array<ReactNode> | undefined => {
+  if (cornerMarkups.length === 0 || cornerMarkups[0] === "") return undefined;
+
+  const cornerMarkupFloats = cornerMarkups.reduce<Array<ReactNode>>(
+    (floats, cornerMarkup, index) => {
+      const placement = getFloatPlacement(cornerMarkups.length, index);
+
+      floats.push(
+        <Float
+          key={cornerMarkup}
+          offsetX={{ base: "1.5", sm: "2.5", md: "4" }}
+          offsetY={{ base: "0.438rem", sm: "3", md: "5" }}
+          placement={placement}
+        >
+          {cornerMarkup}
+        </Float>,
+      );
+
+      return floats;
+    },
+    [],
+  );
+
+  return cornerMarkupFloats;
 };
 
 const getCellBackground = (
@@ -105,6 +180,30 @@ const getCellBackground = (
       `${color} ${index * sliceDegree}deg ${(index + 1) * sliceDegree}deg`,
   );
   return `conic-gradient(${gradientParts.join(", ")})`;
+};
+
+const getFontSize = (cellState: CellState): ButtonProps["fontSize"] => {
+  if (
+    "playerDigit" in cellState.cellContent ||
+    "startingDigit" in cellState.cellContent
+  ) {
+    return DIGIT_TEXT_STYLE;
+  } else if ("centerMarkups" in cellState.cellContent) {
+    const centerMarkupsLength = cellState.cellContent.centerMarkups.length;
+
+    switch (centerMarkupsLength) {
+      case 9:
+        return CENTER_TEXT_STYLE_LENGTH_9;
+      case 8:
+        return CENTER_TEXT_STYLE_LENGTH_8;
+      case 7:
+        return CENTER_TEXT_STYLE_LENGTH_7;
+      case 6:
+        return CENTER_TEXT_STYLE_LENGTH_6;
+      default:
+        return CENTER_TEXT_STYLE_LENGTH_5_OR_LESS;
+    }
+  }
 };
 
 const handleCellSelection = (
@@ -166,30 +265,6 @@ const handleCellSelection = (
   });
 };
 
-const getFontSize = (cellState: CellState): ButtonProps["fontSize"] => {
-  if (
-    "playerDigit" in cellState.cellContent ||
-    "startingDigit" in cellState.cellContent
-  ) {
-    return DIGIT_TEXT_STYLE;
-  } else if ("centerMarkups" in cellState.cellContent) {
-    const centerMarkupsLength = cellState.cellContent.centerMarkups.length;
-
-    switch (centerMarkupsLength) {
-      case 9:
-        return CENTER_TEXT_STYLE_LENGTH_9;
-      case 8:
-        return CENTER_TEXT_STYLE_LENGTH_8;
-      case 7:
-        return CENTER_TEXT_STYLE_LENGTH_7;
-      case 6:
-        return CENTER_TEXT_STYLE_LENGTH_6;
-      default:
-        return CENTER_TEXT_STYLE_LENGTH_5_OR_LESS;
-    }
-  }
-};
-
 type CellProps = {
   cellState: CellState;
   isMultiselectMode: boolean;
@@ -200,28 +275,37 @@ const Cell = ({
   cellState,
   isMultiselectMode,
   setPuzzleHistory,
-}: CellProps) => (
-  <Button
-    background={getCellBackground(cellState.markupColors)}
-    border={THIN_BORDER}
-    borderRadius="0"
-    color={"startingDigit" in cellState.cellContent ? "black" : "#1d6ae5"}
-    height={CELL_SIZE}
-    minWidth={CELL_SIZE}
-    padding="0"
-    fontSize={getFontSize(cellState)}
-    width={CELL_SIZE}
-    {...(cellState.isSelected && {
-      outline: CELL_OUTLINE,
-      outlineOffset: CELL_OUTLINE_OFFSET,
-    })}
-    onClick={() =>
-      handleCellSelection(cellState, isMultiselectMode, setPuzzleHistory)
-    }
-  >
-    {getDisplayValue(cellState.cellContent)}
-  </Button>
-);
+}: CellProps) => {
+  const nonCornerDisplayValue = getNonCornerDisplayValue(cellState.cellContent);
+
+  const cornerMarkups = getCornerMarkups(cellState.cellContent);
+
+  const cornerMarkupFloats = getCornerMarkupFloats(cornerMarkups);
+
+  return (
+    <Button
+      background={getCellBackground(cellState.markupColors)}
+      border={THIN_BORDER}
+      borderRadius="0"
+      color={"startingDigit" in cellState.cellContent ? "black" : "#1d6ae5"}
+      height={CELL_SIZE}
+      minWidth={CELL_SIZE}
+      padding="0"
+      fontSize={getFontSize(cellState)}
+      width={CELL_SIZE}
+      {...(cellState.isSelected && {
+        outline: CELL_OUTLINE,
+        outlineOffset: CELL_OUTLINE_OFFSET,
+      })}
+      onClick={() =>
+        handleCellSelection(cellState, isMultiselectMode, setPuzzleHistory)
+      }
+    >
+      {cornerMarkupFloats}
+      {nonCornerDisplayValue}
+    </Button>
+  );
+};
 // #endregion
 
 // #region Box

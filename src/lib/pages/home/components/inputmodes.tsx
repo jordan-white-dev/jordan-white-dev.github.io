@@ -7,7 +7,6 @@ import { Tooltip } from "./tooltip";
 
 // #region Input Mode Radio Card Item
 type InputModeRadioCardItemProps = {
-  disabled: boolean;
   icon: ReactNode;
   inputModeValue: InputMode;
   tooltipText: string;
@@ -15,7 +14,6 @@ type InputModeRadioCardItemProps = {
 };
 
 export const InputModeRadioCardItem = ({
-  disabled,
   icon,
   inputModeValue,
   tooltipText,
@@ -24,7 +22,6 @@ export const InputModeRadioCardItem = ({
 }: InputModeRadioCardItemProps) => (
   <RadioCard.Item
     alignItems="center"
-    disabled={disabled}
     padding="0"
     value={inputModeValue}
     {...props}
@@ -72,28 +69,24 @@ export const InputModeRadioCard = ({
       minWidth={{ lg: "12.75rem" }}
     >
       <InputModeRadioCardItem
-        disabled={false}
         icon={<DigitSVG />}
         inputModeValue="Digit"
         tooltipText="Digit input mode"
         setInputMode={setInputMode}
       />
       <InputModeRadioCardItem
-        disabled={false}
         icon={<ColorSVG />}
         inputModeValue="Color"
         tooltipText="Color markup mode"
         setInputMode={setInputMode}
       />
       <InputModeRadioCardItem
-        disabled={false}
         icon={<CenterSVG />}
         inputModeValue="Center"
         tooltipText="Center markup mode"
         setInputMode={setInputMode}
       />
       <InputModeRadioCardItem
-        disabled={true}
         icon={<CornerSVG />}
         inputModeValue="Corner"
         tooltipText="Corner markup mode"

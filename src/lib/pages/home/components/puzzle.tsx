@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { makepuzzle } from "sudoku";
 
 import { Board } from "./board";
@@ -113,7 +113,7 @@ type PuzzleProps = {
   isStayPausedMode: boolean;
 };
 
-export const Puzzle = ({ isStayPausedMode }: PuzzleProps) => {
+export const Puzzle = memo(({ isStayPausedMode }: PuzzleProps) => {
   const [newStartingBoardStates] = useState(() => getNewStartingBoardStates());
   const [startingRawBoardState, setStartingRawBoardState] = useState(
     newStartingBoardStates.rawBoardState,
@@ -150,4 +150,4 @@ export const Puzzle = ({ isStayPausedMode }: PuzzleProps) => {
       />
     </Flex>
   );
-};
+});

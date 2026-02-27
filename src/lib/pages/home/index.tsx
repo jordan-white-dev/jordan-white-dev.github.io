@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
 
 import { Header } from "./components/header";
@@ -13,16 +13,29 @@ const Home = () => {
   const [isStayPausedMode, setIsStayPausedMode] = useState(false);
 
   const { isRunning, minutes, seconds, pause, reset, start } = useStopwatch({
-    interval: 20,
+    interval: 500,
   });
 
   const paddedMinutes = `${String(minutes).padStart(2, "0")}`;
   const paddedSeconds = `${String(seconds).padStart(2, "0")}`;
   const stopwatchTime = `${paddedMinutes}:${paddedSeconds}`;
 
+  const stopwatchCommandsValue = useMemo(
+    () => ({ pause, reset, start }),
+    [pause, reset, start],
+  );
+
+  const stopwatchTimeValue = useMemo(
+    () => ({
+      isRunning,
+      stopwatchTime,
+    }),
+    [isRunning, stopwatchTime],
+  );
+
   return (
-    <StopwatchCommandsProvider value={{ pause, reset, start }}>
-      <StopwatchTimeProvider value={{ isRunning, stopwatchTime }}>
+    <StopwatchCommandsProvider value={stopwatchCommandsValue}>
+      <StopwatchTimeProvider value={stopwatchTimeValue}>
         <Header
           isStayPausedMode={isStayPausedMode}
           setIsStayPausedMode={setIsStayPausedMode}

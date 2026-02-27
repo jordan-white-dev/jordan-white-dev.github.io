@@ -7,6 +7,7 @@ import {
   type SquareProps,
 } from "@chakra-ui/react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
+import { memo } from "react";
 
 import type {
   BoardState,
@@ -271,41 +272,41 @@ type CellProps = {
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const Cell = ({
-  cellState,
-  isMultiselectMode,
-  setPuzzleHistory,
-}: CellProps) => {
-  const nonCornerDisplayValue = getNonCornerDisplayValue(cellState.cellContent);
+const Cell = memo(
+  ({ cellState, isMultiselectMode, setPuzzleHistory }: CellProps) => {
+    const nonCornerDisplayValue = getNonCornerDisplayValue(
+      cellState.cellContent,
+    );
 
-  const cornerMarkups = getCornerMarkups(cellState.cellContent);
+    const cornerMarkups = getCornerMarkups(cellState.cellContent);
 
-  const cornerMarkupFloats = getCornerMarkupFloats(cornerMarkups);
+    const cornerMarkupFloats = getCornerMarkupFloats(cornerMarkups);
 
-  return (
-    <Button
-      background={getCellBackground(cellState.markupColors)}
-      border={THIN_BORDER}
-      borderRadius="0"
-      color={"startingDigit" in cellState.cellContent ? "black" : "#1d6ae5"}
-      height={CELL_SIZE}
-      minWidth={CELL_SIZE}
-      padding="0"
-      fontSize={getFontSize(cellState)}
-      width={CELL_SIZE}
-      {...(cellState.isSelected && {
-        outline: CELL_OUTLINE,
-        outlineOffset: CELL_OUTLINE_OFFSET,
-      })}
-      onClick={() =>
-        handleCellSelection(cellState, isMultiselectMode, setPuzzleHistory)
-      }
-    >
-      {cornerMarkupFloats}
-      {nonCornerDisplayValue}
-    </Button>
-  );
-};
+    return (
+      <Button
+        background={getCellBackground(cellState.markupColors)}
+        border={THIN_BORDER}
+        borderRadius="0"
+        color={"startingDigit" in cellState.cellContent ? "black" : "#1d6ae5"}
+        height={CELL_SIZE}
+        minWidth={CELL_SIZE}
+        padding="0"
+        fontSize={getFontSize(cellState)}
+        width={CELL_SIZE}
+        {...(cellState.isSelected && {
+          outline: CELL_OUTLINE,
+          outlineOffset: CELL_OUTLINE_OFFSET,
+        })}
+        onClick={() =>
+          handleCellSelection(cellState, isMultiselectMode, setPuzzleHistory)
+        }
+      >
+        {cornerMarkupFloats}
+        {nonCornerDisplayValue}
+      </Button>
+    );
+  },
+);
 // #endregion
 
 // #region Box

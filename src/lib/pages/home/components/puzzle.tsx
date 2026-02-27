@@ -109,7 +109,21 @@ export const getNewStartingBoardStates = (): StartingBoardStates => {
 };
 // #endregion
 
-export const Puzzle = () => {
+type PuzzleProps = {
+  isStayPausedMode: boolean;
+  stopwatchTime: string;
+  pause: () => void;
+  reset: () => void;
+  start: () => void;
+};
+
+export const Puzzle = ({
+  isStayPausedMode,
+  stopwatchTime,
+  pause,
+  reset,
+  start,
+}: PuzzleProps) => {
   const newStartingBoardStates = getNewStartingBoardStates();
   const [startingRawBoardState, setStartingRawBoardState] = useState(
     newStartingBoardStates.rawBoardState,
@@ -136,12 +150,17 @@ export const Puzzle = () => {
       <PlayerInterface
         inputMode={inputMode}
         isMultiselectMode={isMultiselectMode}
+        isStayPausedMode={isStayPausedMode}
         puzzleHistory={puzzleHistory}
         startingRawBoardState={startingRawBoardState}
+        stopwatchTime={stopwatchTime}
+        pause={pause}
+        reset={reset}
         setInputMode={setInputMode}
         setIsMultiselectMode={setIsMultiselectMode}
         setPuzzleHistory={setPuzzleHistory}
         setStartingRawBoardState={setStartingRawBoardState}
+        start={start}
       />
     </Flex>
   );

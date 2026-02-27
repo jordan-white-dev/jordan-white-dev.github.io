@@ -63,14 +63,7 @@ export const useStopwatchTime = () => {
 export const StopwatchTimeProvider = StopwatchTimeContext.Provider;
 // #endregion
 
-const startTimerIfNotInStayPausedMode = (
-  isStayPausedMode: boolean,
-  start: () => void,
-) => {
-  if (!isStayPausedMode) start();
-};
-
-const startTimerAndHandleStayPausedMode = (
+const startStopwatchAndHandleStayPausedMode = (
   start: () => void,
   setIsStayPausedMode: Dispatch<SetStateAction<boolean>>,
 ) => {
@@ -78,12 +71,85 @@ const startTimerAndHandleStayPausedMode = (
   setIsStayPausedMode(false);
 };
 
-const pauseTimerAndHandleStayPausedMode = (
+const pauseStopwatchAndHandleStayPausedMode = (
   pause: () => void,
   setIsStayPausedMode: Dispatch<SetStateAction<boolean>>,
 ) => {
   pause();
   setIsStayPausedMode(true);
+};
+
+const StopwatchDialogTrigger = () => {
+  const { pause } = useStopwatchCommands();
+  const { isRunning, stopwatchTime } = useStopwatchTime();
+
+  return (
+    <Dialog.Trigger asChild>
+      <HStack cursor="pointer">
+        <Text
+          color="white"
+          fontFamily="sans-serif"
+          fontWeight="medium"
+          textStyle="lg"
+          onClick={pause}
+        >
+          {stopwatchTime}
+        </Text>
+        <IconButton
+          alignSelf="center"
+          color="white"
+          cursor="pointer"
+          onClick={pause}
+          unstyled
+        >
+          {isRunning ? <MdOutlinePauseCircle /> : <MdOutlinePlayCircle />}
+        </IconButton>
+      </HStack>
+    </Dialog.Trigger>
+  );
+};
+
+type StopwatchDialogFooterProps = {
+  setIsStayPausedMode: Dispatch<SetStateAction<boolean>>;
+};
+
+const StopwatchDialogFooter = ({
+  setIsStayPausedMode,
+}: StopwatchDialogFooterProps) => {
+  const { pause, start } = useStopwatchCommands();
+
+  return (
+    <Dialog.Footer justifyContent="center">
+      <Dialog.ActionTrigger asChild>
+        <Button
+          variant="outline"
+          onClick={() =>
+            startStopwatchAndHandleStayPausedMode(start, setIsStayPausedMode)
+          }
+        >
+          Resume <MdOutlinePlayCircle />
+        </Button>
+      </Dialog.ActionTrigger>
+
+      <Dialog.ActionTrigger asChild>
+        <Button
+          variant="outline"
+          onClick={() =>
+            pauseStopwatchAndHandleStayPausedMode(pause, setIsStayPausedMode)
+          }
+        >
+          Stay Paused <MdOutlinePauseCircle />
+        </Button>
+      </Dialog.ActionTrigger>
+    </Dialog.Footer>
+  );
+};
+
+const startStopwatchIfNotInStayPausedMode = (
+  isStayPausedMode: boolean,
+  start: () => void,
+) => {
+  if (!isStayPausedMode) start();
 };
 
 type StopwatchProps = {
@@ -95,8 +161,7 @@ export const Stopwatch = ({
   isStayPausedMode,
   setIsStayPausedMode,
 }: StopwatchProps) => {
-  const { pause, start } = useStopwatchCommands();
-  const { isRunning, stopwatchTime } = useStopwatchTime();
+  const { start } = useStopwatchCommands();
 
   return (
     <Flex gap="1.5" textAlign="center">
@@ -105,34 +170,13 @@ export const Stopwatch = ({
         size="xs"
         motionPreset="slide-in-bottom"
         onEscapeKeyDown={() =>
-          startTimerIfNotInStayPausedMode(isStayPausedMode, start)
+          startStopwatchIfNotInStayPausedMode(isStayPausedMode, start)
         }
         onPointerDownOutside={() =>
-          startTimerIfNotInStayPausedMode(isStayPausedMode, start)
+          startStopwatchIfNotInStayPausedMode(isStayPausedMode, start)
         }
       >
-        <Dialog.Trigger asChild>
-          <HStack cursor="pointer">
-            <Text
-              color="white"
-              fontFamily="sans-serif"
-              fontWeight="medium"
-              textStyle="lg"
-              onClick={pause}
-            >
-              {stopwatchTime}
-            </Text>
-            <IconButton
-              alignSelf="center"
-              color="white"
-              cursor="pointer"
-              onClick={pause}
-              unstyled
-            >
-              {isRunning ? <MdOutlinePauseCircle /> : <MdOutlinePlayCircle />}
-            </IconButton>
-          </HStack>
-        </Dialog.Trigger>
+        <StopwatchDialogTrigger />
 
         <Portal>
           <Dialog.Backdrop />
@@ -148,35 +192,9 @@ export const Stopwatch = ({
                 </Dialog.Title>
               </Dialog.Header>
 
-              <Dialog.Footer justifyContent="center">
-                <Dialog.ActionTrigger asChild>
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      startTimerAndHandleStayPausedMode(
-                        start,
-                        setIsStayPausedMode,
-                      )
-                    }
-                  >
-                    Resume <MdOutlinePlayCircle />
-                  </Button>
-                </Dialog.ActionTrigger>
-
-                <Dialog.ActionTrigger asChild>
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      pauseTimerAndHandleStayPausedMode(
-                        pause,
-                        setIsStayPausedMode,
-                      )
-                    }
-                  >
-                    Stay Paused <MdOutlinePauseCircle />
-                  </Button>
-                </Dialog.ActionTrigger>
-              </Dialog.Footer>
+              <StopwatchDialogFooter
+                setIsStayPausedMode={setIsStayPausedMode}
+              />
             </Dialog.Content>
           </Dialog.Positioner>
         </Portal>

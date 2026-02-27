@@ -78,7 +78,7 @@ const handleSetPuzzleHistory = (
   });
 };
 
-const startTimerIfNotInStayPausedMode = (
+const startStopwatchIfNotInStayPausedMode = (
   isStayPausedMode: boolean,
   start: () => void,
 ) => {
@@ -150,10 +150,10 @@ const ActionDialog = ({
       placement="center"
       size="sm"
       onEscapeKeyDown={() =>
-        startTimerIfNotInStayPausedMode(isStayPausedMode, start)
+        startStopwatchIfNotInStayPausedMode(isStayPausedMode, start)
       }
       onPointerDownOutside={() =>
-        startTimerIfNotInStayPausedMode(isStayPausedMode, start)
+        startStopwatchIfNotInStayPausedMode(isStayPausedMode, start)
       }
     >
       {dialogTrigger}
@@ -177,7 +177,7 @@ const ActionDialog = ({
 // #endregion
 
 // #region New Puzzle Button
-const resetTimerAndHandleNewPuzzleConfirmation = (
+const resetStopwatchAndHandleNewPuzzleConfirmation = (
   reset: () => void,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
   setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>,
@@ -217,7 +217,7 @@ const NewPuzzleButton = ({
                 colorPalette="gray"
                 variant="outline"
                 onClick={() =>
-                  startTimerIfNotInStayPausedMode(isStayPausedMode, start)
+                  startStopwatchIfNotInStayPausedMode(isStayPausedMode, start)
                 }
               >
                 Cancel
@@ -228,7 +228,7 @@ const NewPuzzleButton = ({
               <Button
                 colorPalette="blue"
                 onClick={() =>
-                  resetTimerAndHandleNewPuzzleConfirmation(
+                  resetStopwatchAndHandleNewPuzzleConfirmation(
                     reset,
                     setPuzzleHistory,
                     setStartingRawBoardState,
@@ -357,7 +357,7 @@ const getIsPuzzleSolved = (boardState: BoardState): boolean => {
   return true;
 };
 
-const startTimerIfSolvedAndNotInStayPausedMode = (
+const startStopwatchIfSolvedAndNotInStayPausedMode = (
   isPuzzleSolved: boolean,
   isStayPausedMode: boolean,
   start: () => void,
@@ -399,7 +399,7 @@ const CheckSolutionButton = ({
               colorPalette={isPuzzleSolved ? "blue" : "red"}
               variant="solid"
               onClick={() =>
-                startTimerIfSolvedAndNotInStayPausedMode(
+                startStopwatchIfSolvedAndNotInStayPausedMode(
                   isPuzzleSolved,
                   isStayPausedMode,
                   start,
@@ -445,7 +445,7 @@ const handleRestartPuzzleConfirmation = (
   setPuzzleHistory(newPuzzleHistory);
 };
 
-const resetTimerAndHandleRestartPuzzleConfirmation = (
+const resetStopwatchAndHandleRestartPuzzleConfirmation = (
   startingRawBoardState: RawBoardState,
   reset: () => void,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
@@ -455,7 +455,7 @@ const resetTimerAndHandleRestartPuzzleConfirmation = (
   handleRestartPuzzleConfirmation(startingRawBoardState, setPuzzleHistory);
 };
 
-const startTimerAndHandleRestartPuzzleConfirmation = (
+const startStopwatchAndHandleRestartPuzzleConfirmation = (
   startingRawBoardState: RawBoardState,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
   start: () => void,
@@ -486,7 +486,7 @@ const RestartPuzzleDialogFooter = ({
             colorPalette="gray"
             variant="outline"
             onClick={() =>
-              startTimerIfNotInStayPausedMode(isStayPausedMode, start)
+              startStopwatchIfNotInStayPausedMode(isStayPausedMode, start)
             }
           >
             Cancel
@@ -497,7 +497,7 @@ const RestartPuzzleDialogFooter = ({
           <Button
             colorPalette="blue"
             onClick={() =>
-              resetTimerAndHandleRestartPuzzleConfirmation(
+              resetStopwatchAndHandleRestartPuzzleConfirmation(
                 startingRawBoardState,
                 reset,
                 setPuzzleHistory,
@@ -512,7 +512,7 @@ const RestartPuzzleDialogFooter = ({
           <Button
             colorPalette="blue"
             onClick={() =>
-              startTimerAndHandleRestartPuzzleConfirmation(
+              startStopwatchAndHandleRestartPuzzleConfirmation(
                 startingRawBoardState,
                 setPuzzleHistory,
                 start,

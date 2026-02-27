@@ -220,12 +220,12 @@ const NewPuzzleButton = ({
             <Button
               colorPalette="blue"
               onClick={() => {
+                reset();
+
                 handleNewPuzzleConfirmation(
                   setPuzzleHistory,
                   setStartingRawBoardState,
                 );
-
-                reset();
               }}
             >
               New Puzzle
@@ -440,57 +440,55 @@ const RestartPuzzleDialogFooter = ({
   reset,
   setPuzzleHistory,
   start,
-}: RestartPuzzleDialogFooterProps) => {
-  return (
-    <Dialog.Footer justifyContent="center">
-      <Stack direction={{ base: "column-reverse", sm: "row" }}>
-        <Dialog.ActionTrigger asChild>
-          <Button
-            colorPalette="gray"
-            variant="outline"
-            onClick={() => {
-              if (!isStayPausedMode) start();
-            }}
-          >
-            Cancel
-          </Button>
-        </Dialog.ActionTrigger>
+}: RestartPuzzleDialogFooterProps) => (
+  <Dialog.Footer justifyContent="center">
+    <Stack direction={{ base: "column-reverse", sm: "row" }}>
+      <Dialog.ActionTrigger asChild>
+        <Button
+          colorPalette="gray"
+          variant="outline"
+          onClick={() => {
+            if (!isStayPausedMode) start();
+          }}
+        >
+          Cancel
+        </Button>
+      </Dialog.ActionTrigger>
 
-        <Dialog.ActionTrigger asChild>
-          <Button
-            colorPalette="blue"
-            onClick={() => {
-              handleRestartPuzzleConfirmation(
-                startingRawBoardState,
-                setPuzzleHistory,
-              );
+      <Dialog.ActionTrigger asChild>
+        <Button
+          colorPalette="blue"
+          onClick={() => {
+            reset();
 
-              reset();
-            }}
-          >
-            <MdRestartAlt /> Restart
-          </Button>
-        </Dialog.ActionTrigger>
+            handleRestartPuzzleConfirmation(
+              startingRawBoardState,
+              setPuzzleHistory,
+            );
+          }}
+        >
+          <MdRestartAlt /> Restart
+        </Button>
+      </Dialog.ActionTrigger>
 
-        <Dialog.ActionTrigger asChild>
-          <Button
-            colorPalette="blue"
-            onClick={() => {
-              handleRestartPuzzleConfirmation(
-                startingRawBoardState,
-                setPuzzleHistory,
-              );
+      <Dialog.ActionTrigger asChild>
+        <Button
+          colorPalette="blue"
+          onClick={() => {
+            start();
 
-              start();
-            }}
-          >
-            <MdRestartAlt /> + <ImStopwatch /> Keep Time
-          </Button>
-        </Dialog.ActionTrigger>
-      </Stack>
-    </Dialog.Footer>
-  );
-};
+            handleRestartPuzzleConfirmation(
+              startingRawBoardState,
+              setPuzzleHistory,
+            );
+          }}
+        >
+          <MdRestartAlt /> + <ImStopwatch /> Keep Time
+        </Button>
+      </Dialog.ActionTrigger>
+    </Stack>
+  </Dialog.Footer>
+);
 
 type RestartPuzzleButtonProps = {
   isStayPausedMode: boolean;

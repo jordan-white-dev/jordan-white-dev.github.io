@@ -41,13 +41,13 @@ export const Stopwatch = ({
       }}
     >
       <Dialog.Trigger asChild>
-        <HStack>
+        <HStack cursor="pointer">
           <Text
             color="white"
-            cursor="pointer"
             fontFamily="sans-serif"
             fontWeight="medium"
             textStyle="lg"
+            onClick={pause}
           >
             {stopwatchTime}
           </Text>
@@ -82,8 +82,8 @@ export const Stopwatch = ({
                 <Button
                   variant="outline"
                   onClick={() => {
-                    setIsStayPausedMode(false);
                     start();
+                    setIsStayPausedMode(false);
                   }}
                 >
                   Resume <MdOutlinePlayCircle />
@@ -94,8 +94,8 @@ export const Stopwatch = ({
                 <Button
                   variant="outline"
                   onClick={() => {
-                    setIsStayPausedMode(true);
                     pause();
+                    setIsStayPausedMode(true);
                   }}
                 >
                   Stay Paused <MdOutlinePauseCircle />

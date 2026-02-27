@@ -6,7 +6,9 @@ import { Header } from "./components/header";
 import { Puzzle } from "./components/puzzle";
 
 const Home = () => {
-  const { isRunning, minutes, seconds, pause, start, reset } = useStopwatch();
+  const { isRunning, minutes, seconds, pause, start, reset } = useStopwatch({
+    interval: 20,
+  });
   const [isStayPausedMode, setIsStayPausedMode] = useState(false);
 
   const paddedSeconds =

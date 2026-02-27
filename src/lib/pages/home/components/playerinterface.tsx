@@ -1,9 +1,9 @@
 import { Stack } from "@chakra-ui/react";
 import type { Dispatch, SetStateAction } from "react";
 
-import type { InputMode, PuzzleHistory, RawBoardState } from "..";
 import { InputModeRadioCard } from "./inputmodes";
 import { InputPad } from "./inputpad";
+import type { InputMode, PuzzleHistory, RawBoardState } from "./puzzle";
 import { PuzzleActions } from "./puzzleactions";
 
 type PlayerInterfaceProps = {

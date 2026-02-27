@@ -22,7 +22,7 @@ import {
   getNewStartingBoardStates,
   type PuzzleHistory,
   type RawBoardState,
-} from "..";
+} from "./puzzle";
 import { Tooltip } from "./tooltip";
 
 // #region CSS Properties

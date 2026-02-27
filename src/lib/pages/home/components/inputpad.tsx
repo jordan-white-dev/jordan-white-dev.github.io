@@ -24,7 +24,7 @@ import {
   type PuzzleHistory,
   type SudokuDigit,
   sudokuDigits,
-} from "..";
+} from "./puzzle";
 import {
   MARKUP_COLOR_GRAY,
   MARKUP_COLOR_GREEN,

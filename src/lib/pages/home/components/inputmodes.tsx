@@ -1,7 +1,7 @@
 import { Icon, RadioCard, SimpleGrid } from "@chakra-ui/react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 
-import type { InputMode } from "..";
+import type { InputMode } from "./puzzle";
 import { CenterSVG, ColorSVG, CornerSVG, DigitSVG } from "./svgs";
 import { Tooltip } from "./tooltip";
 

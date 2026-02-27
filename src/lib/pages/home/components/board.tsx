@@ -7,7 +7,12 @@ import {
 } from "@chakra-ui/react";
 import type { Dispatch, SetStateAction } from "react";
 
-import type { BoardState, CellContent, CellState, PuzzleHistory } from "..";
+import type {
+  BoardState,
+  CellContent,
+  CellState,
+  PuzzleHistory,
+} from "./puzzle";
 import { type MarkupColor, markupColors } from "./svgs";
 
 // #region CSS Properties

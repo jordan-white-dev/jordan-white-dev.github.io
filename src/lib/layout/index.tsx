@@ -10,11 +10,11 @@ type LayoutProps = {
 };
 
 export const Layout = ({ children }: LayoutProps) => (
-  <Box margin="0 auto" justifyItems="center" transition="0.5s ease-out">
+  <Box margin="0 auto" transition="0.5s ease-out">
     <Meta />
-    <Flex wrap="wrap" margin="8" minHeight="90vh">
+    <Flex minHeight="90vh" wrap="wrap">
       <Header />
-      <Box width="full" as="main" marginY={22}>
+      <Box width="full" as="main" justifyItems="center" marginY={22}>
         {children}
       </Box>
       <Footer />

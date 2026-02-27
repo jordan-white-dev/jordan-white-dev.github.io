@@ -23,6 +23,7 @@ import {
   type PuzzleHistory,
   type RawBoardState,
 } from "./puzzle";
+import { useStopwatchCommands, useStopwatchTime } from "./stopwatch";
 import { Tooltip } from "./tooltip";
 
 // #region CSS Properties
@@ -62,7 +63,6 @@ const BUTTON_ROUNDED: ButtonProps["rounded"] = {
 };
 // #endregion
 
-// #region Puzzle History
 const handleSetPuzzleHistory = (
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
   boardStateIndexChange: number,
@@ -77,7 +77,13 @@ const handleSetPuzzleHistory = (
     return newPuzzleHistory;
   });
 };
-// #endregion
+
+const startTimerIfNotInStayPausedMode = (
+  isStayPausedMode: boolean,
+  start: () => void,
+) => {
+  if (!isStayPausedMode) start();
+};
 
 // #region Action Button
 type ActionButtonProps = {
@@ -128,7 +134,6 @@ type ActionDialogProps = {
   dialogTitleText: string;
   dialogTrigger: ReactNode;
   isStayPausedMode: boolean;
-  start: () => void;
 };
 
 const ActionDialog = ({
@@ -137,42 +142,48 @@ const ActionDialog = ({
   dialogTitleText,
   dialogTrigger,
   isStayPausedMode,
-  start,
-}: ActionDialogProps) => (
-  <Dialog.Root
-    placement="center"
-    size="sm"
-    onEscapeKeyDown={() => {
-      if (!isStayPausedMode) start();
-    }}
-    onPointerDownOutside={() => {
-      if (!isStayPausedMode) start();
-    }}
-  >
-    {dialogTrigger}
-    <Portal>
-      <Dialog.Backdrop />
-      <Dialog.Positioner>
-        <Dialog.Content>
-          <Dialog.Header>
-            <Dialog.Title>{dialogTitleText}</Dialog.Title>
-          </Dialog.Header>
+}: ActionDialogProps) => {
+  const { start } = useStopwatchCommands();
 
-          <Dialog.Body>{dialogBodyText}</Dialog.Body>
+  return (
+    <Dialog.Root
+      placement="center"
+      size="sm"
+      onEscapeKeyDown={() =>
+        startTimerIfNotInStayPausedMode(isStayPausedMode, start)
+      }
+      onPointerDownOutside={() =>
+        startTimerIfNotInStayPausedMode(isStayPausedMode, start)
+      }
+    >
+      {dialogTrigger}
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>{dialogTitleText}</Dialog.Title>
+            </Dialog.Header>
 
-          {dialogFooter}
-        </Dialog.Content>
-      </Dialog.Positioner>
-    </Portal>
-  </Dialog.Root>
-);
+            <Dialog.Body>{dialogBodyText}</Dialog.Body>
+
+            {dialogFooter}
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
+  );
+};
 // #endregion
 
 // #region New Puzzle Button
-const handleNewPuzzleConfirmation = (
+const resetTimerAndHandleNewPuzzleConfirmation = (
+  reset: () => void,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
   setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>,
 ) => {
+  reset();
+
   const newStartingBoardStates = getNewStartingBoardStates();
   setStartingRawBoardState(newStartingBoardStates.rawBoardState);
   const newPuzzleHistory = {
@@ -184,71 +195,67 @@ const handleNewPuzzleConfirmation = (
 
 type NewPuzzleButtonProps = {
   isStayPausedMode: boolean;
-  pause: () => void;
-  reset: () => void;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
   setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>;
-  start: () => void;
 };
 
 const NewPuzzleButton = ({
   isStayPausedMode,
-  pause,
-  reset,
   setPuzzleHistory,
   setStartingRawBoardState,
-  start,
-}: NewPuzzleButtonProps) => (
-  <GridItem colSpan={{ base: 1, lg: 2 }}>
-    <ActionDialog
-      dialogBodyText="Are you sure you want to start a new puzzle? All progress will be lost!"
-      dialogFooter={
-        <Dialog.Footer>
-          <Dialog.ActionTrigger asChild>
-            <Button
-              colorPalette="gray"
-              variant="outline"
-              onClick={() => {
-                if (!isStayPausedMode) start();
-              }}
-            >
-              Cancel
-            </Button>
-          </Dialog.ActionTrigger>
+}: NewPuzzleButtonProps) => {
+  const { pause, reset, start } = useStopwatchCommands();
 
-          <Dialog.ActionTrigger asChild>
-            <Button
-              colorPalette="blue"
-              onClick={() => {
-                reset();
+  return (
+    <GridItem colSpan={{ base: 1, lg: 2 }}>
+      <ActionDialog
+        dialogBodyText="Are you sure you want to start a new puzzle? All progress will be lost!"
+        dialogFooter={
+          <Dialog.Footer>
+            <Dialog.ActionTrigger asChild>
+              <Button
+                colorPalette="gray"
+                variant="outline"
+                onClick={() =>
+                  startTimerIfNotInStayPausedMode(isStayPausedMode, start)
+                }
+              >
+                Cancel
+              </Button>
+            </Dialog.ActionTrigger>
 
-                handleNewPuzzleConfirmation(
-                  setPuzzleHistory,
-                  setStartingRawBoardState,
-                );
-              }}
-            >
-              New Puzzle
-            </Button>
-          </Dialog.ActionTrigger>
-        </Dialog.Footer>
-      }
-      dialogTitleText="Confirm New"
-      dialogTrigger={
-        <ActionTooltip tooltipText="Start a new puzzle">
-          <Dialog.Trigger asChild onClick={pause}>
-            <ActionButton
-              icon={<MdOutlineFiberNew />}
-              iconSize={MD_ICON_SIZE_ALT}
-            />
-          </Dialog.Trigger>
-        </ActionTooltip>
-      }
-      isStayPausedMode={isStayPausedMode}
-      start={start}
-    />
-  </GridItem>
-);
+            <Dialog.ActionTrigger asChild>
+              <Button
+                colorPalette="blue"
+                onClick={() =>
+                  resetTimerAndHandleNewPuzzleConfirmation(
+                    reset,
+                    setPuzzleHistory,
+                    setStartingRawBoardState,
+                  )
+                }
+              >
+                New Puzzle
+              </Button>
+            </Dialog.ActionTrigger>
+          </Dialog.Footer>
+        }
+        dialogTitleText="Confirm New"
+        dialogTrigger={
+          <ActionTooltip tooltipText="Start a new puzzle">
+            <Dialog.Trigger asChild onClick={pause}>
+              <ActionButton
+                icon={<MdOutlineFiberNew />}
+                iconSize={MD_ICON_SIZE_ALT}
+              />
+            </Dialog.Trigger>
+          </ActionTooltip>
+        }
+        isStayPausedMode={isStayPausedMode}
+      />
+    </GridItem>
+  );
+};
 // #endregion
 
 // #region Undo Button
@@ -350,21 +357,28 @@ const getIsPuzzleSolved = (boardState: BoardState): boolean => {
   return true;
 };
 
+const startTimerIfSolvedAndNotInStayPausedMode = (
+  isPuzzleSolved: boolean,
+  isStayPausedMode: boolean,
+  start: () => void,
+) => {
+  if (!(isPuzzleSolved || isStayPausedMode)) {
+    start();
+  }
+};
+
 type CheckSolutionButtonProps = {
   isStayPausedMode: boolean;
   puzzleHistory: PuzzleHistory;
-  stopwatchTime: string;
-  pause: () => void;
-  start: () => void;
 };
 
 const CheckSolutionButton = ({
   isStayPausedMode,
   puzzleHistory,
-  stopwatchTime,
-  pause,
-  start,
 }: CheckSolutionButtonProps) => {
+  const { pause, start } = useStopwatchCommands();
+  const { stopwatchTime } = useStopwatchTime();
+
   const isPuzzleSolved = getIsPuzzleSolved(
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex],
   );
@@ -384,7 +398,13 @@ const CheckSolutionButton = ({
             <Button
               colorPalette={isPuzzleSolved ? "blue" : "red"}
               variant="solid"
-              {...(!(isPuzzleSolved || isStayPausedMode) && { onClick: start })}
+              onClick={() =>
+                startTimerIfSolvedAndNotInStayPausedMode(
+                  isPuzzleSolved,
+                  isStayPausedMode,
+                  start,
+                )
+              }
             >
               Okay
             </Button>
@@ -400,7 +420,6 @@ const CheckSolutionButton = ({
         </ActionTooltip>
       }
       isStayPausedMode={isStayPausedMode}
-      start={start}
     />
   );
 };
@@ -426,134 +445,139 @@ const handleRestartPuzzleConfirmation = (
   setPuzzleHistory(newPuzzleHistory);
 };
 
+const resetTimerAndHandleRestartPuzzleConfirmation = (
+  startingRawBoardState: RawBoardState,
+  reset: () => void,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  reset();
+
+  handleRestartPuzzleConfirmation(startingRawBoardState, setPuzzleHistory);
+};
+
+const startTimerAndHandleRestartPuzzleConfirmation = (
+  startingRawBoardState: RawBoardState,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+  start: () => void,
+) => {
+  start();
+
+  handleRestartPuzzleConfirmation(startingRawBoardState, setPuzzleHistory);
+};
+
 type RestartPuzzleDialogFooterProps = {
   isStayPausedMode: boolean;
   startingRawBoardState: RawBoardState;
-  reset: () => void;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
-  start: () => void;
 };
 
 const RestartPuzzleDialogFooter = ({
   isStayPausedMode,
   startingRawBoardState,
-  reset,
   setPuzzleHistory,
-  start,
-}: RestartPuzzleDialogFooterProps) => (
-  <Dialog.Footer justifyContent="center">
-    <Stack direction={{ base: "column-reverse", sm: "row" }}>
-      <Dialog.ActionTrigger asChild>
-        <Button
-          colorPalette="gray"
-          variant="outline"
-          onClick={() => {
-            if (!isStayPausedMode) start();
-          }}
-        >
-          Cancel
-        </Button>
-      </Dialog.ActionTrigger>
+}: RestartPuzzleDialogFooterProps) => {
+  const { reset, start } = useStopwatchCommands();
 
-      <Dialog.ActionTrigger asChild>
-        <Button
-          colorPalette="blue"
-          onClick={() => {
-            reset();
+  return (
+    <Dialog.Footer justifyContent="center">
+      <Stack direction={{ base: "column-reverse", sm: "row" }}>
+        <Dialog.ActionTrigger asChild>
+          <Button
+            colorPalette="gray"
+            variant="outline"
+            onClick={() =>
+              startTimerIfNotInStayPausedMode(isStayPausedMode, start)
+            }
+          >
+            Cancel
+          </Button>
+        </Dialog.ActionTrigger>
 
-            handleRestartPuzzleConfirmation(
-              startingRawBoardState,
-              setPuzzleHistory,
-            );
-          }}
-        >
-          <MdRestartAlt /> Restart
-        </Button>
-      </Dialog.ActionTrigger>
+        <Dialog.ActionTrigger asChild>
+          <Button
+            colorPalette="blue"
+            onClick={() =>
+              resetTimerAndHandleRestartPuzzleConfirmation(
+                startingRawBoardState,
+                reset,
+                setPuzzleHistory,
+              )
+            }
+          >
+            <MdRestartAlt /> Restart
+          </Button>
+        </Dialog.ActionTrigger>
 
-      <Dialog.ActionTrigger asChild>
-        <Button
-          colorPalette="blue"
-          onClick={() => {
-            start();
-
-            handleRestartPuzzleConfirmation(
-              startingRawBoardState,
-              setPuzzleHistory,
-            );
-          }}
-        >
-          <MdRestartAlt /> + <ImStopwatch /> Keep Time
-        </Button>
-      </Dialog.ActionTrigger>
-    </Stack>
-  </Dialog.Footer>
-);
+        <Dialog.ActionTrigger asChild>
+          <Button
+            colorPalette="blue"
+            onClick={() =>
+              startTimerAndHandleRestartPuzzleConfirmation(
+                startingRawBoardState,
+                setPuzzleHistory,
+                start,
+              )
+            }
+          >
+            <MdRestartAlt /> + <ImStopwatch /> Keep Time
+          </Button>
+        </Dialog.ActionTrigger>
+      </Stack>
+    </Dialog.Footer>
+  );
+};
 
 type RestartPuzzleButtonProps = {
   isStayPausedMode: boolean;
   startingRawBoardState: RawBoardState;
-  pause: () => void;
-  reset: () => void;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
-  start: () => void;
 };
 
 const RestartPuzzleButton = ({
   isStayPausedMode,
   startingRawBoardState,
-  pause,
-  reset,
   setPuzzleHistory,
-  start,
-}: RestartPuzzleButtonProps) => (
-  <ActionDialog
-    dialogBodyText="Are you sure you want to restart the puzzle? All progress will be lost!"
-    dialogFooter={
-      <RestartPuzzleDialogFooter
-        isStayPausedMode={isStayPausedMode}
-        startingRawBoardState={startingRawBoardState}
-        reset={reset}
-        setPuzzleHistory={setPuzzleHistory}
-        start={start}
-      />
-    }
-    dialogTitleText="Confirm Restart"
-    dialogTrigger={
-      <ActionTooltip tooltipText="Restart the puzzle">
-        <Dialog.Trigger asChild onClick={pause}>
-          <ActionButton icon={<MdRestartAlt />} iconSize={MD_ICON_SIZE} />
-        </Dialog.Trigger>
-      </ActionTooltip>
-    }
-    isStayPausedMode={isStayPausedMode}
-    start={start}
-  />
-);
+}: RestartPuzzleButtonProps) => {
+  const { pause } = useStopwatchCommands();
+
+  return (
+    <ActionDialog
+      dialogBodyText="Are you sure you want to restart the puzzle? All progress will be lost!"
+      dialogFooter={
+        <RestartPuzzleDialogFooter
+          isStayPausedMode={isStayPausedMode}
+          startingRawBoardState={startingRawBoardState}
+          setPuzzleHistory={setPuzzleHistory}
+        />
+      }
+      dialogTitleText="Confirm Restart"
+      dialogTrigger={
+        <ActionTooltip tooltipText="Restart the puzzle">
+          <Dialog.Trigger asChild onClick={pause}>
+            <ActionButton icon={<MdRestartAlt />} iconSize={MD_ICON_SIZE} />
+          </Dialog.Trigger>
+        </ActionTooltip>
+      }
+      isStayPausedMode={isStayPausedMode}
+    />
+  );
+};
 // #endregion
 
 type PuzzleActionsProps = {
   isStayPausedMode: boolean;
   puzzleHistory: PuzzleHistory;
   startingRawBoardState: RawBoardState;
-  stopwatchTime: string;
-  pause: () => void;
-  reset: () => void;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
   setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>;
-  start: () => void;
 };
 
 export const PuzzleActions = ({
   isStayPausedMode,
   puzzleHistory,
   startingRawBoardState,
-  stopwatchTime,
-  pause,
-  reset,
   setPuzzleHistory,
   setStartingRawBoardState,
-  start,
 }: PuzzleActionsProps) => (
   <SimpleGrid
     columnGap={{ base: "0.5", lg: "3" }}
@@ -563,11 +587,8 @@ export const PuzzleActions = ({
   >
     <NewPuzzleButton
       isStayPausedMode={isStayPausedMode}
-      pause={pause}
-      reset={reset}
       setPuzzleHistory={setPuzzleHistory}
       setStartingRawBoardState={setStartingRawBoardState}
-      start={start}
     />
     <UndoButton
       puzzleHistory={puzzleHistory}
@@ -580,17 +601,11 @@ export const PuzzleActions = ({
     <CheckSolutionButton
       isStayPausedMode={isStayPausedMode}
       puzzleHistory={puzzleHistory}
-      stopwatchTime={stopwatchTime}
-      pause={pause}
-      start={start}
     />
     <RestartPuzzleButton
       isStayPausedMode={isStayPausedMode}
       startingRawBoardState={startingRawBoardState}
-      pause={pause}
-      reset={reset}
       setPuzzleHistory={setPuzzleHistory}
-      start={start}
     />
   </SimpleGrid>
 );

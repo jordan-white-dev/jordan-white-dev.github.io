@@ -111,20 +111,10 @@ export const getNewStartingBoardStates = (): StartingBoardStates => {
 
 type PuzzleProps = {
   isStayPausedMode: boolean;
-  stopwatchTime: string;
-  pause: () => void;
-  reset: () => void;
-  start: () => void;
 };
 
-export const Puzzle = ({
-  isStayPausedMode,
-  stopwatchTime,
-  pause,
-  reset,
-  start,
-}: PuzzleProps) => {
-  const newStartingBoardStates = getNewStartingBoardStates();
+export const Puzzle = ({ isStayPausedMode }: PuzzleProps) => {
+  const [newStartingBoardStates] = useState(() => getNewStartingBoardStates());
   const [startingRawBoardState, setStartingRawBoardState] = useState(
     newStartingBoardStates.rawBoardState,
   );
@@ -153,14 +143,10 @@ export const Puzzle = ({
         isStayPausedMode={isStayPausedMode}
         puzzleHistory={puzzleHistory}
         startingRawBoardState={startingRawBoardState}
-        stopwatchTime={stopwatchTime}
-        pause={pause}
-        reset={reset}
         setInputMode={setInputMode}
         setIsMultiselectMode={setIsMultiselectMode}
         setPuzzleHistory={setPuzzleHistory}
         setStartingRawBoardState={setStartingRawBoardState}
-        start={start}
       />
     </Flex>
   );

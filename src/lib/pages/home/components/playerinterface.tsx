@@ -12,14 +12,10 @@ type PlayerInterfaceProps = {
   isStayPausedMode: boolean;
   puzzleHistory: PuzzleHistory;
   startingRawBoardState: RawBoardState;
-  stopwatchTime: string;
-  pause: () => void;
-  reset: () => void;
   setInputMode: Dispatch<SetStateAction<InputMode>>;
   setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
   setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>;
-  start: () => void;
 };
 
 export const PlayerInterface = ({
@@ -28,14 +24,10 @@ export const PlayerInterface = ({
   isStayPausedMode,
   puzzleHistory,
   startingRawBoardState,
-  stopwatchTime,
-  pause,
-  reset,
   setInputMode,
   setIsMultiselectMode,
   setPuzzleHistory,
   setStartingRawBoardState,
-  start,
 }: PlayerInterfaceProps) => (
   <Stack
     alignItems="center"
@@ -47,12 +39,8 @@ export const PlayerInterface = ({
       isStayPausedMode={isStayPausedMode}
       puzzleHistory={puzzleHistory}
       startingRawBoardState={startingRawBoardState}
-      stopwatchTime={stopwatchTime}
-      pause={pause}
-      reset={reset}
       setPuzzleHistory={setPuzzleHistory}
       setStartingRawBoardState={setStartingRawBoardState}
-      start={start}
     />
     <InputPad
       inputMode={inputMode}

@@ -583,7 +583,7 @@ export const PuzzleActions = ({
     columnGap={{ base: "0.5", lg: "3" }}
     columns={{ base: 1, lg: 2 }}
     maxWidth="12.75rem"
-    rowGap={{ base: "0.5", md: "0.2875rem" }}
+    rowGap={{ base: "0.125rem", md: "0.2875rem" }}
   >
     <NewPuzzleButton
       isStayPausedMode={isStayPausedMode}

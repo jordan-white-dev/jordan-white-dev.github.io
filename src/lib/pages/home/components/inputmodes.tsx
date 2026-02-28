@@ -65,7 +65,7 @@ export const InputModeRadioCard = ({
   >
     <SimpleGrid
       columns={{ base: 1, lg: 2 }}
-      gap={{ base: "0.229rem", sm: "1", md: "0.5833rem", lg: "3" }}
+      gap={{ base: "0.229rem", sm: "1", md: "0.583rem", lg: "3" }}
       minWidth={{ lg: "12.75rem" }}
     >
       <InputModeRadioCardItem

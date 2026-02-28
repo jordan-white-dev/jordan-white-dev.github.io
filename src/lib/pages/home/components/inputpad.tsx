@@ -52,10 +52,15 @@ const ICON_BUTTON_SIZE: IconButtonProps["size"] = {
   sm: "lg",
   md: "2xl",
 };
-const ICON_BUTTON_TEXT_STYLE: IconButtonProps["textStyle"] = {
-  base: "md",
+const ICON_BUTTON_TEXT_STYLE_DIGIT: IconButtonProps["textStyle"] = {
+  base: "lg",
   sm: "3xl",
   md: "5xl",
+};
+const ICON_BUTTON_TEXT_STYLE_NONDIGIT: IconButtonProps["textStyle"] = {
+  base: "xs",
+  sm: "lg",
+  md: "2xl",
 };
 // #endregion
 
@@ -308,7 +313,7 @@ const DigitNumberButton = ({
         colorPalette="blue"
         rounded="md"
         size={ICON_BUTTON_SIZE}
-        textStyle={ICON_BUTTON_TEXT_STYLE}
+        textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
         onClick={() =>
           handleDigitInput(buttonValue, puzzleHistory, setPuzzleHistory)
         }
@@ -473,7 +478,7 @@ const CenterNumberButton = ({
         colorPalette="blue"
         rounded="md"
         size={ICON_BUTTON_SIZE}
-        textStyle={ICON_BUTTON_TEXT_STYLE}
+        textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
         onClick={() =>
           handleCenterMarkupInput(buttonValue, puzzleHistory, setPuzzleHistory)
         }
@@ -621,33 +626,56 @@ const handleCornerMarkupInput = (
 
 type CornerNumberButtonProps = {
   buttonValue: SudokuDigit;
+  buttonValueAsNumber: number;
   puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const CornerNumberButton = ({
   buttonValue,
+  buttonValueAsNumber,
   puzzleHistory,
   setPuzzleHistory,
-}: CornerNumberButtonProps) => (
-  <GridItem colSpan={2}>
-    <Square aspectRatio="square">
-      <IconButton
-        aspectRatio="square"
-        color="white"
-        colorPalette="blue"
-        rounded="md"
-        size={ICON_BUTTON_SIZE}
-        textStyle={ICON_BUTTON_TEXT_STYLE}
-        onClick={() =>
-          handleCornerMarkupInput(buttonValue, puzzleHistory, setPuzzleHistory)
-        }
-      >
-        {buttonValue}
-      </IconButton>
-    </Square>
-  </GridItem>
-);
+}: CornerNumberButtonProps) => {
+  const getAlignItems = () => {
+    if (buttonValueAsNumber <= 3) return "start";
+    else if (buttonValueAsNumber <= 6) return "center";
+    else return "end";
+  };
+
+  const getJustifyContent = () => {
+    if (buttonValueAsNumber % 3 === 1) return "start";
+    else if (buttonValueAsNumber % 3 === 2) return "center";
+    else return "end";
+  };
+
+  return (
+    <GridItem colSpan={2}>
+      <Square aspectRatio="square">
+        <IconButton
+          alignItems={getAlignItems()}
+          aspectRatio="square"
+          color="white"
+          colorPalette="blue"
+          justifyContent={getJustifyContent()}
+          padding={{ base: "1", md: "1.5" }}
+          rounded="md"
+          size={ICON_BUTTON_SIZE}
+          textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
+          onClick={() =>
+            handleCornerMarkupInput(
+              buttonValue,
+              puzzleHistory,
+              setPuzzleHistory,
+            )
+          }
+        >
+          {buttonValue}
+        </IconButton>
+      </Square>
+    </GridItem>
+  );
+};
 // #endregion
 
 type NumberPadProps = {
@@ -662,7 +690,7 @@ const NumberPad = ({
   setPuzzleHistory,
 }: NumberPadProps) => (
   <>
-    {sudokuDigits.map((digit) => {
+    {sudokuDigits.map((digit, index) => {
       if (inputMode === "Digit")
         return (
           <DigitNumberButton
@@ -685,6 +713,7 @@ const NumberPad = ({
         return (
           <CornerNumberButton
             buttonValue={digit}
+            buttonValueAsNumber={index + 1}
             key={digit}
             puzzleHistory={puzzleHistory}
             setPuzzleHistory={setPuzzleHistory}
@@ -797,7 +826,7 @@ const ClearButton = ({ puzzleHistory, setPuzzleHistory }: ClearButtonProps) => (
         colorPalette="blue"
         rounded="md"
         size={ICON_BUTTON_SIZE}
-        textStyle={ICON_BUTTON_TEXT_STYLE}
+        textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
         width="full"
         onClick={() => handleClearButton(puzzleHistory, setPuzzleHistory)}
       >
@@ -827,7 +856,7 @@ export const InputPad = ({
 }: InputPadProps) => (
   <SimpleGrid
     columns={6}
-    gap={{ base: "0.1874rem", sm: "1", md: "1.5" }}
+    gap={{ base: "0.2916rem", sm: "1", md: "1.5" }}
     height="fit-content"
   >
     {inputMode === "Color" ? (

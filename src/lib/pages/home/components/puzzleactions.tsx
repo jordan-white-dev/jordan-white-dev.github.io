@@ -15,16 +15,16 @@ import { useNavigate } from "@tanstack/react-router";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
+import { makepuzzle } from "sudoku";
 
 import {
   buildBoardState,
   encodeRawSudokuStringAsBase36String,
-  getIsPuzzleSolved,
-  getNewStartingBoardStates,
   rawBoardStateToRawSudokuString,
 } from "@/lib/shared/constants";
 import type {
   BoardState,
+  CellState,
   PuzzleHistory,
   RawBoardState,
 } from "@/lib/shared/types";
@@ -183,6 +183,20 @@ const ActionDialog = ({
 // #endregion
 
 // #region New Puzzle Button
+type StartingBoardStates = {
+  rawBoardState: RawBoardState;
+  boardState: BoardState;
+};
+
+const getNewStartingBoardStates = (): StartingBoardStates => {
+  const rawBoardState: RawBoardState = makepuzzle();
+  const boardState: BoardState = buildBoardState(rawBoardState);
+
+  const startingBoardStates = { rawBoardState, boardState };
+
+  return startingBoardStates;
+};
+
 const resetStopwatchAndHandleNewPuzzleConfirmation = (
   reset: () => void,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
@@ -334,6 +348,46 @@ const RedoButton = ({ puzzleHistory, setPuzzleHistory }: RedoButtonProps) => (
 // #endregion
 
 // #region Check Solution Button
+const getDigitDisplayValue = (cellState: CellState): string | undefined => {
+  if ("startingDigit" in cellState.cellContent)
+    return cellState.cellContent.startingDigit;
+  else if ("playerDigit" in cellState.cellContent)
+    return cellState.cellContent.playerDigit;
+  else if (
+    "centerMarkups" in cellState.cellContent ||
+    "cornerMarkups" in cellState.cellContent
+  )
+    return undefined;
+};
+
+const getIsPuzzleSolved = (boardState: BoardState): boolean => {
+  const rows: Array<Set<string>> = Array.from({ length: 9 }, () => new Set());
+  const columns: Array<Set<string>> = Array.from(
+    { length: 9 },
+    () => new Set(),
+  );
+  const boxes: Array<Set<string>> = Array.from({ length: 9 }, () => new Set());
+
+  for (const cellState of boardState) {
+    const digit = getDigitDisplayValue(cellState);
+    if (!digit || digit === "") return false;
+
+    const rowIndex = cellState.rowNumber - 1;
+    const columnIndex = cellState.columnNumber - 1;
+    const boxIndex = cellState.boxNumber - 1;
+
+    if (rows[rowIndex].has(digit)) return false;
+    if (columns[columnIndex].has(digit)) return false;
+    if (boxes[boxIndex].has(digit)) return false;
+
+    rows[rowIndex].add(digit);
+    columns[columnIndex].add(digit);
+    boxes[boxIndex].add(digit);
+  }
+
+  return true;
+};
+
 const startStopwatchIfSolvedAndNotInStayPausedMode = (
   isPuzzleSolved: boolean,
   isStayPausedMode: boolean,

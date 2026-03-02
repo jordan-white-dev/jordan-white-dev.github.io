@@ -53,6 +53,7 @@ const Home = () => {
         />
         <Box width="full" as="main" justifyItems="center" marginY={22}>
           <Puzzle
+            key={JSON.stringify(rawBoardState)}
             isStayPausedMode={isStayPausedMode}
             startingBoardState={boardState}
             startingRawBoardState={startingRawBoardState}

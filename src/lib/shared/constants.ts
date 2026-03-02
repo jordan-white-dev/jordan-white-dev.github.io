@@ -1,5 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 import { makepuzzle } from "sudoku";
+import SuperExpressive from "super-expressive";
 
 import type {
   BoardState,
@@ -13,9 +14,10 @@ import type {
 
 export const queryClient = new QueryClient();
 
+const sudokuEncodingDigitsRegex = SuperExpressive().exactly(81).digit.toRegex();
+
 export const encodeSudoku = (puzzle: string): string => {
-  // biome-ignore lint/performance/useTopLevelRegex: TODO
-  if (!/^[0-9]{81}$/.test(puzzle)) {
+  if (!sudokuEncodingDigitsRegex.test(puzzle)) {
     throw Error("Invalid puzzle");
   }
 
@@ -27,8 +29,7 @@ export const decodeSudoku = (encoded: string): string => {
     .toString(10)
     .padStart(81, "0");
 
-  // biome-ignore lint/performance/useTopLevelRegex: TODO
-  if (!/^[0-9]{81}$/.test(decoded)) {
+  if (!sudokuEncodingDigitsRegex.test(decoded)) {
     throw Error("Invalid puzzle encoding");
   }
 

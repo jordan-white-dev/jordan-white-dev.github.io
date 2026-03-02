@@ -19,13 +19,6 @@ import {
   type BoardState,
   type CellState,
   type InputMode,
-  type MarkupDigits,
-  type PlayerDigit,
-  type PuzzleHistory,
-  type SudokuDigit,
-  sudokuDigits,
-} from "./puzzle";
-import {
   MARKUP_COLOR_GRAY,
   MARKUP_COLOR_GREEN,
   MARKUP_COLOR_ORANGE,
@@ -36,8 +29,14 @@ import {
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_YELLOW,
   type MarkupColor,
+  type MarkupDigits,
   markupColors,
-} from "./svgs";
+  type PlayerDigit,
+  type PuzzleHistory,
+  type SudokuDigit,
+  sudokuDigits,
+} from "@/lib/shared/types";
+
 import { Tooltip } from "./tooltip";
 
 // #region CSS Properties

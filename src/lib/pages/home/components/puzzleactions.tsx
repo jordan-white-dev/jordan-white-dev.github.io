@@ -16,13 +16,16 @@ import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 
 import {
-  type BoardState,
   buildBoardState,
-  type CellState,
+  getIsPuzzleSolved,
   getNewStartingBoardStates,
-  type PuzzleHistory,
-  type RawBoardState,
-} from "./puzzle";
+} from "@/lib/shared/constants";
+import type {
+  BoardState,
+  PuzzleHistory,
+  RawBoardState,
+} from "@/lib/shared/types";
+
 import { useStopwatchCommands, useStopwatchTime } from "./stopwatch";
 import { Tooltip } from "./tooltip";
 
@@ -317,46 +320,6 @@ const RedoButton = ({ puzzleHistory, setPuzzleHistory }: RedoButtonProps) => (
 // #endregion
 
 // #region Check Solution Button
-const getDigitDisplayValue = (cellState: CellState): string | undefined => {
-  if ("startingDigit" in cellState.cellContent)
-    return cellState.cellContent.startingDigit;
-  else if ("playerDigit" in cellState.cellContent)
-    return cellState.cellContent.playerDigit;
-  else if (
-    "centerMarkups" in cellState.cellContent ||
-    "cornerMarkups" in cellState.cellContent
-  )
-    return undefined;
-};
-
-const getIsPuzzleSolved = (boardState: BoardState): boolean => {
-  const rows: Array<Set<string>> = Array.from({ length: 9 }, () => new Set());
-  const columns: Array<Set<string>> = Array.from(
-    { length: 9 },
-    () => new Set(),
-  );
-  const boxes: Array<Set<string>> = Array.from({ length: 9 }, () => new Set());
-
-  for (const cellState of boardState) {
-    const digit = getDigitDisplayValue(cellState);
-    if (!digit || digit === "") return false;
-
-    const rowIndex = cellState.rowNumber - 1;
-    const columnIndex = cellState.columnNumber - 1;
-    const boxIndex = cellState.boxNumber - 1;
-
-    if (rows[rowIndex].has(digit)) return false;
-    if (columns[columnIndex].has(digit)) return false;
-    if (boxes[boxIndex].has(digit)) return false;
-
-    rows[rowIndex].add(digit);
-    columns[columnIndex].add(digit);
-    boxes[boxIndex].add(digit);
-  }
-
-  return true;
-};
-
 const startStopwatchIfSolvedAndNotInStayPausedMode = (
   isPuzzleSolved: boolean,
   isStayPausedMode: boolean,

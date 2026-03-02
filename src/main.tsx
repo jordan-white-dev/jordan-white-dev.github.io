@@ -5,7 +5,7 @@ import ReactDOM from "react-dom/client";
 
 import { Provider } from "@/lib/components/ui/provider";
 import Page404 from "@/lib/pages/404";
-import { queryClient } from "@/lib/services/constants";
+import { queryClient } from "@/lib/shared/constants";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";

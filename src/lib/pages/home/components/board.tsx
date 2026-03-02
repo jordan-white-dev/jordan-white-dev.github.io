@@ -9,13 +9,14 @@ import {
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { memo } from "react";
 
-import type {
-  BoardState,
-  CellContent,
-  CellState,
-  PuzzleHistory,
-} from "./puzzle";
-import { type MarkupColor, markupColors } from "./svgs";
+import {
+  type BoardState,
+  type CellContent,
+  type CellState,
+  type MarkupColor,
+  markupColors,
+  type PuzzleHistory,
+} from "@/lib/shared/types";
 
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {

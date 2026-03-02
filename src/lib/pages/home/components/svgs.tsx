@@ -1,5 +1,17 @@
 import { chakra, type HTMLChakraProps } from "@chakra-ui/react";
 
+import {
+  MARKUP_COLOR_GRAY,
+  MARKUP_COLOR_GREEN,
+  MARKUP_COLOR_ORANGE,
+  MARKUP_COLOR_RED,
+  MARKUP_COLOR_SILVER,
+  MARKUP_COLOR_TAN,
+  MARKUP_COLOR_VIOLET,
+  MARKUP_COLOR_WHITE,
+  MARKUP_COLOR_YELLOW,
+} from "@/lib/shared/types";
+
 // #region Digit SVG
 export const DigitSVG = (props: HTMLChakraProps<"svg">) => (
   <chakra.svg
@@ -16,31 +28,6 @@ export const DigitSVG = (props: HTMLChakraProps<"svg">) => (
     <path d="M13.99 10.922q0-1.14-.21-1.856t-.578-1.106q-.33-.36-.667-.495t-.743-.135q-.922 0-1.47.66t-.547 1.912q0 .706.18 1.163t.585.787q.285.233.645.312t.772.078q.48 0 1.035-.168t.968-.447l.019-.296q.012-.184.011-.409zm-5.738-.96q0-.862.282-1.574t.768-1.23q.466-.495 1.137-.773t1.361-.277q.772 0 1.399.258t1.084.747q.577.615.896 1.612t.319 2.52q0 1.388-.312 2.629t-.918 2.059q-.645.87-1.55 1.327t-2.23.457q-.3 0-.638-.033t-.63-.124v-1.432h.075q.188.104.585.202t.81.098q1.47 0 2.31-.968t.953-2.768q-.6.405-1.144.593t-1.181.187q-.623 0-1.133-.135t-1.027-.525q-.6-.457-.908-1.158t-.307-1.692z" />
   </chakra.svg>
 );
-// #endregion
-
-// #region Markup Colors
-export const MARKUP_COLOR_GRAY = "#666666";
-export const MARKUP_COLOR_SILVER = "#b0b0b0";
-export const MARKUP_COLOR_WHITE = "#ffffff";
-export const MARKUP_COLOR_VIOLET = "#f690f6";
-export const MARKUP_COLOR_RED = "#f76664";
-export const MARKUP_COLOR_TAN = "#c69c78";
-export const MARKUP_COLOR_ORANGE = "#f5ae51";
-export const MARKUP_COLOR_YELLOW = "#ffff75";
-export const MARKUP_COLOR_GREEN = "#d1efa6";
-
-export const markupColors = [
-  MARKUP_COLOR_GRAY,
-  MARKUP_COLOR_SILVER,
-  MARKUP_COLOR_WHITE,
-  MARKUP_COLOR_VIOLET,
-  MARKUP_COLOR_RED,
-  MARKUP_COLOR_TAN,
-  MARKUP_COLOR_ORANGE,
-  MARKUP_COLOR_YELLOW,
-  MARKUP_COLOR_GREEN,
-] as const;
-export type MarkupColor = (typeof markupColors)[number];
 // #endregion
 
 // #region Color SVG

@@ -55,12 +55,6 @@
           "options": {
             "syntax": "generic"
           }
-        },
-        "useFilenamingConvention": {
-          "level": "error",
-          "options": {
-            "filenameCases": ["kebab-case"]
-          }
         }
       },
       "suspicious": {

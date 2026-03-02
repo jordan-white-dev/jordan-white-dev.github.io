@@ -11,14 +11,17 @@ import {
   SimpleGrid,
   Stack,
 } from "@chakra-ui/react";
+import { useNavigate } from "@tanstack/react-router";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 
 import {
   buildBoardState,
+  encodeRawSudokuStringAsBase36String,
   getIsPuzzleSolved,
   getNewStartingBoardStates,
+  rawBoardStateToRawSudokuString,
 } from "@/lib/shared/constants";
 import type {
   BoardState,
@@ -184,6 +187,7 @@ const resetStopwatchAndHandleNewPuzzleConfirmation = (
   reset: () => void,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
   setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>,
+  navigate: ReturnType<typeof useNavigate>,
 ) => {
   reset();
 
@@ -194,6 +198,13 @@ const resetStopwatchAndHandleNewPuzzleConfirmation = (
     boardStateHistory: [newStartingBoardStates.boardState],
   };
   setPuzzleHistory(newPuzzleHistory);
+
+  const rawSudokuString = rawBoardStateToRawSudokuString(
+    newStartingBoardStates.rawBoardState,
+  );
+  const encodedBase36String =
+    encodeRawSudokuStringAsBase36String(rawSudokuString);
+  navigate({ to: `/puzzle/${encodedBase36String}` });
 };
 
 type NewPuzzleButtonProps = {
@@ -208,6 +219,8 @@ const NewPuzzleButton = ({
   setStartingRawBoardState,
 }: NewPuzzleButtonProps) => {
   const { pause, reset, start } = useStopwatchCommands();
+
+  const navigate = useNavigate();
 
   return (
     <GridItem colSpan={{ base: 1, lg: 2 }}>
@@ -235,6 +248,7 @@ const NewPuzzleButton = ({
                     reset,
                     setPuzzleHistory,
                     setStartingRawBoardState,
+                    navigate,
                   )
                 }
               >

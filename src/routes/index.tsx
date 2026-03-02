@@ -1,7 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { makepuzzle } from "sudoku";
 
-import Home from "@/lib/pages/home";
+import {
+  encodeRawSudokuStringAsBase36String,
+  rawBoardStateToRawSudokuString,
+} from "@/lib/shared/constants";
+import type { RawBoardState } from "@/lib/shared/types";
 
 export const Route = createFileRoute("/")({
-  component: Home,
+  loader: () => {
+    const rawBoardState: RawBoardState = makepuzzle();
+    const rawSudokuString = rawBoardStateToRawSudokuString(rawBoardState);
+    const encoded = encodeRawSudokuStringAsBase36String(rawSudokuString);
+
+    throw redirect({
+      to: "/puzzle/$encoded",
+      params: { encoded },
+      replace: true,
+    });
+  },
 });

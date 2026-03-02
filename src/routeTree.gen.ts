@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PuzzleEncodedRouteImport } from './routes/puzzle.$encoded'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PuzzleEncodedRoute = PuzzleEncodedRouteImport.update({
+  id: '/puzzle/$encoded',
+  path: '/puzzle/$encoded',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/puzzle/$encoded': typeof PuzzleEncodedRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/puzzle/$encoded': typeof PuzzleEncodedRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/puzzle/$encoded': typeof PuzzleEncodedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/puzzle/$encoded'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/puzzle/$encoded'
+  id: '__root__' | '/' | '/puzzle/$encoded'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PuzzleEncodedRoute: typeof PuzzleEncodedRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/puzzle/$encoded': {
+      id: '/puzzle/$encoded'
+      path: '/puzzle/$encoded'
+      fullPath: '/puzzle/$encoded'
+      preLoaderRoute: typeof PuzzleEncodedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PuzzleEncodedRoute: PuzzleEncodedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

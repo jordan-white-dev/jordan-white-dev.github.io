@@ -14,12 +14,15 @@ import type {
 
 export const queryClient = new QueryClient();
 
-const validRawSudokuString = SuperExpressive().exactly(81).digit.toRegex();
+// Equivalent to: /^\d{81}$/
+export const validRawSudokuStringRegEx = SuperExpressive()
+  .startOfInput.exactly(81)
+  .digit.endOfInput.toRegex();
 
 export const encodeRawSudokuStringAsBase36String = (
   rawSudokuString: string,
 ): string => {
-  if (!validRawSudokuString.test(rawSudokuString)) {
+  if (!validRawSudokuStringRegEx.test(rawSudokuString)) {
     throw Error("Invalid raw sudoku string.");
   }
 
@@ -55,6 +58,20 @@ export const decodeBase36StringAsRawSudokuString = (base36String: string) =>
       return nextAccumulatedDecimalValue;
     },
     0n,
+  );
+
+export const rawBoardStateToRawSudokuString = (
+  rawBoardState: RawBoardState,
+): string =>
+  rawBoardState
+    .map((cell) => (cell === null ? "0" : (cell + 1).toString()))
+    .join("");
+
+export const rawSudokuStringToRawBoardState = (
+  rawSudokuString: string,
+): RawBoardState =>
+  [...rawSudokuString].map((character) =>
+    character === "0" ? null : ((Number(character) - 1) as RawStartingDigit),
   );
 
 const getDigitDisplayValue = (cellState: CellState): string | undefined => {

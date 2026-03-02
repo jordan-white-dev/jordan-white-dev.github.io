@@ -29,14 +29,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
+      - name: Set up Actions
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: lts/*
+          node-version: "24"
           cache: "pnpm"
-      - name: Install dependencies
-        run: pnpm ci
+        run: pnpm install
+        run: pnpm test
       - name: Build
         run: pnpm run build
       - name: Setup Pages

@@ -47,7 +47,8 @@
     "react-icons": "^5.5.0",
     "react-timer-hook": "^4.0.5",
     "sudoku": "^0.0.3",
-    "super-expressive": "^2.0.0"
+    "super-expressive": "^2.0.0",
+    "use-local-storage-state": "^19.5.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.2",
@@ -56,8 +57,8 @@
     "@commitlint/config-conventional": "^20.4.2",
     "@commitlint/types": "^20.4.0",
     "@tanstack/devtools-vite": "^0.3.12",
-    "@tanstack/router-plugin": "^1.163.3",
-    "@types/node": "^24.10.15",
+    "@tanstack/router-plugin": "^1.164.0",
+    "@types/node": "^24.11.0",
     "@types/react": "19.2.2",
     "@types/react-dom": "^19.2.3",
     "@vite-pwa/assets-generator": "^1.0.2",
@@ -67,7 +68,7 @@
     "cross-env": "^10.1.0",
     "husky": "^9.1.7",
     "knip": "^5.85.0",
-    "lint-staged": "^16.2.7",
+    "lint-staged": "^16.3.1",
     "rollup-plugin-visualizer": "^6.0.5",
     "turbo": "^2.8.12",
     "typescript": "5.9.3",

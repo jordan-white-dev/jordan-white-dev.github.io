@@ -14,27 +14,48 @@ import type {
 
 export const queryClient = new QueryClient();
 
-const sudokuEncodingDigitsRegex = SuperExpressive().exactly(81).digit.toRegex();
+const validRawSudokuString = SuperExpressive().exactly(81).digit.toRegex();
 
-export const encodeSudoku = (puzzle: string): string => {
-  if (!sudokuEncodingDigitsRegex.test(puzzle)) {
-    throw Error("Invalid puzzle");
+export const encodeRawSudokuStringAsBase36String = (
+  rawSudokuString: string,
+): string => {
+  if (!validRawSudokuString.test(rawSudokuString)) {
+    throw Error("Invalid raw sudoku string.");
   }
 
-  return BigInt(puzzle).toString(36);
+  const rawSudokuStringAsBigIntString = BigInt(rawSudokuString).toString(36);
+  return rawSudokuStringAsBigIntString;
 };
 
-export const decodeSudoku = (encoded: string): string => {
-  const decoded = BigInt(`0x${BigInt(encoded).toString(16)}`)
-    .toString(10)
-    .padStart(81, "0");
+export const decodeBase36StringAsRawSudokuString = (base36String: string) =>
+  [...base36String.toLowerCase()].reduce(
+    (accumulatedDecimalValue, currentCharacter, characterIndex) => {
+      const base36Alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-  if (!sudokuEncodingDigitsRegex.test(decoded)) {
-    throw Error("Invalid puzzle encoding");
-  }
+      const currentBase36Character = currentCharacter;
+      const currentCharacterPosition = characterIndex;
 
-  return decoded;
-};
+      const digitIndexInAlphabet = base36Alphabet.indexOf(
+        currentBase36Character,
+      );
+      const characterIsValidBase36Digit = digitIndexInAlphabet !== -1;
+
+      if (!characterIsValidBase36Digit) {
+        throw new Error(
+          `Invalid base36 character "${currentBase36Character}" at position ${currentCharacterPosition}`,
+        );
+      }
+
+      const decimalDigitValue = BigInt(digitIndexInAlphabet);
+
+      const accumulatedValueAfterBaseShift = accumulatedDecimalValue * 36n;
+      const nextAccumulatedDecimalValue =
+        accumulatedValueAfterBaseShift + decimalDigitValue;
+
+      return nextAccumulatedDecimalValue;
+    },
+    0n,
+  );
 
 const getDigitDisplayValue = (cellState: CellState): string | undefined => {
   if ("startingDigit" in cellState.cellContent)

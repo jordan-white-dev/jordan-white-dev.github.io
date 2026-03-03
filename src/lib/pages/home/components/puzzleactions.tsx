@@ -388,6 +388,20 @@ const getIsPuzzleSolved = (boardState: BoardState): boolean => {
   return true;
 };
 
+const getDialogBodyText = (
+  isPuzzleSolved: boolean,
+  isStayPausedMode: boolean,
+  stopwatchTime: string,
+): string => {
+  const solvedText = isStayPausedMode
+    ? "You solved the puzzle!"
+    : `You solved the puzzle in ${stopwatchTime}!`;
+  const notSolvedText =
+    "That doesn't look quite right. Some digits are missing or incorrect.";
+
+  return isPuzzleSolved ? solvedText : notSolvedText;
+};
+
 const startStopwatchIfSolvedAndNotInStayPausedMode = (
   isPuzzleSolved: boolean,
   isStayPausedMode: boolean,
@@ -418,11 +432,11 @@ const CheckSolutionButton = ({
 
   return (
     <ActionDialog
-      dialogBodyText={
-        isPuzzleSolved
-          ? `You solved the puzzle in ${stopwatchTime}!`
-          : "That doesn't look quite right. Some digits are missing or incorrect."
-      }
+      dialogBodyText={getDialogBodyText(
+        isPuzzleSolved,
+        isStayPausedMode,
+        stopwatchTime,
+      )}
       dialogFooter={
         <Dialog.Footer>
           <Dialog.ActionTrigger asChild>

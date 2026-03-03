@@ -26,23 +26,32 @@ const Home = () => {
     useState(rawBoardState);
   const [isStayPausedMode, setIsStayPausedMode] = useState(false);
 
-  const { isRunning, minutes, seconds, pause, reset, start } = useStopwatch({
-    interval: 500,
-  });
-
-  const paddedMinutes = `${String(minutes).padStart(2, "0")}`;
-  const paddedSeconds = `${String(seconds).padStart(2, "0")}`;
-  const stopwatchTime = `${paddedMinutes}:${paddedSeconds}`;
+  const { hours, isRunning, minutes, seconds, pause, reset, start } =
+    useStopwatch({
+      interval: 500,
+    });
 
   const stopwatchCommandsValue = useMemo(
     () => ({ pause, reset, start }),
     [pause, reset, start],
   );
 
-  const stopwatchTimeValue = useMemo(
-    () => ({ isRunning, stopwatchTime }),
-    [isRunning, stopwatchTime],
-  );
+  const stopwatchTimeValue = useMemo(() => {
+    const getPaddedMinutes = () => {
+      if (hours >= 1) {
+        const hoursToMinutes = 60 * hours;
+        const totalMinutes = minutes + hoursToMinutes;
+        const paddedTotalMinutesAsString = `${String(totalMinutes).padStart(3, "0")}`;
+        return paddedTotalMinutesAsString;
+      } else return `${String(minutes).padStart(2, "0")}`;
+    };
+
+    const paddedMinutes = getPaddedMinutes();
+    const paddedSeconds = `${String(seconds).padStart(2, "0")}`;
+    const stopwatchTime = `${paddedMinutes}:${paddedSeconds}`;
+
+    return { isRunning, stopwatchTime };
+  }, [isRunning, hours, minutes, seconds]);
 
   return (
     <StopwatchCommandsProvider value={stopwatchCommandsValue}>

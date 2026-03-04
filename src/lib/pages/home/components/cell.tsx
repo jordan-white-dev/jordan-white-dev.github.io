@@ -456,10 +456,13 @@ export const Cell = memo(
         border={THIN_BORDER}
         borderRadius="0"
         color={"startingDigit" in cellState.cellContent ? "black" : "#1d6ae5"}
+        fontSize={getFontSize(cellState)}
         height={CELL_SIZE}
         minWidth={CELL_SIZE}
         padding="0"
-        fontSize={getFontSize(cellState)}
+        textShadow={{
+          sm: "1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff",
+        }}
         width={CELL_SIZE}
         {...(cellState.isSelected && {
           outline: CELL_OUTLINE,

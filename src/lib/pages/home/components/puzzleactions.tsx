@@ -12,7 +12,12 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useNavigate } from "@tanstack/react-router";
-import type { Dispatch, ReactNode, SetStateAction } from "react";
+import {
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useState,
+} from "react";
 import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 import { makepuzzle } from "sudoku";
@@ -603,45 +608,48 @@ const RestartPuzzleButton = ({
 type PuzzleActionsProps = {
   isStayPausedMode: boolean;
   puzzleHistory: PuzzleHistory;
-  startingRawBoardState: RawBoardState;
+  rawBoardState: RawBoardState;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
-  setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>;
 };
 
 export const PuzzleActions = ({
   isStayPausedMode,
   puzzleHistory,
-  startingRawBoardState,
+  rawBoardState,
   setPuzzleHistory,
-  setStartingRawBoardState,
-}: PuzzleActionsProps) => (
-  <SimpleGrid
-    columnGap={{ base: "0.5", lg: "3" }}
-    columns={{ base: 1, lg: 2 }}
-    maxWidth="12.75rem"
-    rowGap={{ base: "0.125rem", md: "0.2875rem" }}
-  >
-    <NewPuzzleButton
-      isStayPausedMode={isStayPausedMode}
-      setPuzzleHistory={setPuzzleHistory}
-      setStartingRawBoardState={setStartingRawBoardState}
-    />
-    <UndoButton
-      puzzleHistory={puzzleHistory}
-      setPuzzleHistory={setPuzzleHistory}
-    />
-    <RedoButton
-      puzzleHistory={puzzleHistory}
-      setPuzzleHistory={setPuzzleHistory}
-    />
-    <CheckSolutionButton
-      isStayPausedMode={isStayPausedMode}
-      puzzleHistory={puzzleHistory}
-    />
-    <RestartPuzzleButton
-      isStayPausedMode={isStayPausedMode}
-      startingRawBoardState={startingRawBoardState}
-      setPuzzleHistory={setPuzzleHistory}
-    />
-  </SimpleGrid>
-);
+}: PuzzleActionsProps) => {
+  const [startingRawBoardState, setStartingRawBoardState] =
+    useState(rawBoardState);
+
+  return (
+    <SimpleGrid
+      columnGap={{ base: "0.5", lg: "3" }}
+      columns={{ base: 1, lg: 2 }}
+      maxWidth="12.75rem"
+      rowGap={{ base: "0.125rem", md: "0.2875rem" }}
+    >
+      <NewPuzzleButton
+        isStayPausedMode={isStayPausedMode}
+        setPuzzleHistory={setPuzzleHistory}
+        setStartingRawBoardState={setStartingRawBoardState}
+      />
+      <UndoButton
+        puzzleHistory={puzzleHistory}
+        setPuzzleHistory={setPuzzleHistory}
+      />
+      <RedoButton
+        puzzleHistory={puzzleHistory}
+        setPuzzleHistory={setPuzzleHistory}
+      />
+      <CheckSolutionButton
+        isStayPausedMode={isStayPausedMode}
+        puzzleHistory={puzzleHistory}
+      />
+      <RestartPuzzleButton
+        isStayPausedMode={isStayPausedMode}
+        startingRawBoardState={startingRawBoardState}
+        setPuzzleHistory={setPuzzleHistory}
+      />
+    </SimpleGrid>
+  );
+};

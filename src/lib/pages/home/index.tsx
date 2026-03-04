@@ -22,8 +22,6 @@ const Home = () => {
     from: "/puzzle/$encoded",
   }) as LoaderData;
 
-  const [startingRawBoardState, setStartingRawBoardState] =
-    useState(rawBoardState);
   const [isStayPausedMode, setIsStayPausedMode] = useState(false);
 
   const { hours, isRunning, minutes, seconds, pause, reset, start } =
@@ -64,9 +62,8 @@ const Home = () => {
           <Puzzle
             key={JSON.stringify(rawBoardState)}
             isStayPausedMode={isStayPausedMode}
+            rawBoardState={rawBoardState}
             startingBoardState={boardState}
-            startingRawBoardState={startingRawBoardState}
-            setStartingRawBoardState={setStartingRawBoardState}
           />
         </Box>
       </StopwatchTimeProvider>

@@ -1,9 +1,8 @@
 import { Flex } from "@chakra-ui/react";
-import { type Dispatch, memo, type SetStateAction, useState } from "react";
+import { memo, useState } from "react";
 
 import type {
   BoardState,
-  InputMode,
   PuzzleHistory,
   RawBoardState,
 } from "@/lib/shared/types";
@@ -13,19 +12,12 @@ import { PlayerInterface } from "./playerinterface";
 
 type PuzzleProps = {
   isStayPausedMode: boolean;
+  rawBoardState: RawBoardState;
   startingBoardState: BoardState;
-  startingRawBoardState: RawBoardState;
-  setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>;
 };
 
 export const Puzzle = memo(
-  ({
-    isStayPausedMode,
-    startingBoardState,
-    startingRawBoardState,
-    setStartingRawBoardState,
-  }: PuzzleProps) => {
-    const [inputMode, setInputMode] = useState<InputMode>("Digit");
+  ({ isStayPausedMode, rawBoardState, startingBoardState }: PuzzleProps) => {
     const [isMultiselectMode, setIsMultiselectMode] = useState(false);
     const [puzzleHistory, setPuzzleHistory] = useState<PuzzleHistory>({
       currentBoardStateIndex: 0,
@@ -45,15 +37,12 @@ export const Puzzle = memo(
           setPuzzleHistory={setPuzzleHistory}
         />
         <PlayerInterface
-          inputMode={inputMode}
           isMultiselectMode={isMultiselectMode}
           isStayPausedMode={isStayPausedMode}
           puzzleHistory={puzzleHistory}
-          startingRawBoardState={startingRawBoardState}
-          setInputMode={setInputMode}
+          rawBoardState={rawBoardState}
           setIsMultiselectMode={setIsMultiselectMode}
           setPuzzleHistory={setPuzzleHistory}
-          setStartingRawBoardState={setStartingRawBoardState}
         />
       </Flex>
     );

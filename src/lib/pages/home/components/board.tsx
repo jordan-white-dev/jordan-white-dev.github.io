@@ -9,6 +9,7 @@ import type { CellState, PuzzleHistory } from "@/lib/shared/types";
 
 import { Cell } from "./cell";
 
+// #region CSS Properties
 const BOX_SIZE: SimpleGridProps["width"] = {
   base: "6.438rem", // 103px
   sm: "9.813rem", // 157px

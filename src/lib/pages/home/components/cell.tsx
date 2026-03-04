@@ -80,6 +80,52 @@ const getNonCornerDigitsInCellAsString = (cellContent: CellContent): string => {
   return "";
 };
 
+const getCellBackground = (
+  cellMarkupColors: Array<MarkupColor> | [""],
+): string => {
+  const filteredColors = cellMarkupColors.filter(
+    (markupColor) => markupColor !== "",
+  );
+  if (filteredColors.length === 0) return "transparent";
+
+  const sortedColors = markupColors.filter((markupColor) =>
+    filteredColors.includes(markupColor),
+  );
+
+  const sliceDegree = 360 / sortedColors.length;
+  const gradientParts = sortedColors.map(
+    (color, index) =>
+      `${color} ${index * sliceDegree}deg ${(index + 1) * sliceDegree}deg`,
+  );
+  return `conic-gradient(${gradientParts.join(", ")})`;
+};
+
+const getFontSize = (cellState: CellState): ButtonProps["fontSize"] => {
+  if (isStartingOrPlayerDigitInCellContent(cellState.cellContent)) {
+    return DIGIT_TEXT_STYLE;
+  } else if ("centerMarkups" in cellState.cellContent) {
+    const centerMarkupsLength = cellState.cellContent.centerMarkups.length;
+
+    switch (centerMarkupsLength) {
+      case 9:
+        return CENTER_TEXT_STYLE_LENGTH_9;
+      case 8:
+        return CENTER_TEXT_STYLE_LENGTH_8;
+      case 7:
+        return CENTER_TEXT_STYLE_LENGTH_7;
+      case 6:
+        return CENTER_TEXT_STYLE_LENGTH_6;
+      default:
+        return CENTER_TEXT_STYLE_LENGTH_5_OR_LESS;
+    }
+  }
+};
+
+const isStartingOrPlayerDigitInCellContent = (
+  cellContent: CellContent,
+): boolean => "playerDigit" in cellContent || "startingDigit" in cellContent;
+
+// #region Float Handling
 const getCornerMarkups = (cellContent: CellContent): Array<string> => {
   if ("cornerMarkups" in cellContent && cellContent.cornerMarkups[0] !== "") {
     const sortedCornerMarkups = cellContent.cornerMarkups.sort();
@@ -98,7 +144,6 @@ const floatPlacements = [
   "bottom-center",
   "bottom-end",
 ] as const;
-
 type FloatPlacement = (typeof floatPlacements)[number];
 
 const floatPlacementOrdersByMarkupAmount: Record<
@@ -153,52 +198,9 @@ const getCornerMarkupFloats = (
 
   return cornerMarkupFloats;
 };
+// #endregion
 
-const isStartingOrPlayerDigitInCellContent = (
-  cellContent: CellContent,
-): boolean => "playerDigit" in cellContent || "startingDigit" in cellContent;
-
-const getCellBackground = (
-  cellMarkupColors: Array<MarkupColor> | [""],
-): string => {
-  const filteredColors = cellMarkupColors.filter(
-    (markupColor) => markupColor !== "",
-  );
-  if (filteredColors.length === 0) return "transparent";
-
-  const sortedColors = markupColors.filter((markupColor) =>
-    filteredColors.includes(markupColor),
-  );
-
-  const sliceDegree = 360 / sortedColors.length;
-  const gradientParts = sortedColors.map(
-    (color, index) =>
-      `${color} ${index * sliceDegree}deg ${(index + 1) * sliceDegree}deg`,
-  );
-  return `conic-gradient(${gradientParts.join(", ")})`;
-};
-
-const getFontSize = (cellState: CellState): ButtonProps["fontSize"] => {
-  if (isStartingOrPlayerDigitInCellContent(cellState.cellContent)) {
-    return DIGIT_TEXT_STYLE;
-  } else if ("centerMarkups" in cellState.cellContent) {
-    const centerMarkupsLength = cellState.cellContent.centerMarkups.length;
-
-    switch (centerMarkupsLength) {
-      case 9:
-        return CENTER_TEXT_STYLE_LENGTH_9;
-      case 8:
-        return CENTER_TEXT_STYLE_LENGTH_8;
-      case 7:
-        return CENTER_TEXT_STYLE_LENGTH_7;
-      case 6:
-        return CENTER_TEXT_STYLE_LENGTH_6;
-      default:
-        return CENTER_TEXT_STYLE_LENGTH_5_OR_LESS;
-    }
-  }
-};
-
+// #region Handle Click
 const handleCellClick = (
   cellState: CellState,
   isMultiselectMode: boolean,
@@ -262,7 +264,9 @@ const handleCellClick = (
     return newPuzzleHistory;
   });
 };
+// #endregion
 
+// #region Handle Double Click
 const isCellAnEmptyPlayerDigitWithNoColorMarkups = (cellState: CellState) => {
   if ("startingDigit" in cellState.cellContent) return false;
   else if (
@@ -426,6 +430,8 @@ const handleCellDoubleClick = (
     return newPuzzleHistory;
   });
 };
+// #endregion
+
 // #endregion
 
 type CellProps = {

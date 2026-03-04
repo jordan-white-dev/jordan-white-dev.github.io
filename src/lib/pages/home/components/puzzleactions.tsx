@@ -73,11 +73,11 @@ const handleSetPuzzleHistory = (
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
   boardStateIndexChange: number,
 ) => {
-  setPuzzleHistory((currentPuzzleHistory) => {
+  setPuzzleHistory((previousPuzzleHistory) => {
     const newPuzzleHistory = {
-      ...currentPuzzleHistory,
+      ...previousPuzzleHistory,
       currentBoardStateIndex:
-        currentPuzzleHistory.currentBoardStateIndex + boardStateIndexChange,
+        previousPuzzleHistory.currentBoardStateIndex + boardStateIndexChange,
     };
 
     return newPuzzleHistory;

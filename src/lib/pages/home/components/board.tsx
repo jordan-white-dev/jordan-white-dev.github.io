@@ -208,58 +208,63 @@ const getFontSize = (cellState: CellState): ButtonProps["fontSize"] => {
   }
 };
 
-const handleCellSelection = (
-  cellState: CellState,
+const handleCellClick = (
+  targetCellState: CellState,
   isMultiselectMode: boolean,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
-  setPuzzleHistory((currentPuzzleHistory) => {
-    const currentBoardState =
-      currentPuzzleHistory.boardStateHistory[
-        currentPuzzleHistory.currentBoardStateIndex
+  setPuzzleHistory((previousPuzzleHistory) => {
+    const previousBoardState =
+      previousPuzzleHistory.boardStateHistory[
+        previousPuzzleHistory.currentBoardStateIndex
       ];
 
-    const selectedCells = currentBoardState.filter(
-      (cellState) => cellState.isSelected,
+    const selectedCells = previousBoardState.filter(
+      (previousCellState) => previousCellState.isSelected,
     );
 
-    const currentBoardStateUpdatedWithSelections: BoardState =
-      currentBoardState.map((currentCellState) => {
-        const isOnlySelectedCell =
-          selectedCells.length === 1 &&
-          selectedCells[0].cellNumber === cellState.cellNumber;
+    const newBoardStateWithUpdatedCellSelections: BoardState =
+      previousBoardState.map((previousCellState) => {
+        if (isMultiselectMode) {
+          const isSelected =
+            previousCellState.cellNumber === targetCellState.cellNumber
+              ? !previousCellState.isSelected
+              : previousCellState.isSelected;
 
-        const isSelectedInSingleSelectMode =
-          currentCellState.cellNumber === cellState.cellNumber
-            ? !isOnlySelectedCell
-            : false;
+          const cellState = {
+            ...previousCellState,
+            isSelected: isSelected,
+          };
 
-        const isSelectedInMultiselectMode =
-          currentCellState.cellNumber === cellState.cellNumber
-            ? !currentCellState.isSelected
-            : currentCellState.isSelected;
+          return cellState;
+        } else {
+          const isThisTheOnlySelectedCell =
+            selectedCells.length === 1 &&
+            selectedCells[0].cellNumber === targetCellState.cellNumber;
 
-        const newIsSelected = isMultiselectMode
-          ? isSelectedInMultiselectMode
-          : isSelectedInSingleSelectMode;
+          const isSelected =
+            previousCellState.cellNumber === targetCellState.cellNumber
+              ? !isThisTheOnlySelectedCell
+              : false;
 
-        const newCellState = {
-          ...currentCellState,
-          isSelected: newIsSelected,
-        };
+          const cellState = {
+            ...previousCellState,
+            isSelected: isSelected,
+          };
 
-        return newCellState;
+          return cellState;
+        }
       });
 
-    const newBoardStateHistory = currentPuzzleHistory.boardStateHistory.map(
-      (boardState, index) =>
-        index === currentPuzzleHistory.currentBoardStateIndex
-          ? currentBoardStateUpdatedWithSelections
-          : boardState,
+    const newBoardStateHistory = previousPuzzleHistory.boardStateHistory.map(
+      (previousBoardState, index) =>
+        index === previousPuzzleHistory.currentBoardStateIndex
+          ? newBoardStateWithUpdatedCellSelections
+          : previousBoardState,
     );
 
     const newPuzzleHistory: PuzzleHistory = {
-      currentBoardStateIndex: currentPuzzleHistory.currentBoardStateIndex,
+      currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
       boardStateHistory: newBoardStateHistory,
     };
 
@@ -299,7 +304,7 @@ const Cell = memo(
           outlineOffset: CELL_OUTLINE_OFFSET,
         })}
         onClick={() =>
-          handleCellSelection(cellState, isMultiselectMode, setPuzzleHistory)
+          handleCellClick(cellState, isMultiselectMode, setPuzzleHistory)
         }
       >
         {cornerMarkupFloats}
@@ -343,10 +348,10 @@ const getCellStatesGroupedByBox = (puzzleHistory: PuzzleHistory) => {
     () => [],
   );
 
-  const currentBoardState =
+  const previousBoardState =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-  const cellStatesGroupedByBox = currentBoardState.reduce(
+  const cellStatesGroupedByBox = previousBoardState.reduce(
     (boxes, cellState) => {
       boxes[cellState.boxNumber - 1].push(cellState);
       return boxes;

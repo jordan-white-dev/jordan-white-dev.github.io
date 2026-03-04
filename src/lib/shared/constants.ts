@@ -51,8 +51,10 @@ export const buildBoardState = (rawBoardState: RawBoardState): BoardState => {
 
     const blankPlayerDigitCellContent: PlayerDigit = { playerDigit: "" };
 
-    const getStartingDigitCellContent = (rawCellState: RawStartingDigit) => ({
-      startingDigit: (rawCellState + 1).toString() as SudokuDigit,
+    const getStartingDigitCellContent = (
+      rawStartingDigit: RawStartingDigit,
+    ): CellContent => ({
+      startingDigit: (rawStartingDigit + 1).toString() as SudokuDigit,
     });
 
     const cellContent: CellContent =
@@ -74,4 +76,12 @@ export const buildBoardState = (rawBoardState: RawBoardState): BoardState => {
   }
 
   return boardState;
+};
+
+export const getStartingOrPlayerDigitInCellIfPresent = (
+  cellContent: CellContent,
+): string => {
+  if ("startingDigit" in cellContent) return cellContent.startingDigit;
+  else if ("playerDigit" in cellContent) return cellContent.playerDigit;
+  else return "";
 };

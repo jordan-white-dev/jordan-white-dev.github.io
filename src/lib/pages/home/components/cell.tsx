@@ -19,17 +19,6 @@ import {
   type SudokuDigit,
 } from "@/lib/shared/types";
 
-const getNonCornerDigitsInCellAsString = (cellContent: CellContent): string => {
-  if ("startingDigit" in cellContent) {
-    return cellContent.startingDigit;
-  } else if ("playerDigit" in cellContent) {
-    return cellContent.playerDigit;
-  } else if ("centerMarkups" in cellContent) {
-    return cellContent.centerMarkups.sort().join("");
-  }
-  return "";
-};
-
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
   base: "33px",
@@ -80,6 +69,17 @@ const THIN_BORDER: SquareProps["border"] = "1px solid black";
 // #endregion
 
 // #region Functions
+const getNonCornerDigitsInCellAsString = (cellContent: CellContent): string => {
+  if ("startingDigit" in cellContent) {
+    return cellContent.startingDigit;
+  } else if ("playerDigit" in cellContent) {
+    return cellContent.playerDigit;
+  } else if ("centerMarkups" in cellContent) {
+    return cellContent.centerMarkups.sort().join("");
+  }
+  return "";
+};
+
 const getCornerMarkups = (cellContent: CellContent): Array<string> => {
   if ("cornerMarkups" in cellContent && cellContent.cornerMarkups[0] !== "") {
     const sortedCornerMarkups = cellContent.cornerMarkups.sort();

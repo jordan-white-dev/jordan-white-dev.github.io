@@ -41,13 +41,19 @@ export const sudokuDigits = [
 ] as const;
 export type SudokuDigit = (typeof sudokuDigits)[number];
 
-export type StartingDigit = { startingDigit: SudokuDigit };
-export type PlayerDigit = { playerDigit: SudokuDigit | "" };
-export type MarkupDigits = {
-  centerMarkups: [""] | Array<SudokuDigit>;
-  cornerMarkups: [""] | Array<SudokuDigit>;
+export type StartingDigitCellContent = { startingDigit: SudokuDigit };
+export type PlayerDigitCellContent = { playerDigit: SudokuDigit | "" };
+
+export type MarkupDigitsType = "centerMarkups" | "cornerMarkups";
+export type MarkupDigits = [""] | Array<SudokuDigit>;
+export type MarkupDigitsCellContent = {
+  centerMarkups: MarkupDigits;
+  cornerMarkups: MarkupDigits;
 };
-export type CellContent = StartingDigit | PlayerDigit | MarkupDigits;
+export type CellContent =
+  | StartingDigitCellContent
+  | PlayerDigitCellContent
+  | MarkupDigitsCellContent;
 
 export type CellState = {
   boxNumber: number;

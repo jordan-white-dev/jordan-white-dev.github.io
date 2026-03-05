@@ -5,7 +5,7 @@ import type {
   BoardState,
   CellContent,
   CellState,
-  PlayerDigit,
+  PlayerDigitCellContent,
   RawBoardState,
   RawStartingDigit,
   SudokuDigit,
@@ -49,7 +49,9 @@ export const buildBoardState = (rawBoardState: RawBoardState): BoardState => {
 
     const rawCellState = rawBoardState[cellNumber - 1];
 
-    const blankPlayerDigitCellContent: PlayerDigit = { playerDigit: "" };
+    const blankPlayerDigitCellContent: PlayerDigitCellContent = {
+      playerDigit: "",
+    };
 
     const getStartingDigitCellContent = (
       rawStartingDigit: RawStartingDigit,

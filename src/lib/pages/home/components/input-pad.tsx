@@ -35,9 +35,9 @@ import {
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_YELLOW,
   type MarkupColor,
-  type MarkupDigits,
+  type MarkupDigitsCellContent,
   markupColors,
-  type PlayerDigit,
+  type PlayerDigitCellContent,
   type PuzzleHistory,
   type SudokuDigit,
   sudokuDigits,
@@ -266,7 +266,9 @@ const handleDigitInput = (
     .filter(
       (
         previousCellState,
-      ): previousCellState is CellState & { cellContent: PlayerDigit } =>
+      ): previousCellState is CellState & {
+        cellContent: PlayerDigitCellContent;
+      } =>
         previousCellState.isSelected &&
         isPlayerDigitInCellContent(previousCellState.cellContent),
     )
@@ -364,12 +366,13 @@ const getUpdatedCenterMarkupsCellStateAfterRemoveCheck = (
   if (!isCenterMarkupsInCellContent(previousCellContent))
     return previousCellState;
 
-  const updatedCenterMarkupsCellContentAfterRemoveCheck: MarkupDigits = {
-    centerMarkups: previousCenterMarkups.filter(
-      (previousCenterMarkup) => previousCenterMarkup !== buttonValue,
-    ),
-    cornerMarkups: previousCellContent.cornerMarkups,
-  };
+  const updatedCenterMarkupsCellContentAfterRemoveCheck: MarkupDigitsCellContent =
+    {
+      centerMarkups: previousCenterMarkups.filter(
+        (previousCenterMarkup) => previousCenterMarkup !== buttonValue,
+      ),
+      cornerMarkups: previousCellContent.cornerMarkups,
+    };
 
   if (
     updatedCenterMarkupsCellContentAfterRemoveCheck.centerMarkups.length > 0
@@ -380,7 +383,7 @@ const getUpdatedCenterMarkupsCellStateAfterRemoveCheck = (
     };
     return updatedCenterMarkupsCellStateAfterRemoveCheck;
   } else {
-    const blankCenterMarkupsCellContent: MarkupDigits = {
+    const blankCenterMarkupsCellContent: MarkupDigitsCellContent = {
       centerMarkups: [""],
       cornerMarkups: previousCellContent.cornerMarkups,
     };
@@ -404,12 +407,13 @@ const getUpdatedCenterMarkupsCellStateAfterAddCheck = (
   if (!isCenterMarkupsInCellContent(previousCellContent))
     return previousCellState;
 
-  const updatedCenterMarkupsCellContentAfterAddCheck: MarkupDigits = {
-    centerMarkups: previousCenterMarkups.includes(buttonValue)
-      ? previousCenterMarkups
-      : [...previousCenterMarkups, buttonValue],
-    cornerMarkups: previousCellContent.cornerMarkups,
-  };
+  const updatedCenterMarkupsCellContentAfterAddCheck: MarkupDigitsCellContent =
+    {
+      centerMarkups: previousCenterMarkups.includes(buttonValue)
+        ? previousCenterMarkups
+        : [...previousCenterMarkups, buttonValue],
+      cornerMarkups: previousCellContent.cornerMarkups,
+    };
 
   const updatedCenterMarkupsCellStateAfterAddCheck: CellState = {
     ...previousCellState,
@@ -423,7 +427,7 @@ const getNewCenterMarkupDigitsCellState = (
   buttonValue: SudokuDigit,
   previousCellState: CellState,
 ) => {
-  const newMarkupDigitsCellContent: MarkupDigits = {
+  const newMarkupDigitsCellContent: MarkupDigitsCellContent = {
     centerMarkups: [buttonValue],
     cornerMarkups: [""],
   };
@@ -447,7 +451,9 @@ const handleCenterMarkupInput = (
   const selectedCellsWithMarkupDigitsCellContent = previousBoardState.filter(
     (
       previousCellState,
-    ): previousCellState is CellState & { cellContent: MarkupDigits } =>
+    ): previousCellState is CellState & {
+      cellContent: MarkupDigitsCellContent;
+    } =>
       previousCellState.isSelected &&
       isCenterMarkupsInCellContent(previousCellState.cellContent),
   );
@@ -555,12 +561,13 @@ const getUpdatedCornerMarkupsCellStateAfterRemoveCheck = (
   if (!isCornerMarkupsInCellContent(previousCellContent))
     return previousCellState;
 
-  const updatedCornerMarkupsCellContentAfterRemoveCheck: MarkupDigits = {
-    centerMarkups: previousCellContent.centerMarkups,
-    cornerMarkups: previousCornerMarkups.filter(
-      (previousCornerMarkup) => previousCornerMarkup !== buttonValue,
-    ),
-  };
+  const updatedCornerMarkupsCellContentAfterRemoveCheck: MarkupDigitsCellContent =
+    {
+      centerMarkups: previousCellContent.centerMarkups,
+      cornerMarkups: previousCornerMarkups.filter(
+        (previousCornerMarkup) => previousCornerMarkup !== buttonValue,
+      ),
+    };
 
   if (
     updatedCornerMarkupsCellContentAfterRemoveCheck.cornerMarkups.length > 0
@@ -572,7 +579,7 @@ const getUpdatedCornerMarkupsCellStateAfterRemoveCheck = (
 
     return updatedCornerMarkupsCellStateAfterRemoveCheck;
   } else {
-    const blankCornerMarkupsCellContent: MarkupDigits = {
+    const blankCornerMarkupsCellContent: MarkupDigitsCellContent = {
       centerMarkups: previousCellContent.centerMarkups,
       cornerMarkups: [""],
     };
@@ -596,12 +603,13 @@ const getUpdatedCornerMarkupsCellStateAfterAddCheck = (
   if (!isCornerMarkupsInCellContent(previousCellContent))
     return previousCellState;
 
-  const updatedCornerMarkupsCellContentAfterAddCheck: MarkupDigits = {
-    centerMarkups: previousCellContent.centerMarkups,
-    cornerMarkups: previousCornerMarkups.includes(buttonValue)
-      ? previousCornerMarkups
-      : [...previousCornerMarkups, buttonValue],
-  };
+  const updatedCornerMarkupsCellContentAfterAddCheck: MarkupDigitsCellContent =
+    {
+      centerMarkups: previousCellContent.centerMarkups,
+      cornerMarkups: previousCornerMarkups.includes(buttonValue)
+        ? previousCornerMarkups
+        : [...previousCornerMarkups, buttonValue],
+    };
 
   const updatedCornerMarkupsCellStateAfterAddCheck: CellState = {
     ...previousCellState,
@@ -615,7 +623,7 @@ const getNewCornerMarkupDigitsCellState = (
   buttonValue: SudokuDigit,
   previousCellState: CellState,
 ) => {
-  const newMarkupDigitsCellContent: MarkupDigits = {
+  const newMarkupDigitsCellContent: MarkupDigitsCellContent = {
     centerMarkups: [""],
     cornerMarkups: [buttonValue],
   };
@@ -639,7 +647,9 @@ const handleCornerMarkupInput = (
   const selectedCellsWithMarkupDigitsCellContent = previousBoardState.filter(
     (
       previousCellState,
-    ): previousCellState is CellState & { cellContent: MarkupDigits } =>
+    ): previousCellState is CellState & {
+      cellContent: MarkupDigitsCellContent;
+    } =>
       previousCellState.isSelected &&
       isCornerMarkupsInCellContent(previousCellState.cellContent),
   );

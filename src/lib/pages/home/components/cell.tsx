@@ -21,6 +21,7 @@ import {
   type CellState,
   type MarkupColor,
   type MarkupDigits,
+  type MarkupDigitsCellContent,
   markupColors,
   type PuzzleHistory,
   type SudokuDigit,
@@ -323,12 +324,12 @@ const getUpdatedCellStateIfMatchingMarkupColorsExist = (
 };
 
 const isArrayOfSudokuDigits = (
-  array: [""] | Array<SudokuDigit>,
+  array: MarkupDigits,
 ): array is Array<SudokuDigit> => array[0] !== "";
 
 const doBothCellsContainAtLeastOneMatchingMarkup = (
-  cellContent: [""] | Array<SudokuDigit>,
-  previousCellContent: [""] | Array<SudokuDigit>,
+  cellContent: MarkupDigits,
+  previousCellContent: MarkupDigits,
 ): boolean => {
   const doBothCellsContainAtLeastOneMatchingMarkup =
     isArrayOfSudokuDigits(cellContent) &&
@@ -341,8 +342,8 @@ const doBothCellsContainAtLeastOneMatchingMarkup = (
 };
 
 const getUpdatedCellStateIfMatchingMarkupDigitsExist = (
-  cellContent: MarkupDigits,
-  previousCellContent: MarkupDigits,
+  cellContent: MarkupDigitsCellContent,
+  previousCellContent: MarkupDigitsCellContent,
   previousCellState: CellState,
 ): CellState => {
   const doBothCellsContainAtLeastOneMatchingMarkupDigit =

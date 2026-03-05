@@ -8,7 +8,7 @@ import type {
 } from "@/lib/shared/types";
 
 import { Board } from "./board";
-import { PlayerInterface } from "./playerinterface";
+import { PlayerInterface } from "./player-interface";
 
 type PuzzleProps = {
   isStayPausedMode: boolean;

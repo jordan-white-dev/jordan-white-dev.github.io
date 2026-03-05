@@ -7,9 +7,9 @@ import type {
   RawBoardState,
 } from "@/lib/shared/types";
 
-import { InputModeRadioCard } from "./inputmodes";
-import { InputPad } from "./inputpad";
-import { PuzzleActions } from "./puzzleactions";
+import { InputModeRadioCard } from "./input-modes";
+import { InputPad } from "./input-pad";
+import { PuzzleActions } from "./puzzle-actions";
 
 type PlayerInterfaceProps = {
   isMultiselectMode: boolean;

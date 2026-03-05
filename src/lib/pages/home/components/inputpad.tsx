@@ -41,7 +41,7 @@ import { Tooltip } from "./tooltip";
 
 // #region CSS Properties
 const COLOR_SWATCH_SIZE: IconProps["width"] = {
-  base: "2.105rem",
+  base: "8",
   sm: "11",
   md: "16",
 };

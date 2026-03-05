@@ -353,7 +353,6 @@ const RedoButton = ({ puzzleHistory, setPuzzleHistory }: RedoButtonProps) => (
 // #endregion
 
 // #region Check Solution Button
-
 const getIsPuzzleSolved = (boardState: BoardState): boolean => {
   const rows: Array<Set<string>> = Array.from({ length: 9 }, () => new Set());
   const columns: Array<Set<string>> = Array.from(

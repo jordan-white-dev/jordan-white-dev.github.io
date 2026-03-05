@@ -7,7 +7,14 @@ import {
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { memo } from "react";
 
-import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/shared/constants";
+import {
+  getStartingOrPlayerDigitInCellIfPresent,
+  isCenterMarkupsInCellContent,
+  isCornerMarkupsInCellContent,
+  isPlayerDigitInCellContent,
+  isStartingDigitInCellContent,
+  isStartingOrPlayerDigitInCellContent,
+} from "@/lib/shared/constants";
 import {
   type BoardState,
   type CellContent,
@@ -70,14 +77,13 @@ const THIN_BORDER: SquareProps["border"] = "1px solid black";
 
 // #region Functions
 const getNonCornerDigitsInCellAsString = (cellContent: CellContent): string => {
-  if ("startingDigit" in cellContent) {
+  if (isStartingDigitInCellContent(cellContent))
     return cellContent.startingDigit;
-  } else if ("playerDigit" in cellContent) {
+  else if (isPlayerDigitInCellContent(cellContent))
     return cellContent.playerDigit;
-  } else if ("centerMarkups" in cellContent) {
+  else if (isCenterMarkupsInCellContent(cellContent))
     return cellContent.centerMarkups.sort().join("");
-  }
-  return "";
+  else return "";
 };
 
 const getCellBackground = (
@@ -100,11 +106,11 @@ const getCellBackground = (
   return `conic-gradient(${gradientParts.join(", ")})`;
 };
 
-const getFontSize = (cellState: CellState): ButtonProps["fontSize"] => {
-  if (isStartingOrPlayerDigitInCellContent(cellState.cellContent)) {
+const getFontSize = (cellContent: CellContent): ButtonProps["fontSize"] => {
+  if (isStartingOrPlayerDigitInCellContent(cellContent)) {
     return DIGIT_TEXT_STYLE;
-  } else if ("centerMarkups" in cellState.cellContent) {
-    const centerMarkupsLength = cellState.cellContent.centerMarkups.length;
+  } else if (isCenterMarkupsInCellContent(cellContent)) {
+    const centerMarkupsLength = cellContent.centerMarkups.length;
 
     switch (centerMarkupsLength) {
       case 9:
@@ -121,13 +127,12 @@ const getFontSize = (cellState: CellState): ButtonProps["fontSize"] => {
   }
 };
 
-const isStartingOrPlayerDigitInCellContent = (
-  cellContent: CellContent,
-): boolean => "playerDigit" in cellContent || "startingDigit" in cellContent;
-
 // #region Float Handling
 const getCornerMarkups = (cellContent: CellContent): Array<string> => {
-  if ("cornerMarkups" in cellContent && cellContent.cornerMarkups[0] !== "") {
+  if (
+    isCornerMarkupsInCellContent(cellContent) &&
+    cellContent.cornerMarkups[0] !== ""
+  ) {
     const sortedCornerMarkups = cellContent.cornerMarkups.sort();
     return sortedCornerMarkups;
   } else return [""];
@@ -202,7 +207,7 @@ const getCornerMarkupFloats = (
 
 // #region Handle Click
 const handleCellClick = (
-  cellState: CellState,
+  cellNumber: number,
   isMultiselectMode: boolean,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
@@ -220,7 +225,7 @@ const handleCellClick = (
       previousBoardState.map((previousCellState) => {
         if (isMultiselectMode) {
           const isSelected =
-            previousCellState.cellNumber === cellState.cellNumber
+            previousCellState.cellNumber === cellNumber
               ? !previousCellState.isSelected
               : previousCellState.isSelected;
 
@@ -233,10 +238,10 @@ const handleCellClick = (
         } else {
           const isThisTheOnlySelectedCell =
             selectedCells.length === 1 &&
-            selectedCells[0].cellNumber === cellState.cellNumber;
+            selectedCells[0].cellNumber === cellNumber;
 
           const isSelected =
-            previousCellState.cellNumber === cellState.cellNumber
+            previousCellState.cellNumber === cellNumber
               ? !isThisTheOnlySelectedCell
               : false;
 
@@ -268,20 +273,22 @@ const handleCellClick = (
 
 // #region Handle Double Click
 const isCellAnEmptyPlayerDigitWithNoColorMarkups = (cellState: CellState) => {
-  if ("startingDigit" in cellState.cellContent) return false;
+  const cellContent = cellState.cellContent;
+
+  if (isStartingDigitInCellContent(cellContent)) return false;
   else if (
-    "playerDigit" in cellState.cellContent &&
-    cellState.cellContent.playerDigit !== ""
+    isPlayerDigitInCellContent(cellContent) &&
+    cellContent.playerDigit !== ""
   )
     return false;
   else if (
-    "cornerMarkups" in cellState.cellContent &&
-    cellState.cellContent.cornerMarkups[0] !== ""
+    isCornerMarkupsInCellContent(cellContent) &&
+    cellContent.cornerMarkups[0] !== ""
   )
     return false;
   else if (
-    "centerMarkups" in cellState.cellContent &&
-    cellState.cellContent.centerMarkups[0] !== ""
+    isCenterMarkupsInCellContent(cellContent) &&
+    cellContent.centerMarkups[0] !== ""
   )
     return false;
   else if (cellState.markupColors[0] !== "") return false;
@@ -366,6 +373,9 @@ const getNewCellStateWithUpdatedCellSelections = (
   if (isCellAnEmptyPlayerDigitWithNoColorMarkups(previousCellState))
     return previousCellState;
 
+  const cellContent = cellState.cellContent;
+  const previousCellContent = previousCellState.cellContent;
+
   if (
     cellState.markupColors[0] !== "" &&
     previousCellState.markupColors[0] !== ""
@@ -377,20 +387,20 @@ const getNewCellStateWithUpdatedCellSelections = (
     );
     return newCellState;
   } else if (
-    "centerMarkups" in cellState.cellContent &&
-    "centerMarkups" in previousCellState.cellContent
+    isCenterMarkupsInCellContent(cellContent) &&
+    isCenterMarkupsInCellContent(previousCellContent)
   ) {
     const newCellState = getUpdatedCellStateIfMatchingMarkupDigitsExist(
-      cellState.cellContent,
-      previousCellState.cellContent,
+      cellContent,
+      previousCellContent,
       previousCellState,
     );
     return newCellState;
   } else if (
-    isStartingOrPlayerDigitInCellContent(cellState.cellContent) &&
-    isStartingOrPlayerDigitInCellContent(previousCellState.cellContent) &&
-    getStartingOrPlayerDigitInCellIfPresent(cellState.cellContent) ===
-      getStartingOrPlayerDigitInCellIfPresent(previousCellState.cellContent)
+    isStartingOrPlayerDigitInCellContent(cellContent) &&
+    isStartingOrPlayerDigitInCellContent(previousCellContent) &&
+    getStartingOrPlayerDigitInCellIfPresent(cellContent) ===
+      getStartingOrPlayerDigitInCellIfPresent(previousCellContent)
   ) {
     const newCellState = {
       ...previousCellState,
@@ -442,11 +452,12 @@ type CellProps = {
 
 export const Cell = memo(
   ({ cellState, isMultiselectMode, setPuzzleHistory }: CellProps) => {
-    const nonCornerDigitsInCellAsString = getNonCornerDigitsInCellAsString(
-      cellState.cellContent,
-    );
+    const cellContent = cellState.cellContent;
 
-    const cornerMarkups = getCornerMarkups(cellState.cellContent);
+    const nonCornerDigitsInCellAsString =
+      getNonCornerDigitsInCellAsString(cellContent);
+
+    const cornerMarkups = getCornerMarkups(cellContent);
 
     const cornerMarkupFloats = getCornerMarkupFloats(cornerMarkups);
 
@@ -455,8 +466,8 @@ export const Cell = memo(
         background={getCellBackground(cellState.markupColors)}
         border={THIN_BORDER}
         borderRadius="0"
-        color={"startingDigit" in cellState.cellContent ? "black" : "#1d6ae5"}
-        fontSize={getFontSize(cellState)}
+        color={isStartingDigitInCellContent(cellContent) ? "black" : "#1d6ae5"}
+        fontSize={getFontSize(cellContent)}
         height={CELL_SIZE}
         minWidth={CELL_SIZE}
         padding="0"
@@ -469,7 +480,11 @@ export const Cell = memo(
           outlineOffset: CELL_OUTLINE_OFFSET,
         })}
         onClick={() =>
-          handleCellClick(cellState, isMultiselectMode, setPuzzleHistory)
+          handleCellClick(
+            cellState.cellNumber,
+            isMultiselectMode,
+            setPuzzleHistory,
+          )
         }
         onDoubleClick={() => handleCellDoubleClick(cellState, setPuzzleHistory)}
       >

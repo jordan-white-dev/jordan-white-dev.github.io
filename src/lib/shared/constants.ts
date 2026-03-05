@@ -77,11 +77,28 @@ export const buildBoardState = (rawBoardState: RawBoardState): BoardState => {
 
   return boardState;
 };
+export const isStartingDigitInCellContent = (cellContent: CellContent) =>
+  "startingDigit" in cellContent;
+
+export const isPlayerDigitInCellContent = (cellContent: CellContent) =>
+  "playerDigit" in cellContent;
+
+export const isCenterMarkupsInCellContent = (cellContent: CellContent) =>
+  "centerMarkups" in cellContent;
+
+export const isCornerMarkupsInCellContent = (cellContent: CellContent) =>
+  "cornerMarkups" in cellContent;
+
+export const isStartingOrPlayerDigitInCellContent = (
+  cellContent: CellContent,
+): boolean => "playerDigit" in cellContent || "startingDigit" in cellContent;
 
 export const getStartingOrPlayerDigitInCellIfPresent = (
   cellContent: CellContent,
 ): string => {
-  if ("startingDigit" in cellContent) return cellContent.startingDigit;
-  else if ("playerDigit" in cellContent) return cellContent.playerDigit;
+  if (isStartingDigitInCellContent(cellContent))
+    return cellContent.startingDigit;
+  else if (isPlayerDigitInCellContent(cellContent))
+    return cellContent.playerDigit;
   else return "";
 };

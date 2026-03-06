@@ -63,22 +63,6 @@ export const useStopwatchTime = () => {
 export const StopwatchTimeProvider = StopwatchTimeContext.Provider;
 // #endregion
 
-const startStopwatchAndHandleStayPausedMode = (
-  start: () => void,
-  setIsStayPausedMode: Dispatch<SetStateAction<boolean>>,
-) => {
-  start();
-  setIsStayPausedMode(false);
-};
-
-const pauseStopwatchAndHandleStayPausedMode = (
-  pause: () => void,
-  setIsStayPausedMode: Dispatch<SetStateAction<boolean>>,
-) => {
-  pause();
-  setIsStayPausedMode(true);
-};
-
 const StopwatchDialogTrigger = () => {
   const { pause } = useStopwatchCommands();
   const { isRunning, stopwatchTime } = useStopwatchTime();
@@ -123,9 +107,10 @@ const StopwatchDialogFooter = ({
       <Dialog.ActionTrigger asChild>
         <Button
           variant="outline"
-          onClick={() =>
-            startStopwatchAndHandleStayPausedMode(start, setIsStayPausedMode)
-          }
+          onClick={() => {
+            start();
+            setIsStayPausedMode(false);
+          }}
         >
           Resume <MdOutlinePlayCircle />
         </Button>
@@ -134,9 +119,10 @@ const StopwatchDialogFooter = ({
       <Dialog.ActionTrigger asChild>
         <Button
           variant="outline"
-          onClick={() =>
-            pauseStopwatchAndHandleStayPausedMode(pause, setIsStayPausedMode)
-          }
+          onClick={() => {
+            pause();
+            setIsStayPausedMode(true);
+          }}
         >
           Stay Paused <MdOutlinePauseCircle />
         </Button>

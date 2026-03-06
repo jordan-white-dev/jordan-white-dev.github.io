@@ -202,7 +202,7 @@ const getNewStartingBoardStates = (): StartingBoardStates => {
   return startingBoardStates;
 };
 
-const resetStopwatchAndHandleNewPuzzleConfirmation = (
+const handleResetStopwatchAndNewPuzzleConfirmation = (
   reset: () => void,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
   setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>,
@@ -263,7 +263,7 @@ const NewPuzzleButton = ({
               <Button
                 colorPalette="blue"
                 onClick={() =>
-                  resetStopwatchAndHandleNewPuzzleConfirmation(
+                  handleResetStopwatchAndNewPuzzleConfirmation(
                     reset,
                     setPuzzleHistory,
                     setStartingRawBoardState,
@@ -485,26 +485,6 @@ const handleRestartPuzzleConfirmation = (
   setPuzzleHistory(newPuzzleHistory);
 };
 
-const resetStopwatchAndHandleRestartPuzzleConfirmation = (
-  startingRawBoardState: RawBoardState,
-  reset: () => void,
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-) => {
-  reset();
-
-  handleRestartPuzzleConfirmation(startingRawBoardState, setPuzzleHistory);
-};
-
-const startStopwatchAndHandleRestartPuzzleConfirmation = (
-  startingRawBoardState: RawBoardState,
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-  start: () => void,
-) => {
-  start();
-
-  handleRestartPuzzleConfirmation(startingRawBoardState, setPuzzleHistory);
-};
-
 type RestartPuzzleDialogFooterProps = {
   isStayPausedMode: boolean;
   startingRawBoardState: RawBoardState;
@@ -536,13 +516,13 @@ const RestartPuzzleDialogFooter = ({
         <Dialog.ActionTrigger asChild>
           <Button
             colorPalette="blue"
-            onClick={() =>
-              resetStopwatchAndHandleRestartPuzzleConfirmation(
+            onClick={() => {
+              reset();
+              handleRestartPuzzleConfirmation(
                 startingRawBoardState,
-                reset,
                 setPuzzleHistory,
-              )
-            }
+              );
+            }}
           >
             <MdRestartAlt /> Restart
           </Button>
@@ -551,13 +531,13 @@ const RestartPuzzleDialogFooter = ({
         <Dialog.ActionTrigger asChild>
           <Button
             colorPalette="blue"
-            onClick={() =>
-              startStopwatchAndHandleRestartPuzzleConfirmation(
+            onClick={() => {
+              start();
+              handleRestartPuzzleConfirmation(
                 startingRawBoardState,
                 setPuzzleHistory,
-                start,
-              )
-            }
+              );
+            }}
           >
             <MdRestartAlt /> + <ImStopwatch /> Keep Time
           </Button>

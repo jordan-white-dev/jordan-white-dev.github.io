@@ -20,7 +20,6 @@ import {
   isCornerMarkupsInCellContent,
   isPlayerDigitInCellContent,
   isStartingDigitInCellContent,
-  isStartingOrPlayerDigitInCellContent,
 } from "@/lib/shared/constants";
 import {
   type BoardState,
@@ -340,27 +339,13 @@ const handleDigitInput = (
   const previousBoardState =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-  const selectedCells = previousBoardState.filter(
-    (previousCellState) => previousCellState.isSelected,
-  );
-
-  const selectedCellsWithStartingOrPlayerDigits = previousBoardState.filter(
-    (previousCellState) =>
-      previousCellState.isSelected &&
-      isStartingOrPlayerDigitInCellContent(previousCellState.cellContent),
-  );
-
-  const areAllSelectedCellsStartingOrPlayerDigits =
-    selectedCellsWithStartingOrPlayerDigits.length === selectedCells.length;
-
-  const areAllSelectedCellsStartingDigitsOrHaveTheButtonValueAsAPlayerDigit =
-    areAllSelectedCellsStartingOrPlayerDigits &&
-    selectedCellsWithStartingOrPlayerDigits.length > 0 &&
-    selectedCellsWithStartingOrPlayerDigits.every(
+  const areAllSelectedCellsStartingOrContainButtonPlayerDigit =
+    previousBoardState.every(
       (previousCellState) =>
+        !previousCellState.isSelected ||
         isStartingDigitInCellContent(previousCellState.cellContent) ||
         (isPlayerDigitInCellContent(previousCellState.cellContent) &&
-          previousCellState.cellContent.playerDigit !== ""),
+          previousCellState.cellContent.playerDigit === buttonValue),
     );
 
   const newBoardState: BoardState = previousBoardState.map(
@@ -372,7 +357,7 @@ const handleDigitInput = (
         !isStartingDigitInCellContent(previousCellContent);
       if (!isValidInputCell) return previousCellState;
 
-      if (areAllSelectedCellsStartingDigitsOrHaveTheButtonValueAsAPlayerDigit) {
+      if (areAllSelectedCellsStartingOrContainButtonPlayerDigit) {
         const newEmptyValueAsPlayerDigitCellState: CellState = {
           ...previousCellState,
           cellContent: {
@@ -458,9 +443,6 @@ const handleCenterMarkupInput = (
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
   const areAllSelectedCellsStartingOrContainButtonCenterMarkup =
-    previousBoardState.some(
-      (previousCellState) => previousCellState.isSelected,
-    ) &&
     previousBoardState.every(
       (previousCellState) =>
         !previousCellState.isSelected ||
@@ -584,9 +566,6 @@ const handleCornerMarkupInput = (
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
   const areAllSelectedCellsStartingOrContainButtonCornerMarkup =
-    previousBoardState.some(
-      (previousCellState) => previousCellState.isSelected,
-    ) &&
     previousBoardState.every(
       (previousCellState) =>
         !previousCellState.isSelected ||

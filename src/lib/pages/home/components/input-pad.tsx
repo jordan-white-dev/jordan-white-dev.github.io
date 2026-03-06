@@ -11,9 +11,10 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
-import type { Dispatch, SetStateAction } from "react";
+import { type Dispatch, type SetStateAction, useEffect } from "react";
 import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
+import SuperExpressive from "super-expressive";
 
 import {
   isCenterMarkupsInCellContent,
@@ -857,32 +858,69 @@ export const InputPad = ({
   puzzleHistory,
   setIsMultiselectMode,
   setPuzzleHistory,
-}: InputPadProps) => (
-  <SimpleGrid
-    columns={6}
-    gap={{ base: "0.2916rem", sm: "1", md: "1.5" }}
-    height="fit-content"
-  >
-    {inputMode === "Color" ? (
-      <ColorPad
-        puzzleHistory={puzzleHistory}
-        setPuzzleHistory={setPuzzleHistory}
-      />
-    ) : (
-      <NumberPad
-        inputMode={inputMode}
-        puzzleHistory={puzzleHistory}
-        setPuzzleHistory={setPuzzleHistory}
-      />
-    )}
+}: InputPadProps) => {
+  useEffect(() => {
+    const handleNumberKeyDown = (digit: SudokuDigit) => {
+      if (inputMode === "Digit") {
+        handleDigitInput(digit, puzzleHistory, setPuzzleHistory);
+      } else if (inputMode === "Center") {
+        handleCenterMarkupInput(digit, puzzleHistory, setPuzzleHistory);
+      } else if (inputMode === "Corner") {
+        handleCornerMarkupInput(digit, puzzleHistory, setPuzzleHistory);
+      }
+    };
 
-    <MultiselectSwitch
-      isMultiselectMode={isMultiselectMode}
-      setIsMultiselectMode={setIsMultiselectMode}
-    />
-    <ClearButton
-      puzzleHistory={puzzleHistory}
-      setPuzzleHistory={setPuzzleHistory}
-    />
-  </SimpleGrid>
-);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const key = event.key;
+
+      // Equivalent to: /^[1-9]$/
+      const validNumberKey = SuperExpressive()
+        .startOfInput.range("1", "9")
+        .endOfInput.toRegex();
+
+      if (validNumberKey.test(key)) {
+        const digit = key as SudokuDigit;
+
+        handleNumberKeyDown(digit);
+      } else if (key === "Escape" || key === "Backspace" || key === "Delete") {
+        handleClearButton(puzzleHistory, setPuzzleHistory);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [inputMode, puzzleHistory, setPuzzleHistory]);
+
+  return (
+    <SimpleGrid
+      columns={6}
+      gap={{ base: "0.2916rem", sm: "1", md: "1.5" }}
+      height="fit-content"
+    >
+      {inputMode === "Color" ? (
+        <ColorPad
+          puzzleHistory={puzzleHistory}
+          setPuzzleHistory={setPuzzleHistory}
+        />
+      ) : (
+        <NumberPad
+          inputMode={inputMode}
+          puzzleHistory={puzzleHistory}
+          setPuzzleHistory={setPuzzleHistory}
+        />
+      )}
+
+      <MultiselectSwitch
+        isMultiselectMode={isMultiselectMode}
+        setIsMultiselectMode={setIsMultiselectMode}
+      />
+      <ClearButton
+        puzzleHistory={puzzleHistory}
+        setPuzzleHistory={setPuzzleHistory}
+      />
+    </SimpleGrid>
+  );
+};

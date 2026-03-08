@@ -5,7 +5,13 @@ import {
   RadioCard,
   SimpleGrid,
 } from "@chakra-ui/react";
-import type { Dispatch, ReactNode, SetStateAction } from "react";
+import {
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useEffect,
+  useRef,
+} from "react";
 
 import type { InputMode } from "@/lib/shared/types";
 import {
@@ -145,6 +151,16 @@ export const InputModeRadioCardItem = ({
 );
 // #endregion
 
+type KeyboardShortcut = "Control" | "Shift" | "Alt";
+const shortcutKeysToInputMode: Record<
+  KeyboardShortcut,
+  Exclude<InputMode, "Digit">
+> = {
+  Control: "Center",
+  Shift: "Corner",
+  Alt: "Color",
+};
+
 type InputModeRadioCardProps = {
   inputMode: InputMode;
   setInputMode: Dispatch<SetStateAction<InputMode>>;
@@ -153,44 +169,125 @@ type InputModeRadioCardProps = {
 export const InputModeRadioCard = ({
   inputMode,
   setInputMode,
-}: InputModeRadioCardProps) => (
-  <RadioCard.Root
-    align="center"
-    colorPalette="yellow"
-    defaultValue="digit"
-    value={inputMode}
-    variant="solid"
-    onValueChange={(event) => setInputMode(event.value as InputMode)}
-  >
-    <SimpleGrid
-      columns={{ base: 1, lg: 2 }}
-      gap={{ base: "0.229rem", sm: "1", md: "0.583rem", lg: "3" }}
-      minWidth={{ lg: "12.75rem" }}
+}: InputModeRadioCardProps) => {
+  const keyDownOrder = useRef<Array<KeyboardShortcut>>([]);
+  const originalInputMode = useRef<InputMode>(inputMode);
+
+  useEffect(() => {
+    const handleWindowBlur = () => {
+      keyDownOrder.current = [];
+      setInputMode(originalInputMode.current);
+    };
+
+    window.addEventListener("blur", handleWindowBlur);
+    return () => window.removeEventListener("blur", handleWindowBlur);
+  }, [setInputMode]);
+
+  useEffect(() => {
+    const reconcileKeyDownOrderWithEvent = (event: KeyboardEvent) => {
+      keyDownOrder.current = keyDownOrder.current.filter((keyboardShortcut) => {
+        if (keyboardShortcut === "Control") return event.ctrlKey;
+        if (keyboardShortcut === "Shift") return event.shiftKey;
+        if (keyboardShortcut === "Alt") return event.altKey;
+        return false;
+      });
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      reconcileKeyDownOrderWithEvent(event);
+
+      const keyDown = event.key as KeyboardShortcut;
+
+      if (!(keyDown in shortcutKeysToInputMode)) return;
+
+      if (event.repeat) return;
+
+      event.preventDefault();
+
+      if (!keyDownOrder.current.includes(keyDown))
+        keyDownOrder.current.push(keyDown);
+
+      const newestKeyDown =
+        keyDownOrder.current[keyDownOrder.current.length - 1];
+
+      if (!newestKeyDown) return;
+
+      setInputMode(shortcutKeysToInputMode[newestKeyDown]);
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      reconcileKeyDownOrderWithEvent(event);
+
+      const keyUp = event.key as KeyboardShortcut;
+
+      if (!(keyUp in shortcutKeysToInputMode)) return;
+
+      keyDownOrder.current = keyDownOrder.current.filter(
+        (keyDown) => keyDown !== keyUp,
+      );
+
+      const newestKeyDown =
+        keyDownOrder.current[keyDownOrder.current.length - 1];
+
+      if (newestKeyDown) {
+        setInputMode(shortcutKeysToInputMode[newestKeyDown]);
+      } else {
+        setInputMode(originalInputMode.current);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [setInputMode]);
+
+  return (
+    <RadioCard.Root
+      align="center"
+      colorPalette="yellow"
+      defaultValue="Digit"
+      value={inputMode}
+      variant="solid"
+      onValueChange={(event) => {
+        const newInputMode = event.value as InputMode;
+        setInputMode(newInputMode);
+        originalInputMode.current = newInputMode;
+      }}
     >
-      <InputModeRadioCardItem
-        icon={<DigitSVG />}
-        inputModeValue="Digit"
-        tooltipText="Digit input mode"
-        setInputMode={setInputMode}
-      />
-      <InputModeRadioCardItem
-        icon={<ColorSVG />}
-        inputModeValue="Color"
-        tooltipText="Color markup mode"
-        setInputMode={setInputMode}
-      />
-      <InputModeRadioCardItem
-        icon={<CenterSVG />}
-        inputModeValue="Center"
-        tooltipText="Center markup mode"
-        setInputMode={setInputMode}
-      />
-      <InputModeRadioCardItem
-        icon={<CornerSVG />}
-        inputModeValue="Corner"
-        tooltipText="Corner markup mode"
-        setInputMode={setInputMode}
-      />
-    </SimpleGrid>
-  </RadioCard.Root>
-);
+      <SimpleGrid
+        columns={{ base: 1, lg: 2 }}
+        gap={{ base: "0.229rem", sm: "1", md: "0.583rem", lg: "3" }}
+        minWidth={{ lg: "12.75rem" }}
+      >
+        <InputModeRadioCardItem
+          icon={<DigitSVG />}
+          inputModeValue="Digit"
+          tooltipText="Digit input mode"
+          setInputMode={setInputMode}
+        />
+        <InputModeRadioCardItem
+          icon={<ColorSVG />}
+          inputModeValue="Color"
+          tooltipText="Color markup mode"
+          setInputMode={setInputMode}
+        />
+        <InputModeRadioCardItem
+          icon={<CenterSVG />}
+          inputModeValue="Center"
+          tooltipText="Center markup mode"
+          setInputMode={setInputMode}
+        />
+        <InputModeRadioCardItem
+          icon={<CornerSVG />}
+          inputModeValue="Corner"
+          tooltipText="Corner markup mode"
+          setInputMode={setInputMode}
+        />
+      </SimpleGrid>
+    </RadioCard.Root>
+  );
+};

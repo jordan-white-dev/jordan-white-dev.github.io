@@ -889,9 +889,7 @@ export const InputPad = ({
 
     window.addEventListener("keydown", handleKeyDown);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [inputMode, puzzleHistory, setPuzzleHistory]);
 
   return (

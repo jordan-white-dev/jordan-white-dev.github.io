@@ -93,7 +93,7 @@ const handleSetPuzzleHistory = (
 };
 
 const getUpdatedCellStateWithRemovedMarkupDigit = (
-  markupType: "centerMarkups" | "cornerMarkups",
+  markupType: Extract<InputMode, "Center" | "Corner">,
   buttonValue: SudokuDigit,
   previousCellState: CellState,
   previousMarkups: Array<SudokuDigit>,
@@ -113,12 +113,12 @@ const getUpdatedCellStateWithRemovedMarkupDigit = (
       : [""];
 
   const centerMarkups: MarkupDigits =
-    markupType === "centerMarkups"
+    markupType === "Center"
       ? updatedMarkups
       : previousCellContent.centerMarkups;
 
   const cornerMarkups: MarkupDigits =
-    markupType === "cornerMarkups"
+    markupType === "Corner"
       ? updatedMarkups
       : previousCellContent.cornerMarkups;
 
@@ -136,7 +136,7 @@ const getUpdatedCellStateWithRemovedMarkupDigit = (
 };
 
 const getUpdatedCellStateWithAddedMarkupDigit = (
-  markupType: "centerMarkups" | "cornerMarkups",
+  markupType: Extract<InputMode, "Center" | "Corner">,
   buttonValue: SudokuDigit,
   previousCellState: CellState,
   previousMarkups: Array<SudokuDigit>,
@@ -151,12 +151,12 @@ const getUpdatedCellStateWithAddedMarkupDigit = (
     : [...previousMarkups, buttonValue];
 
   const centerMarkups: MarkupDigits =
-    markupType === "centerMarkups"
+    markupType === "Center"
       ? updatedMarkups
       : previousCellContent.centerMarkups;
 
   const cornerMarkups: MarkupDigits =
-    markupType === "cornerMarkups"
+    markupType === "Corner"
       ? updatedMarkups
       : previousCellContent.cornerMarkups;
 
@@ -480,14 +480,14 @@ const handleCenterMarkupInput = (
 
         if (areAllSelectedCellsStartingOrContainButtonCenterMarkup)
           return getUpdatedCellStateWithRemovedMarkupDigit(
-            "centerMarkups",
+            "Center",
             buttonValue,
             previousCellState,
             previousCenterMarkups,
           );
         else
           return getUpdatedCellStateWithAddedMarkupDigit(
-            "centerMarkups",
+            "Center",
             buttonValue,
             previousCellState,
             previousCenterMarkups,
@@ -603,14 +603,14 @@ const handleCornerMarkupInput = (
 
         if (areAllSelectedCellsStartingOrContainButtonCornerMarkup)
           return getUpdatedCellStateWithRemovedMarkupDigit(
-            "cornerMarkups",
+            "Corner",
             buttonValue,
             previousCellState,
             previousCornerMarkups,
           );
         else
           return getUpdatedCellStateWithAddedMarkupDigit(
-            "cornerMarkups",
+            "Corner",
             buttonValue,
             previousCellState,
             previousCornerMarkups,

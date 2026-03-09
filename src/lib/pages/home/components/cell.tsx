@@ -235,23 +235,23 @@ const handleCellClick = (
           };
 
           return newCellState;
-        } else {
-          const isThisTheOnlySelectedCell =
-            selectedCells.length === 1 &&
-            selectedCells[0].cellNumber === cellNumber;
-
-          const isSelected =
-            previousCellState.cellNumber === cellNumber
-              ? !isThisTheOnlySelectedCell
-              : false;
-
-          const newCellState = {
-            ...previousCellState,
-            isSelected: isSelected,
-          };
-
-          return newCellState;
         }
+
+        const isThisTheOnlySelectedCell =
+          selectedCells.length === 1 &&
+          selectedCells[0].cellNumber === cellNumber;
+
+        const isSelected =
+          previousCellState.cellNumber === cellNumber
+            ? !isThisTheOnlySelectedCell
+            : false;
+
+        const newCellState = {
+          ...previousCellState,
+          isSelected: isSelected,
+        };
+
+        return newCellState;
       });
 
     const newBoardStateHistory = previousPuzzleHistory.boardStateHistory.map(

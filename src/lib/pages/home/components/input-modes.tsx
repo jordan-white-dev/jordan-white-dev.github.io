@@ -231,9 +231,9 @@ export const InputModeRadioCard = ({
 
       if (newestKeyDown) {
         setInputMode(shortcutKeysToInputMode[newestKeyDown]);
-      } else {
-        setInputMode(originalInputMode.current);
       }
+
+      setInputMode(originalInputMode.current);
     };
 
     window.addEventListener("keydown", handleKeyDown);

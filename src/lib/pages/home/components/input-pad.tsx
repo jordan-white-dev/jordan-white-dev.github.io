@@ -297,14 +297,14 @@ const getUpdatedCellStateWithRemovedMarkupColor = (
     };
 
     return markupColorsCellStateAfterRemoveCheck;
-  } else {
-    const markupColorsCellStateAfterRemoveCheck: CellState = {
-      ...previousCellState,
-      markupColors: [""],
-    };
-
-    return markupColorsCellStateAfterRemoveCheck;
   }
+
+  const markupColorsCellStateAfterRemoveCheck: CellState = {
+    ...previousCellState,
+    markupColors: [""],
+  };
+
+  return markupColorsCellStateAfterRemoveCheck;
 };
 
 const getUpdatedCellStateWithAddedMarkupColor = (
@@ -795,17 +795,17 @@ const handleClearButton = (
         };
 
         return newStartingDigitCellState;
-      } else {
-        const newPlayerDigitCellState: CellState = {
-          ...previousCellState,
-          cellContent: {
-            playerDigit: "",
-          },
-          markupColors: [""],
-        };
-
-        return newPlayerDigitCellState;
       }
+
+      const newPlayerDigitCellState: CellState = {
+        ...previousCellState,
+        cellContent: {
+          playerDigit: "",
+        },
+        markupColors: [""],
+      };
+
+      return newPlayerDigitCellState;
     },
   );
 

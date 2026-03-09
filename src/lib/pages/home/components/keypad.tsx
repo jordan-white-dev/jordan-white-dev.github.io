@@ -25,7 +25,7 @@ import {
 import {
   type BoardState,
   type CellState,
-  type InputMode,
+  type KeypadMode,
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_GRAY,
   MARKUP_COLOR_GREEN,
@@ -93,7 +93,7 @@ const handleSetPuzzleHistory = (
 };
 
 const getUpdatedCellStateWithRemovedMarkupDigit = (
-  markupType: Extract<InputMode, "Center" | "Corner">,
+  markupType: Extract<KeypadMode, "Center" | "Corner">,
   buttonValue: SudokuDigit,
   previousCellState: CellState,
   previousMarkups: Array<SudokuDigit>,
@@ -136,7 +136,7 @@ const getUpdatedCellStateWithRemovedMarkupDigit = (
 };
 
 const getUpdatedCellStateWithAddedMarkupDigit = (
-  markupType: Extract<InputMode, "Center" | "Corner">,
+  markupType: Extract<KeypadMode, "Center" | "Corner">,
   buttonValue: SudokuDigit,
   previousCellState: CellState,
   previousMarkups: Array<SudokuDigit>,
@@ -174,7 +174,7 @@ const getUpdatedCellStateWithAddedMarkupDigit = (
 };
 
 const getUpdatedCellStateWithAnEmptyMarkupType = (
-  markupType: Extract<InputMode, "Center" | "Corner">,
+  markupType: Extract<KeypadMode, "Center" | "Corner">,
   buttonValue: SudokuDigit,
   previousCellState: CellState,
 ) => {
@@ -199,7 +199,7 @@ const getUpdatedCellStateWithAnEmptyMarkupType = (
 
 const markupDigitsCellStateUpdater = (
   buttonValue: SudokuDigit,
-  markupType: Extract<InputMode, "Center" | "Corner">,
+  markupType: Extract<KeypadMode, "Center" | "Corner">,
   previousCellState: CellState,
   shouldMarkupDigitBeRemoved: boolean,
 ) => {
@@ -257,7 +257,7 @@ const markupDigitsCellStateUpdater = (
 
 const areAllSelectedCellsStartingPlayerOrContainButtonValueAsMarkup = (
   buttonValue: SudokuDigit,
-  markupType: Extract<InputMode, "Center" | "Corner">,
+  markupType: Extract<KeypadMode, "Center" | "Corner">,
   previousBoardState: BoardState,
 ): boolean =>
   previousBoardState.every(
@@ -646,19 +646,19 @@ const getJustifyContent = (buttonValueAsNumber: number) => {
 };
 
 type NumberPadProps = {
-  inputMode: InputMode;
+  keypadMode: KeypadMode;
   puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const NumberPad = ({
-  inputMode,
+  keypadMode,
   puzzleHistory,
   setPuzzleHistory,
 }: NumberPadProps) => (
   <>
     {sudokuDigits.map((buttonValue, index) => {
-      if (inputMode === "Digit") {
+      if (keypadMode === "Digit") {
         return (
           <NumberButton
             buttonValue={buttonValue}
@@ -668,7 +668,7 @@ const NumberPad = ({
             }
           />
         );
-      } else if (inputMode === "Center")
+      } else if (keypadMode === "Center")
         return (
           <NumberButton
             buttonValue={buttonValue}
@@ -820,23 +820,23 @@ const ClearButton = ({ puzzleHistory, setPuzzleHistory }: ClearButtonProps) => (
 // #endregion
 
 type KeypadProps = {
-  inputMode: InputMode;
   isMultiselectMode: boolean;
+  keypadMode: KeypadMode;
   puzzleHistory: PuzzleHistory;
   setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 export const Keypad = ({
-  inputMode,
   isMultiselectMode,
+  keypadMode,
   puzzleHistory,
   setIsMultiselectMode,
   setPuzzleHistory,
 }: KeypadProps) => {
   useEffect(() => {
     const handleNumberKeyDown = (digit: SudokuDigit) => {
-      switch (inputMode) {
+      switch (keypadMode) {
         case "Digit":
           handleDigitInput(digit, puzzleHistory, setPuzzleHistory);
           break;
@@ -878,7 +878,7 @@ export const Keypad = ({
     window.addEventListener("keydown", handleKeyDown);
 
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [inputMode, puzzleHistory, setPuzzleHistory, setIsMultiselectMode]);
+  }, [keypadMode, puzzleHistory, setPuzzleHistory, setIsMultiselectMode]);
 
   return (
     <SimpleGrid
@@ -886,14 +886,14 @@ export const Keypad = ({
       gap={{ base: "0.2916rem", sm: "1", md: "1.5" }}
       height="fit-content"
     >
-      {inputMode === "Color" ? (
+      {keypadMode === "Color" ? (
         <ColorPad
           puzzleHistory={puzzleHistory}
           setPuzzleHistory={setPuzzleHistory}
         />
       ) : (
         <NumberPad
-          inputMode={inputMode}
+          keypadMode={keypadMode}
           puzzleHistory={puzzleHistory}
           setPuzzleHistory={setPuzzleHistory}
         />

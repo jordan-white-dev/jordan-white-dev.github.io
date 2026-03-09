@@ -2,13 +2,13 @@ import { Stack } from "@chakra-ui/react";
 import { type Dispatch, type SetStateAction, useState } from "react";
 
 import type {
-  InputMode,
+  KeypadMode,
   PuzzleHistory,
   RawBoardState,
 } from "@/lib/shared/types";
 
-import { InputModeRadioCard } from "./input-modes";
-import { Keypad } from "./input-pad";
+import { Keypad } from "./keypad";
+import { KeypadModeRadioCard } from "./keypad-modes";
 import { PuzzleActions } from "./puzzle-actions";
 
 type PlayerInterfaceProps = {
@@ -28,7 +28,7 @@ export const PlayerInterface = ({
   setIsMultiselectMode,
   setPuzzleHistory,
 }: PlayerInterfaceProps) => {
-  const [inputMode, setInputMode] = useState<InputMode>("Digit");
+  const [keypadMode, setKeypadMode] = useState<KeypadMode>("Digit");
 
   return (
     <Stack
@@ -44,13 +44,16 @@ export const PlayerInterface = ({
         setPuzzleHistory={setPuzzleHistory}
       />
       <Keypad
-        inputMode={inputMode}
         isMultiselectMode={isMultiselectMode}
+        keypadMode={keypadMode}
         puzzleHistory={puzzleHistory}
         setIsMultiselectMode={setIsMultiselectMode}
         setPuzzleHistory={setPuzzleHistory}
       />
-      <InputModeRadioCard inputMode={inputMode} setInputMode={setInputMode} />
+      <KeypadModeRadioCard
+        keypadMode={keypadMode}
+        setKeypadMode={setKeypadMode}
+      />
     </Stack>
   );
 };

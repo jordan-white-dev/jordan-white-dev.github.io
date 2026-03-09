@@ -280,6 +280,23 @@ const areAllSelectedCellsStartingPlayerOrContainButtonValueAsMarkup = (
 // #region Color Button
 
 // #region Color Pad Input
+const isSudokuDigit = (
+  colorValue: MarkupColor | SudokuDigit,
+): colorValue is SudokuDigit =>
+  sudokuDigits.includes(colorValue as SudokuDigit);
+
+const doAllSelectedCellsHaveTheButtonColorAsAMarkup = (
+  buttonColor: MarkupColor,
+  previousBoardState: BoardState,
+): boolean =>
+  previousBoardState
+    .filter((previousCellState) => previousCellState.isSelected)
+    .every((previousCellState) =>
+      previousCellState.markupColors
+        .filter((previousMarkupColor) => previousMarkupColor !== "")
+        .includes(buttonColor),
+    );
+
 const getUpdatedCellStateWithRemovedMarkupColor = (
   markupColor: MarkupColor,
   previousCellState: CellState,
@@ -348,23 +365,6 @@ const markupColorCellStateUpdater = (
         previousMarkupColors,
       );
 };
-
-const doAllSelectedCellsHaveTheButtonColorAsAMarkup = (
-  buttonColor: MarkupColor,
-  previousBoardState: BoardState,
-): boolean =>
-  previousBoardState
-    .filter((previousCellState) => previousCellState.isSelected)
-    .every((previousCellState) =>
-      previousCellState.markupColors
-        .filter((previousMarkupColor) => previousMarkupColor !== "")
-        .includes(buttonColor),
-    );
-
-const isSudokuDigit = (
-  colorValue: MarkupColor | SudokuDigit,
-): colorValue is SudokuDigit =>
-  sudokuDigits.includes(colorValue as SudokuDigit);
 
 const handleColorPadInput = (
   colorValue: MarkupColor | SudokuDigit,
@@ -460,7 +460,7 @@ const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => (
 
 // #region Number Pad
 
-// #region Digit Number Button
+// #region Number Button
 
 // #region Digit Input
 const playerDigitCellStateUpdater = (
@@ -531,41 +531,6 @@ const handleDigitInput = (
 };
 // #endregion
 
-type DigitNumberButtonProps = {
-  buttonValue: SudokuDigit;
-  puzzleHistory: PuzzleHistory;
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
-};
-
-const DigitNumberButton = ({
-  buttonValue,
-  puzzleHistory,
-  setPuzzleHistory,
-}: DigitNumberButtonProps) => (
-  <GridItem colSpan={2}>
-    <Tooltip content={buttonValue}>
-      <Square aspectRatio="square">
-        <IconButton
-          aspectRatio="square"
-          color="white"
-          colorPalette="blue"
-          rounded="md"
-          size={ICON_BUTTON_SIZE}
-          textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
-          onClick={() =>
-            handleDigitInput(buttonValue, puzzleHistory, setPuzzleHistory)
-          }
-        >
-          {buttonValue}
-        </IconButton>
-      </Square>
-    </Tooltip>
-  </GridItem>
-);
-// #endregion
-
-// #region Center Number Button
-
 // #region Center Markup Input
 const handleCenterMarkupInput = (
   buttonValue: SudokuDigit,
@@ -595,45 +560,6 @@ const handleCenterMarkupInput = (
   handleSetPuzzleHistory(newBoardState, setPuzzleHistory);
 };
 // #endregion
-
-type CenterNumberButtonProps = {
-  buttonValue: SudokuDigit;
-  puzzleHistory: PuzzleHistory;
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
-};
-
-const CenterNumberButton = ({
-  buttonValue,
-  puzzleHistory,
-  setPuzzleHistory,
-}: CenterNumberButtonProps) => (
-  <GridItem colSpan={2}>
-    <Tooltip content={buttonValue}>
-      <Square aspectRatio="square">
-        <IconButton
-          aspectRatio="square"
-          color="white"
-          colorPalette="blue"
-          rounded="md"
-          size={ICON_BUTTON_SIZE}
-          textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
-          onClick={() =>
-            handleCenterMarkupInput(
-              buttonValue,
-              puzzleHistory,
-              setPuzzleHistory,
-            )
-          }
-        >
-          {buttonValue}
-        </IconButton>
-      </Square>
-    </Tooltip>
-  </GridItem>
-);
-// #endregion
-
-// #region Corner Number Button
 
 // #region Corner Markup Input
 const handleCornerMarkupInput = (
@@ -665,61 +591,59 @@ const handleCornerMarkupInput = (
 };
 // #endregion
 
-type CornerNumberButtonProps = {
+type NumberButtonProps = {
+  alignItems?: IconButtonProps["alignItems"];
   buttonValue: SudokuDigit;
-  buttonValueAsNumber: number;
-  puzzleHistory: PuzzleHistory;
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
+  justifyContent?: IconButtonProps["justifyContent"];
+  padding?: IconButtonProps["padding"];
+  textStyle: IconButtonProps["textStyle"];
+  onClick: () => void;
 };
 
-const CornerNumberButton = ({
+const NumberButton = ({
+  alignItems,
   buttonValue,
-  buttonValueAsNumber,
-  puzzleHistory,
-  setPuzzleHistory,
-}: CornerNumberButtonProps) => {
-  const getAlignItems = () => {
-    if (buttonValueAsNumber <= 3) return "start";
-    else if (buttonValueAsNumber <= 6) return "center";
-    else return "end";
-  };
-
-  const getJustifyContent = () => {
-    if (buttonValueAsNumber % 3 === 1) return "start";
-    else if (buttonValueAsNumber % 3 === 2) return "center";
-    else return "end";
-  };
-
-  return (
-    <GridItem colSpan={2}>
-      <Tooltip content={buttonValue}>
-        <Square aspectRatio="square">
-          <IconButton
-            alignItems={getAlignItems()}
-            aspectRatio="square"
-            color="white"
-            colorPalette="blue"
-            justifyContent={getJustifyContent()}
-            padding={{ base: "1", md: "1.5" }}
-            rounded="md"
-            size={ICON_BUTTON_SIZE}
-            textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
-            onClick={() =>
-              handleCornerMarkupInput(
-                buttonValue,
-                puzzleHistory,
-                setPuzzleHistory,
-              )
-            }
-          >
-            {buttonValue}
-          </IconButton>
-        </Square>
-      </Tooltip>
-    </GridItem>
-  );
-};
+  justifyContent,
+  padding,
+  textStyle,
+  onClick,
+}: NumberButtonProps) => (
+  <GridItem colSpan={2} key={buttonValue}>
+    <Tooltip content={buttonValue}>
+      <Square aspectRatio="square">
+        <IconButton
+          aspectRatio="square"
+          color="white"
+          colorPalette="blue"
+          rounded="md"
+          size={ICON_BUTTON_SIZE}
+          textStyle={textStyle}
+          onClick={onClick}
+          {...(alignItems && { alignItems })}
+          {...(justifyContent && { justifyContent })}
+          {...(padding && { padding })}
+        >
+          {buttonValue}
+        </IconButton>
+      </Square>
+    </Tooltip>
+  </GridItem>
+);
 // #endregion
+
+const getAlignItems = (
+  buttonValueAsNumber: number,
+): IconButtonProps["alignItems"] => {
+  if (buttonValueAsNumber <= 3) return "start";
+  else if (buttonValueAsNumber <= 6) return "center";
+  else return "end";
+};
+
+const getJustifyContent = (buttonValueAsNumber: number) => {
+  if (buttonValueAsNumber % 3 === 1) return "start";
+  else if (buttonValueAsNumber % 3 === 2) return "center";
+  else return "end";
+};
 
 type NumberPadProps = {
   inputMode: InputMode;
@@ -733,35 +657,49 @@ const NumberPad = ({
   setPuzzleHistory,
 }: NumberPadProps) => (
   <>
-    {sudokuDigits.map((digit, index) => {
-      if (inputMode === "Digit")
+    {sudokuDigits.map((buttonValue, index) => {
+      if (inputMode === "Digit") {
         return (
-          <DigitNumberButton
-            buttonValue={digit}
-            key={digit}
-            puzzleHistory={puzzleHistory}
-            setPuzzleHistory={setPuzzleHistory}
+          <NumberButton
+            buttonValue={buttonValue}
+            textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
+            onClick={() =>
+              handleDigitInput(buttonValue, puzzleHistory, setPuzzleHistory)
+            }
           />
         );
-      else if (inputMode === "Center")
+      } else if (inputMode === "Center")
         return (
-          <CenterNumberButton
-            buttonValue={digit}
-            key={digit}
-            puzzleHistory={puzzleHistory}
-            setPuzzleHistory={setPuzzleHistory}
+          <NumberButton
+            buttonValue={buttonValue}
+            textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
+            onClick={() =>
+              handleCenterMarkupInput(
+                buttonValue,
+                puzzleHistory,
+                setPuzzleHistory,
+              )
+            }
           />
         );
-      else
+      else {
         return (
-          <CornerNumberButton
-            buttonValue={digit}
-            buttonValueAsNumber={index + 1}
-            key={digit}
-            puzzleHistory={puzzleHistory}
-            setPuzzleHistory={setPuzzleHistory}
+          <NumberButton
+            alignItems={getAlignItems(index + 1)}
+            buttonValue={buttonValue}
+            justifyContent={getJustifyContent(index + 1)}
+            padding={{ base: "1", md: "1.5" }}
+            textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
+            onClick={() =>
+              handleCornerMarkupInput(
+                buttonValue,
+                puzzleHistory,
+                setPuzzleHistory,
+              )
+            }
           />
         );
+      }
     })}
   </>
 );
@@ -776,46 +714,44 @@ type MultiselectSwitchProps = {
 const MultiselectSwitch = ({
   isMultiselectMode,
   setIsMultiselectMode,
-}: MultiselectSwitchProps) => {
-  return (
-    <GridItem
-      alignContent="center"
-      border={{ sm: "2px solid" }}
-      borderColor={{ sm: "blue.border" }}
-      colSpan={3}
-      height="full"
-      rounded="md"
-      width="full"
-    >
-      <Tooltip content="Multiple cells can be selected while this is toggled">
-        <Stack alignItems="center" direction="column" gap="1">
-          <Switch.Root
-            checked={isMultiselectMode}
-            colorPalette="blue"
-            size="lg"
-            onCheckedChange={(event) => setIsMultiselectMode(event.checked)}
-          >
-            <Switch.HiddenInput />
-            <Switch.Control>
-              <Switch.Thumb />
-              <Switch.Indicator fallback={<Icon as={GrCheckbox} />}>
-                <Icon as={GrMultiple} />
-              </Switch.Indicator>
-            </Switch.Control>
-          </Switch.Root>
-          <Text
-            alignSelf="center"
-            fontWeight="semibold"
-            hideBelow="md"
-            justifySelf="center"
-          >
-            Multiselect
-          </Text>
-        </Stack>
-      </Tooltip>
-    </GridItem>
-  );
-};
+}: MultiselectSwitchProps) => (
+  <GridItem
+    alignContent="center"
+    border={{ sm: "2px solid" }}
+    borderColor={{ sm: "blue.border" }}
+    colSpan={3}
+    height="full"
+    rounded="md"
+    width="full"
+  >
+    <Tooltip content="Multiple cells can be selected while this is toggled">
+      <Stack alignItems="center" direction="column" gap="1">
+        <Switch.Root
+          checked={isMultiselectMode}
+          colorPalette="blue"
+          size="lg"
+          onCheckedChange={(event) => setIsMultiselectMode(event.checked)}
+        >
+          <Switch.HiddenInput />
+          <Switch.Control>
+            <Switch.Thumb />
+            <Switch.Indicator fallback={<Icon as={GrCheckbox} />}>
+              <Icon as={GrMultiple} />
+            </Switch.Indicator>
+          </Switch.Control>
+        </Switch.Root>
+        <Text
+          alignSelf="center"
+          fontWeight="semibold"
+          hideBelow="md"
+          justifySelf="center"
+        >
+          Multiselect
+        </Text>
+      </Stack>
+    </Tooltip>
+  </GridItem>
+);
 // #endregion
 
 // #region Clear Button
@@ -883,7 +819,7 @@ const ClearButton = ({ puzzleHistory, setPuzzleHistory }: ClearButtonProps) => (
 );
 // #endregion
 
-type InputPadProps = {
+type KeypadProps = {
   inputMode: InputMode;
   isMultiselectMode: boolean;
   puzzleHistory: PuzzleHistory;
@@ -891,13 +827,13 @@ type InputPadProps = {
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-export const InputPad = ({
+export const Keypad = ({
   inputMode,
   isMultiselectMode,
   puzzleHistory,
   setIsMultiselectMode,
   setPuzzleHistory,
-}: InputPadProps) => {
+}: KeypadProps) => {
   useEffect(() => {
     const handleNumberKeyDown = (digit: SudokuDigit) => {
       switch (inputMode) {

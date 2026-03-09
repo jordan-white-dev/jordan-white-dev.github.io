@@ -8,7 +8,7 @@ import type {
 } from "@/lib/shared/types";
 
 import { InputModeRadioCard } from "./input-modes";
-import { InputPad } from "./input-pad";
+import { Keypad } from "./input-pad";
 import { PuzzleActions } from "./puzzle-actions";
 
 type PlayerInterfaceProps = {
@@ -43,7 +43,7 @@ export const PlayerInterface = ({
         rawBoardState={rawBoardState}
         setPuzzleHistory={setPuzzleHistory}
       />
-      <InputPad
+      <Keypad
         inputMode={inputMode}
         isMultiselectMode={isMultiselectMode}
         puzzleHistory={puzzleHistory}

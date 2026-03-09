@@ -417,13 +417,20 @@ const handleCellDoubleClick = (
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
   setPuzzleHistory((previousPuzzleHistory) => {
-    const previousBoardState =
+    const boardStateWithClearedCellSelections: BoardState =
       previousPuzzleHistory.boardStateHistory[
         previousPuzzleHistory.currentBoardStateIndex
-      ];
+      ].map((previousCellState) => {
+        const updatedCellState = {
+          ...previousCellState,
+          isSelected: false,
+        };
+
+        return updatedCellState;
+      });
 
     const newBoardStateWithUpdatedCellSelections: BoardState =
-      previousBoardState.map((previousCellState) =>
+      boardStateWithClearedCellSelections.map((previousCellState) =>
         getNewCellStateWithUpdatedCellSelections(cellState, previousCellState),
       );
 

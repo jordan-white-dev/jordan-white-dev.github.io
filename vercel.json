@@ -1,4 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "turbo run build"
+  "buildCommand": "turbo run build",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

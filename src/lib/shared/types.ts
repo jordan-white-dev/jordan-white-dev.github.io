@@ -1,23 +1,23 @@
-export const MARKUP_COLOR_GRAY = "#666666";
-export const MARKUP_COLOR_SILVER = "#b0b0b0";
+export const MARKUP_COLOR_GRAY = "#b4adad";
 export const MARKUP_COLOR_WHITE = "#ffffff";
-export const MARKUP_COLOR_VIOLET = "#f690f6";
-export const MARKUP_COLOR_RED = "#f76664";
-export const MARKUP_COLOR_TAN = "#c69c78";
+export const MARKUP_COLOR_PINK = "#f690f6";
+export const MARKUP_COLOR_RED = "#f98987";
 export const MARKUP_COLOR_ORANGE = "#f5ae51";
-export const MARKUP_COLOR_YELLOW = "#ffff75";
-export const MARKUP_COLOR_GREEN = "#d1efa6";
+export const MARKUP_COLOR_YELLOW = "#fef28c";
+export const MARKUP_COLOR_GREEN = "#66b571";
+export const MARKUP_COLOR_BLUE = "#8cc2fa";
+export const MARKUP_COLOR_PURPLE = "#bf5fca";
 
 export const markupColors = [
   MARKUP_COLOR_GRAY,
-  MARKUP_COLOR_SILVER,
   MARKUP_COLOR_WHITE,
-  MARKUP_COLOR_VIOLET,
+  MARKUP_COLOR_PINK,
   MARKUP_COLOR_RED,
-  MARKUP_COLOR_TAN,
   MARKUP_COLOR_ORANGE,
   MARKUP_COLOR_YELLOW,
   MARKUP_COLOR_GREEN,
+  MARKUP_COLOR_BLUE,
+  MARKUP_COLOR_PURPLE,
 ] as const;
 export type MarkupColor = (typeof markupColors)[number];
 

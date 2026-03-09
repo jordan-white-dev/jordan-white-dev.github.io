@@ -26,13 +26,13 @@ import {
   type BoardState,
   type CellState,
   type InputMode,
+  MARKUP_COLOR_BLUE,
   MARKUP_COLOR_GRAY,
   MARKUP_COLOR_GREEN,
   MARKUP_COLOR_ORANGE,
+  MARKUP_COLOR_PINK,
+  MARKUP_COLOR_PURPLE,
   MARKUP_COLOR_RED,
-  MARKUP_COLOR_SILVER,
-  MARKUP_COLOR_TAN,
-  MARKUP_COLOR_VIOLET,
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_YELLOW,
   type MarkupColor,
@@ -427,15 +427,15 @@ const ColorButton = ({
 // #endregion
 
 const colorPadTooltipTexts = {
-  [MARKUP_COLOR_GRAY]: "Gray",
-  [MARKUP_COLOR_SILVER]: "Silver",
-  [MARKUP_COLOR_WHITE]: "White",
-  [MARKUP_COLOR_VIOLET]: "Violet",
-  [MARKUP_COLOR_RED]: "Red",
-  [MARKUP_COLOR_TAN]: "Tan",
-  [MARKUP_COLOR_ORANGE]: "Orange",
-  [MARKUP_COLOR_YELLOW]: "Yellow",
-  [MARKUP_COLOR_GREEN]: "Green",
+  [MARKUP_COLOR_GRAY]: "Gray (1)",
+  [MARKUP_COLOR_WHITE]: "White (2)",
+  [MARKUP_COLOR_PINK]: "Pink (3)",
+  [MARKUP_COLOR_RED]: "Red (4)",
+  [MARKUP_COLOR_ORANGE]: "Orange (5)",
+  [MARKUP_COLOR_YELLOW]: "Yellow (6)",
+  [MARKUP_COLOR_GREEN]: "Green (7)",
+  [MARKUP_COLOR_BLUE]: "Blue (8)",
+  [MARKUP_COLOR_PURPLE]: "Purple (9)",
 };
 
 type ColorPadProps = {

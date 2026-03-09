@@ -15,13 +15,13 @@ import {
 
 import type { InputMode } from "@/lib/shared/types";
 import {
+  MARKUP_COLOR_BLUE,
   MARKUP_COLOR_GRAY,
   MARKUP_COLOR_GREEN,
   MARKUP_COLOR_ORANGE,
+  MARKUP_COLOR_PINK,
+  MARKUP_COLOR_PURPLE,
   MARKUP_COLOR_RED,
-  MARKUP_COLOR_SILVER,
-  MARKUP_COLOR_TAN,
-  MARKUP_COLOR_VIOLET,
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_YELLOW,
 } from "@/lib/shared/types";
@@ -59,14 +59,14 @@ const ColorSVG = (props: HTMLChakraProps<"svg">) => (
   >
     <title>Color</title>
     <g stroke="#0003" strokeWidth={0.3}>
-      <path fill={MARKUP_COLOR_SILVER} d="m12 12 3.36-7.2h3.84v3.84L12 12" />
-      <path fill={MARKUP_COLOR_WHITE} d="m12 12 7.2-3.36v5.29L12 12" />
-      <path fill={MARKUP_COLOR_VIOLET} d="m12 12 7.2 1.93v5.27h-2.16L12 12" />
-      <path fill={MARKUP_COLOR_RED} d="m12 12 5.04 7.2h-5.67L12 12" />
-      <path fill={MARKUP_COLOR_TAN} d="m12 12-.63 7.2H4.8L12 12" />
-      <path fill={MARKUP_COLOR_ORANGE} d="m12 12-7.2 7.2v-6.57L12 12" />
-      <path fill={MARKUP_COLOR_YELLOW} d="m12 12-7.2.63V6.96L12 12" />
-      <path fill={MARKUP_COLOR_GREEN} d="M12 12 4.8 6.96V4.8h5.27L12 12" />
+      <path fill={MARKUP_COLOR_WHITE} d="m12 12 3.36-7.2h3.84v3.84L12 12" />
+      <path fill={MARKUP_COLOR_PINK} d="m12 12 7.2-3.36v5.29L12 12" />
+      <path fill={MARKUP_COLOR_RED} d="m12 12 7.2 1.93v5.27h-2.16L12 12" />
+      <path fill={MARKUP_COLOR_ORANGE} d="m12 12 5.04 7.2h-5.67L12 12" />
+      <path fill={MARKUP_COLOR_YELLOW} d="m12 12-.63 7.2H4.8L12 12" />
+      <path fill={MARKUP_COLOR_GREEN} d="m12 12-7.2 7.2v-6.57L12 12" />
+      <path fill={MARKUP_COLOR_BLUE} d="m12 12-7.2.63V6.96L12 12" />
+      <path fill={MARKUP_COLOR_PURPLE} d="M12 12 4.8 6.96V4.8h5.27L12 12" />
       <path fill={MARKUP_COLOR_GRAY} d="m12 12-1.93-7.2h5.29L12 12" />
     </g>
     <path d="M18 19H6c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1zm1-16H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />

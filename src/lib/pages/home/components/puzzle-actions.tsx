@@ -397,7 +397,7 @@ const getDialogBodyText = (
   return isPuzzleSolved ? solvedText : notSolvedText;
 };
 
-const startStopwatchIfSolvedAndNotInStayPausedMode = (
+const startStopwatchIfUnsolvedAndNotInStayPausedMode = (
   isPuzzleSolved: boolean,
   isStayPausedMode: boolean,
   start: () => void,
@@ -423,8 +423,6 @@ const CheckSolutionButton = ({
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex],
   );
 
-  if (isPuzzleSolved) pause();
-
   return (
     <ActionDialog
       dialogBodyText={getDialogBodyText(
@@ -439,7 +437,7 @@ const CheckSolutionButton = ({
               colorPalette={isPuzzleSolved ? "blue" : "red"}
               variant="solid"
               onClick={() =>
-                startStopwatchIfSolvedAndNotInStayPausedMode(
+                startStopwatchIfUnsolvedAndNotInStayPausedMode(
                   isPuzzleSolved,
                   isStayPausedMode,
                   start,

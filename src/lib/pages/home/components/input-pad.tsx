@@ -543,21 +543,23 @@ const DigitNumberButton = ({
   setPuzzleHistory,
 }: DigitNumberButtonProps) => (
   <GridItem colSpan={2}>
-    <Square aspectRatio="square">
-      <IconButton
-        aspectRatio="square"
-        color="white"
-        colorPalette="blue"
-        rounded="md"
-        size={ICON_BUTTON_SIZE}
-        textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
-        onClick={() =>
-          handleDigitInput(buttonValue, puzzleHistory, setPuzzleHistory)
-        }
-      >
-        {buttonValue}
-      </IconButton>
-    </Square>
+    <Tooltip content={buttonValue}>
+      <Square aspectRatio="square">
+        <IconButton
+          aspectRatio="square"
+          color="white"
+          colorPalette="blue"
+          rounded="md"
+          size={ICON_BUTTON_SIZE}
+          textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
+          onClick={() =>
+            handleDigitInput(buttonValue, puzzleHistory, setPuzzleHistory)
+          }
+        >
+          {buttonValue}
+        </IconButton>
+      </Square>
+    </Tooltip>
   </GridItem>
 );
 // #endregion
@@ -606,21 +608,27 @@ const CenterNumberButton = ({
   setPuzzleHistory,
 }: CenterNumberButtonProps) => (
   <GridItem colSpan={2}>
-    <Square aspectRatio="square">
-      <IconButton
-        aspectRatio="square"
-        color="white"
-        colorPalette="blue"
-        rounded="md"
-        size={ICON_BUTTON_SIZE}
-        textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
-        onClick={() =>
-          handleCenterMarkupInput(buttonValue, puzzleHistory, setPuzzleHistory)
-        }
-      >
-        {buttonValue}
-      </IconButton>
-    </Square>
+    <Tooltip content={buttonValue}>
+      <Square aspectRatio="square">
+        <IconButton
+          aspectRatio="square"
+          color="white"
+          colorPalette="blue"
+          rounded="md"
+          size={ICON_BUTTON_SIZE}
+          textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
+          onClick={() =>
+            handleCenterMarkupInput(
+              buttonValue,
+              puzzleHistory,
+              setPuzzleHistory,
+            )
+          }
+        >
+          {buttonValue}
+        </IconButton>
+      </Square>
+    </Tooltip>
   </GridItem>
 );
 // #endregion
@@ -684,28 +692,30 @@ const CornerNumberButton = ({
 
   return (
     <GridItem colSpan={2}>
-      <Square aspectRatio="square">
-        <IconButton
-          alignItems={getAlignItems()}
-          aspectRatio="square"
-          color="white"
-          colorPalette="blue"
-          justifyContent={getJustifyContent()}
-          padding={{ base: "1", md: "1.5" }}
-          rounded="md"
-          size={ICON_BUTTON_SIZE}
-          textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
-          onClick={() =>
-            handleCornerMarkupInput(
-              buttonValue,
-              puzzleHistory,
-              setPuzzleHistory,
-            )
-          }
-        >
-          {buttonValue}
-        </IconButton>
-      </Square>
+      <Tooltip content={buttonValue}>
+        <Square aspectRatio="square">
+          <IconButton
+            alignItems={getAlignItems()}
+            aspectRatio="square"
+            color="white"
+            colorPalette="blue"
+            justifyContent={getJustifyContent()}
+            padding={{ base: "1", md: "1.5" }}
+            rounded="md"
+            size={ICON_BUTTON_SIZE}
+            textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
+            onClick={() =>
+              handleCornerMarkupInput(
+                buttonValue,
+                puzzleHistory,
+                setPuzzleHistory,
+              )
+            }
+          >
+            {buttonValue}
+          </IconButton>
+        </Square>
+      </Tooltip>
     </GridItem>
   );
 };

@@ -1,10 +1,10 @@
-export const MARKUP_COLOR_GRAY = "#b4adad";
+export const MARKUP_COLOR_GRAY = "#c2bcbc";
 export const MARKUP_COLOR_WHITE = "#ffffff";
-export const MARKUP_COLOR_PINK = "#f690f6";
+export const MARKUP_COLOR_PINK = "#f79cf7";
 export const MARKUP_COLOR_RED = "#f98987";
 export const MARKUP_COLOR_ORANGE = "#f5ae51";
 export const MARKUP_COLOR_YELLOW = "#fef28c";
-export const MARKUP_COLOR_GREEN = "#66b571";
+export const MARKUP_COLOR_GREEN = "#94cb9c";
 export const MARKUP_COLOR_BLUE = "#8cc2fa";
 export const MARKUP_COLOR_PURPLE = "#bf5fca";
 

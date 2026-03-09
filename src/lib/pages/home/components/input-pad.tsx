@@ -17,10 +17,10 @@ import { GrCheckbox, GrMultiple } from "react-icons/gr";
 import SuperExpressive from "super-expressive";
 
 import {
-  isCenterMarkupsInCellContent,
-  isCornerMarkupsInCellContent,
+  isMarkupDigitsInCellContent,
   isPlayerDigitInCellContent,
   isStartingDigitInCellContent,
+  isStartingOrPlayerDigitInCellContent,
 } from "@/lib/shared/constants";
 import {
   type BoardState,
@@ -100,7 +100,7 @@ const getUpdatedCellStateWithRemovedMarkupDigit = (
 ): CellState => {
   const previousCellContent = previousCellState.cellContent;
 
-  if (!isCenterMarkupsInCellContent(previousCellContent))
+  if (!isMarkupDigitsInCellContent(previousCellContent))
     return previousCellState;
 
   const previousMarkupsNotMatchingTheButtonValue = previousMarkups.filter(
@@ -143,7 +143,7 @@ const getUpdatedCellStateWithAddedMarkupDigit = (
 ) => {
   const previousCellContent = previousCellState.cellContent;
 
-  if (!isCenterMarkupsInCellContent(previousCellContent))
+  if (!isMarkupDigitsInCellContent(previousCellContent))
     return previousCellState;
 
   const updatedMarkups = previousMarkups.includes(buttonValue)
@@ -172,6 +172,107 @@ const getUpdatedCellStateWithAddedMarkupDigit = (
 
   return updatedCellState;
 };
+
+const getUpdatedCellStateWithAnEmptyMarkupType = (
+  markupType: Extract<InputMode, "Center" | "Corner">,
+  buttonValue: SudokuDigit,
+  previousCellState: CellState,
+) => {
+  const newMarkupDigitsCellContent: MarkupDigitsCellContent =
+    markupType === "Center"
+      ? {
+          centerMarkups: [buttonValue],
+          cornerMarkups: [""],
+        }
+      : {
+          centerMarkups: [""],
+          cornerMarkups: [buttonValue],
+        };
+
+  const newMarkupDigitsCellState: CellState = {
+    ...previousCellState,
+    cellContent: newMarkupDigitsCellContent,
+  };
+
+  return newMarkupDigitsCellState;
+};
+
+const markupDigitsCellStateUpdater = (
+  buttonValue: SudokuDigit,
+  markupType: Extract<InputMode, "Center" | "Corner">,
+  previousCellState: CellState,
+  shouldMarkupDigitBeRemoved: boolean,
+) => {
+  if (!previousCellState.isSelected) return previousCellState;
+
+  const previousCellContent = previousCellState.cellContent;
+
+  const isNotAStartingDigit =
+    !isStartingDigitInCellContent(previousCellContent);
+
+  const isABlankPlayerDigit =
+    isPlayerDigitInCellContent(previousCellContent) &&
+    previousCellContent.playerDigit === "";
+
+  const isValidInputCell =
+    isNotAStartingDigit &&
+    (isABlankPlayerDigit || isMarkupDigitsInCellContent(previousCellContent));
+
+  if (!isValidInputCell) return previousCellState;
+
+  if (isMarkupDigitsInCellContent(previousCellContent)) {
+    const previousMarkups =
+      markupType === "Center"
+        ? previousCellContent.centerMarkups.filter(
+            (previousCenterMarkup) => previousCenterMarkup !== "",
+          )
+        : previousCellContent.cornerMarkups.filter(
+            (previousCornerMarkup) => previousCornerMarkup !== "",
+          );
+
+    if (shouldMarkupDigitBeRemoved)
+      return getUpdatedCellStateWithRemovedMarkupDigit(
+        markupType,
+        buttonValue,
+        previousCellState,
+        previousMarkups,
+      );
+
+    return getUpdatedCellStateWithAddedMarkupDigit(
+      markupType,
+      buttonValue,
+      previousCellState,
+      previousMarkups,
+    );
+  } else if (isPlayerDigitInCellContent(previousCellContent)) {
+    return getUpdatedCellStateWithAnEmptyMarkupType(
+      markupType,
+      buttonValue,
+      previousCellState,
+    );
+  }
+
+  return previousCellState;
+};
+
+const areAllSelectedCellsStartingPlayerOrContainButtonValueAsMarkup = (
+  buttonValue: SudokuDigit,
+  markupType: Extract<InputMode, "Center" | "Corner">,
+  previousBoardState: BoardState,
+): boolean =>
+  previousBoardState.every(
+    (previousCellState) =>
+      !previousCellState.isSelected ||
+      isStartingOrPlayerDigitInCellContent(previousCellState.cellContent) ||
+      (isMarkupDigitsInCellContent(previousCellState.cellContent) &&
+      markupType === "Center"
+        ? previousCellState.cellContent.centerMarkups
+            .filter((centerMarkup) => centerMarkup !== "")
+            .includes(buttonValue)
+        : previousCellState.cellContent.cornerMarkups
+            .filter((cornerMarkup) => cornerMarkup !== "")
+            .includes(buttonValue)),
+  );
 // #endregion
 
 // #region Color Pad
@@ -179,7 +280,7 @@ const getUpdatedCellStateWithAddedMarkupDigit = (
 // #region Color Button
 
 // #region Color Pad Input
-const getUpdatedMarkupColorsCellStateAfterRemoveCheck = (
+const getUpdatedCellStateWithRemovedMarkupColor = (
   markupColor: MarkupColor,
   previousCellState: CellState,
   previousMarkupColors: Array<MarkupColor>,
@@ -206,7 +307,7 @@ const getUpdatedMarkupColorsCellStateAfterRemoveCheck = (
   }
 };
 
-const getUpdatedMarkupColorsCellStateAfterAddCheck = (
+const getUpdatedCellStateWithAddedMarkupColor = (
   markupColor: MarkupColor,
   previousCellState: CellState,
   previousMarkupColors: Array<MarkupColor>,
@@ -249,12 +350,12 @@ const handleColorPadInput = (
       );
 
       return doAllSelectedCellsHaveTheButtonColorAsAMarkup
-        ? getUpdatedMarkupColorsCellStateAfterRemoveCheck(
+        ? getUpdatedCellStateWithRemovedMarkupColor(
             buttonColor,
             previousCellState,
             previousMarkupColors,
           )
-        : getUpdatedMarkupColorsCellStateAfterAddCheck(
+        : getUpdatedCellStateWithAddedMarkupColor(
             buttonColor,
             previousCellState,
             previousMarkupColors,
@@ -332,6 +433,47 @@ const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => (
 // #region Digit Number Button
 
 // #region Digit Input
+const playerDigitCellStateUpdater = (
+  buttonValue: SudokuDigit,
+  previousCellState: CellState,
+  shouldPlayerDigitBeRemoved: boolean,
+) => {
+  const isValidInputCell =
+    previousCellState.isSelected &&
+    !isStartingDigitInCellContent(previousCellState.cellContent);
+  if (!isValidInputCell) return previousCellState;
+
+  if (shouldPlayerDigitBeRemoved) {
+    const emptyPlayerDigitCellState: CellState = {
+      ...previousCellState,
+      cellContent: {
+        playerDigit: "",
+      },
+    };
+    return emptyPlayerDigitCellState;
+  }
+
+  const addedPlayerDigitCellState: CellState = {
+    ...previousCellState,
+    cellContent: {
+      playerDigit: buttonValue,
+    },
+  };
+  return addedPlayerDigitCellState;
+};
+
+const areAllSelectedCellsStartingOrContainButtonValueAsPlayerDigit = (
+  buttonValue: SudokuDigit,
+  previousBoardState: BoardState,
+): boolean =>
+  previousBoardState.every(
+    (previousCellState) =>
+      !previousCellState.isSelected ||
+      isStartingDigitInCellContent(previousCellState.cellContent) ||
+      (isPlayerDigitInCellContent(previousCellState.cellContent) &&
+        previousCellState.cellContent.playerDigit === buttonValue),
+  );
+
 const handleDigitInput = (
   buttonValue: SudokuDigit,
   puzzleHistory: PuzzleHistory,
@@ -340,44 +482,19 @@ const handleDigitInput = (
   const previousBoardState =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-  const areAllSelectedCellsStartingOrContainButtonPlayerDigit =
-    previousBoardState.every(
-      (previousCellState) =>
-        !previousCellState.isSelected ||
-        isStartingDigitInCellContent(previousCellState.cellContent) ||
-        (isPlayerDigitInCellContent(previousCellState.cellContent) &&
-          previousCellState.cellContent.playerDigit === buttonValue),
+  const shouldPlayerDigitBeRemoved =
+    areAllSelectedCellsStartingOrContainButtonValueAsPlayerDigit(
+      buttonValue,
+      previousBoardState,
     );
 
   const newBoardState: BoardState = previousBoardState.map(
-    (previousCellState) => {
-      const previousCellContent = previousCellState.cellContent;
-
-      const isValidInputCell =
-        previousCellState.isSelected &&
-        !isStartingDigitInCellContent(previousCellContent);
-      if (!isValidInputCell) return previousCellState;
-
-      if (areAllSelectedCellsStartingOrContainButtonPlayerDigit) {
-        const newEmptyValueAsPlayerDigitCellState: CellState = {
-          ...previousCellState,
-          cellContent: {
-            playerDigit: "",
-          },
-        };
-
-        return newEmptyValueAsPlayerDigitCellState;
-      } else {
-        const newButtonValueAsPlayerDigitCellState: CellState = {
-          ...previousCellState,
-          cellContent: {
-            playerDigit: buttonValue,
-          },
-        };
-
-        return newButtonValueAsPlayerDigitCellState;
-      }
-    },
+    (previousCellState) =>
+      playerDigitCellStateUpdater(
+        buttonValue,
+        previousCellState,
+        shouldPlayerDigitBeRemoved,
+      ),
   );
 
   handleSetPuzzleHistory(newBoardState, setPuzzleHistory);
@@ -418,23 +535,6 @@ const DigitNumberButton = ({
 // #region Center Number Button
 
 // #region Center Markup Input
-const getNewCenterMarkupDigitsCellState = (
-  buttonValue: SudokuDigit,
-  previousCellState: CellState,
-) => {
-  const newMarkupDigitsCellContent: MarkupDigitsCellContent = {
-    centerMarkups: [buttonValue],
-    cornerMarkups: [""],
-  };
-
-  const newCenterMarkupDigitsCellState: CellState = {
-    ...previousCellState,
-    cellContent: newMarkupDigitsCellContent,
-  };
-
-  return newCenterMarkupDigitsCellState;
-};
-
 const handleCenterMarkupInput = (
   buttonValue: SudokuDigit,
   puzzleHistory: PuzzleHistory,
@@ -443,64 +543,21 @@ const handleCenterMarkupInput = (
   const previousBoardState =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-  const areAllSelectedCellsStartingOrContainButtonCenterMarkup =
-    previousBoardState.every(
-      (previousCellState) =>
-        !previousCellState.isSelected ||
-        isStartingDigitInCellContent(previousCellState.cellContent) ||
-        (isCenterMarkupsInCellContent(previousCellState.cellContent) &&
-          previousCellState.cellContent.centerMarkups
-            .filter((centerMarkup) => centerMarkup !== "")
-            .includes(buttonValue)),
+  const shouldMarkupDigitBeRemoved =
+    areAllSelectedCellsStartingPlayerOrContainButtonValueAsMarkup(
+      buttonValue,
+      "Center",
+      previousBoardState,
     );
 
   const newBoardState: BoardState = previousBoardState.map(
-    (previousCellState) => {
-      const previousCellContent = previousCellState.cellContent;
-
-      const isNotAStartingDigit =
-        !isStartingDigitInCellContent(previousCellContent);
-
-      const isABlankPlayerDigit =
-        isPlayerDigitInCellContent(previousCellContent) &&
-        previousCellContent.playerDigit === "";
-
-      const isValidInputCell =
-        previousCellState.isSelected &&
-        isNotAStartingDigit &&
-        (isABlankPlayerDigit ||
-          isCenterMarkupsInCellContent(previousCellContent));
-
-      if (!isValidInputCell) return previousCellState;
-
-      if (isCenterMarkupsInCellContent(previousCellContent)) {
-        const previousCenterMarkups = previousCellContent.centerMarkups.filter(
-          (previousCenterMarkup) => previousCenterMarkup !== "",
-        );
-
-        if (areAllSelectedCellsStartingOrContainButtonCenterMarkup)
-          return getUpdatedCellStateWithRemovedMarkupDigit(
-            "Center",
-            buttonValue,
-            previousCellState,
-            previousCenterMarkups,
-          );
-        else
-          return getUpdatedCellStateWithAddedMarkupDigit(
-            "Center",
-            buttonValue,
-            previousCellState,
-            previousCenterMarkups,
-          );
-      } else if (isPlayerDigitInCellContent(previousCellContent)) {
-        return getNewCenterMarkupDigitsCellState(
-          buttonValue,
-          previousCellState,
-        );
-      }
-
-      return previousCellState;
-    },
+    (previousCellState) =>
+      markupDigitsCellStateUpdater(
+        buttonValue,
+        "Center",
+        previousCellState,
+        shouldMarkupDigitBeRemoved,
+      ),
   );
 
   handleSetPuzzleHistory(newBoardState, setPuzzleHistory);
@@ -541,23 +598,6 @@ const CenterNumberButton = ({
 // #region Corner Number Button
 
 // #region Corner Markup Input
-const getNewCornerMarkupDigitsCellState = (
-  buttonValue: SudokuDigit,
-  previousCellState: CellState,
-) => {
-  const newMarkupDigitsCellContent: MarkupDigitsCellContent = {
-    centerMarkups: [""],
-    cornerMarkups: [buttonValue],
-  };
-
-  const newCornerMarkupDigitsCellState: CellState = {
-    ...previousCellState,
-    cellContent: newMarkupDigitsCellContent,
-  };
-
-  return newCornerMarkupDigitsCellState;
-};
-
 const handleCornerMarkupInput = (
   buttonValue: SudokuDigit,
   puzzleHistory: PuzzleHistory,
@@ -566,64 +606,21 @@ const handleCornerMarkupInput = (
   const previousBoardState =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-  const areAllSelectedCellsStartingOrContainButtonCornerMarkup =
-    previousBoardState.every(
-      (previousCellState) =>
-        !previousCellState.isSelected ||
-        isStartingDigitInCellContent(previousCellState.cellContent) ||
-        (isCornerMarkupsInCellContent(previousCellState.cellContent) &&
-          previousCellState.cellContent.cornerMarkups
-            .filter((cornerMarkup) => cornerMarkup !== "")
-            .includes(buttonValue)),
+  const shouldMarkupDigitBeRemoved =
+    areAllSelectedCellsStartingPlayerOrContainButtonValueAsMarkup(
+      buttonValue,
+      "Corner",
+      previousBoardState,
     );
 
   const newBoardState: BoardState = previousBoardState.map(
-    (previousCellState) => {
-      const previousCellContent = previousCellState.cellContent;
-
-      const isNotAStartingDigit =
-        !isStartingDigitInCellContent(previousCellContent);
-
-      const isABlankPlayerDigit =
-        isPlayerDigitInCellContent(previousCellContent) &&
-        previousCellContent.playerDigit === "";
-
-      const isValidInputCell =
-        previousCellState.isSelected &&
-        isNotAStartingDigit &&
-        (isABlankPlayerDigit ||
-          isCornerMarkupsInCellContent(previousCellContent));
-
-      if (!isValidInputCell) return previousCellState;
-
-      if (isCornerMarkupsInCellContent(previousCellContent)) {
-        const previousCornerMarkups = previousCellContent.cornerMarkups.filter(
-          (previousCornerMarkup) => previousCornerMarkup !== "",
-        );
-
-        if (areAllSelectedCellsStartingOrContainButtonCornerMarkup)
-          return getUpdatedCellStateWithRemovedMarkupDigit(
-            "Corner",
-            buttonValue,
-            previousCellState,
-            previousCornerMarkups,
-          );
-        else
-          return getUpdatedCellStateWithAddedMarkupDigit(
-            "Corner",
-            buttonValue,
-            previousCellState,
-            previousCornerMarkups,
-          );
-      } else if (isPlayerDigitInCellContent(previousCellContent)) {
-        return getNewCornerMarkupDigitsCellState(
-          buttonValue,
-          previousCellState,
-        );
-      }
-
-      return previousCellState;
-    },
+    (previousCellState) =>
+      markupDigitsCellStateUpdater(
+        buttonValue,
+        "Corner",
+        previousCellState,
+        shouldMarkupDigitBeRemoved,
+      ),
   );
 
   handleSetPuzzleHistory(newBoardState, setPuzzleHistory);

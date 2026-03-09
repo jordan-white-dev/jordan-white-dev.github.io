@@ -9,8 +9,7 @@ import { memo } from "react";
 
 import {
   getStartingOrPlayerDigitInCellIfPresent,
-  isCenterMarkupsInCellContent,
-  isCornerMarkupsInCellContent,
+  isMarkupDigitsInCellContent,
   isPlayerDigitInCellContent,
   isStartingDigitInCellContent,
   isStartingOrPlayerDigitInCellContent,
@@ -82,7 +81,7 @@ const getNonCornerDigitsInCellAsString = (cellContent: CellContent): string => {
     return cellContent.startingDigit;
   else if (isPlayerDigitInCellContent(cellContent))
     return cellContent.playerDigit;
-  else if (isCenterMarkupsInCellContent(cellContent))
+  else if (isMarkupDigitsInCellContent(cellContent))
     return cellContent.centerMarkups.sort().join("");
   else return "";
 };
@@ -110,7 +109,7 @@ const getCellBackground = (
 const getFontSize = (cellContent: CellContent): ButtonProps["fontSize"] => {
   if (isStartingOrPlayerDigitInCellContent(cellContent)) {
     return DIGIT_TEXT_STYLE;
-  } else if (isCenterMarkupsInCellContent(cellContent)) {
+  } else if (isMarkupDigitsInCellContent(cellContent)) {
     const centerMarkupsLength = cellContent.centerMarkups.length;
 
     switch (centerMarkupsLength) {
@@ -131,7 +130,7 @@ const getFontSize = (cellContent: CellContent): ButtonProps["fontSize"] => {
 // #region Float Handling
 const getCornerMarkups = (cellContent: CellContent): Array<string> => {
   if (
-    isCornerMarkupsInCellContent(cellContent) &&
+    isMarkupDigitsInCellContent(cellContent) &&
     cellContent.cornerMarkups[0] !== ""
   ) {
     const sortedCornerMarkups = cellContent.cornerMarkups.sort();
@@ -283,12 +282,12 @@ const isCellAnEmptyPlayerDigitWithNoColorMarkups = (cellState: CellState) => {
   )
     return false;
   else if (
-    isCornerMarkupsInCellContent(cellContent) &&
+    isMarkupDigitsInCellContent(cellContent) &&
     cellContent.cornerMarkups[0] !== ""
   )
     return false;
   else if (
-    isCenterMarkupsInCellContent(cellContent) &&
+    isMarkupDigitsInCellContent(cellContent) &&
     cellContent.centerMarkups[0] !== ""
   )
     return false;
@@ -388,8 +387,8 @@ const getNewCellStateWithUpdatedCellSelections = (
     );
     return newCellState;
   } else if (
-    isCenterMarkupsInCellContent(cellContent) &&
-    isCenterMarkupsInCellContent(previousCellContent)
+    isMarkupDigitsInCellContent(cellContent) &&
+    isMarkupDigitsInCellContent(previousCellContent)
   ) {
     const newCellState = getUpdatedCellStateIfMatchingMarkupDigitsExist(
       cellContent,

@@ -325,15 +325,35 @@ const getUpdatedCellStateWithAddedMarkupColor = (
   return markupColorsCellStateAfterAddCheck;
 };
 
-const handleColorPadInput = (
+const markupColorCellStateUpdater = (
   buttonColor: MarkupColor,
-  puzzleHistory: PuzzleHistory,
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+  previousCellState: CellState,
+  shouldMarkupColorBeRemoved: boolean,
 ) => {
-  const previousBoardState =
-    puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
+  if (!previousCellState.isSelected) return previousCellState;
 
-  const doAllSelectedCellsHaveTheButtonColorAsAMarkup = previousBoardState
+  const previousMarkupColors = previousCellState.markupColors.filter(
+    (previousMarkupColor) => previousMarkupColor !== "",
+  );
+
+  return shouldMarkupColorBeRemoved
+    ? getUpdatedCellStateWithRemovedMarkupColor(
+        buttonColor,
+        previousCellState,
+        previousMarkupColors,
+      )
+    : getUpdatedCellStateWithAddedMarkupColor(
+        buttonColor,
+        previousCellState,
+        previousMarkupColors,
+      );
+};
+
+const doAllSelectedCellsHaveTheButtonColorAsAMarkup = (
+  buttonColor: MarkupColor,
+  previousBoardState: BoardState,
+): boolean =>
+  previousBoardState
     .filter((previousCellState) => previousCellState.isSelected)
     .every((previousCellState) =>
       previousCellState.markupColors
@@ -341,26 +361,36 @@ const handleColorPadInput = (
         .includes(buttonColor),
     );
 
+const isSudokuDigit = (
+  colorValue: MarkupColor | SudokuDigit,
+): colorValue is SudokuDigit =>
+  sudokuDigits.includes(colorValue as SudokuDigit);
+
+const handleColorPadInput = (
+  colorValue: MarkupColor | SudokuDigit,
+  puzzleHistory: PuzzleHistory,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  const buttonColor: MarkupColor = isSudokuDigit(colorValue)
+    ? markupColors[sudokuDigits.indexOf(colorValue)]
+    : colorValue;
+
+  const previousBoardState =
+    puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
+
+  const shouldMarkupColorBeRemoved =
+    doAllSelectedCellsHaveTheButtonColorAsAMarkup(
+      buttonColor,
+      previousBoardState,
+    );
+
   const newBoardState: BoardState = previousBoardState.map(
-    (previousCellState) => {
-      if (!previousCellState.isSelected) return previousCellState;
-
-      const previousMarkupColors = previousCellState.markupColors.filter(
-        (previousMarkupColor) => previousMarkupColor !== "",
-      );
-
-      return doAllSelectedCellsHaveTheButtonColorAsAMarkup
-        ? getUpdatedCellStateWithRemovedMarkupColor(
-            buttonColor,
-            previousCellState,
-            previousMarkupColors,
-          )
-        : getUpdatedCellStateWithAddedMarkupColor(
-            buttonColor,
-            previousCellState,
-            previousMarkupColors,
-          );
-    },
+    (previousCellState) =>
+      markupColorCellStateUpdater(
+        buttonColor,
+        previousCellState,
+        shouldMarkupColorBeRemoved,
+      ),
   );
 
   handleSetPuzzleHistory(newBoardState, setPuzzleHistory);
@@ -858,12 +888,21 @@ export const InputPad = ({
 }: InputPadProps) => {
   useEffect(() => {
     const handleNumberKeyDown = (digit: SudokuDigit) => {
-      if (inputMode === "Digit") {
-        handleDigitInput(digit, puzzleHistory, setPuzzleHistory);
-      } else if (inputMode === "Center") {
-        handleCenterMarkupInput(digit, puzzleHistory, setPuzzleHistory);
-      } else if (inputMode === "Corner") {
-        handleCornerMarkupInput(digit, puzzleHistory, setPuzzleHistory);
+      switch (inputMode) {
+        case "Digit":
+          handleDigitInput(digit, puzzleHistory, setPuzzleHistory);
+          break;
+        case "Center":
+          handleCenterMarkupInput(digit, puzzleHistory, setPuzzleHistory);
+          break;
+        case "Corner":
+          handleCornerMarkupInput(digit, puzzleHistory, setPuzzleHistory);
+          break;
+        case "Color":
+          handleColorPadInput(digit, puzzleHistory, setPuzzleHistory);
+          break;
+        default:
+          break;
       }
     };
 

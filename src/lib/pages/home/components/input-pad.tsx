@@ -766,44 +766,46 @@ type MultiselectSwitchProps = {
 const MultiselectSwitch = ({
   isMultiselectMode,
   setIsMultiselectMode,
-}: MultiselectSwitchProps) => (
-  <GridItem
-    alignContent="center"
-    border={{ sm: "2px solid" }}
-    borderColor={{ sm: "blue.border" }}
-    colSpan={3}
-    height="full"
-    rounded="md"
-    width="full"
-  >
-    <Tooltip content="Multiple cells can be selected while this is toggled">
-      <Stack alignItems="center" direction="column" gap="1">
-        <Switch.Root
-          checked={isMultiselectMode}
-          colorPalette="blue"
-          size="lg"
-          onCheckedChange={(event) => setIsMultiselectMode(event.checked)}
-        >
-          <Switch.HiddenInput />
-          <Switch.Control>
-            <Switch.Thumb />
-            <Switch.Indicator fallback={<Icon as={GrCheckbox} />}>
-              <Icon as={GrMultiple} />
-            </Switch.Indicator>
-          </Switch.Control>
-        </Switch.Root>
-        <Text
-          alignSelf="center"
-          fontWeight="semibold"
-          hideBelow="md"
-          justifySelf="center"
-        >
-          Multiselect
-        </Text>
-      </Stack>
-    </Tooltip>
-  </GridItem>
-);
+}: MultiselectSwitchProps) => {
+  return (
+    <GridItem
+      alignContent="center"
+      border={{ sm: "2px solid" }}
+      borderColor={{ sm: "blue.border" }}
+      colSpan={3}
+      height="full"
+      rounded="md"
+      width="full"
+    >
+      <Tooltip content="Multiple cells can be selected while this is toggled">
+        <Stack alignItems="center" direction="column" gap="1">
+          <Switch.Root
+            checked={isMultiselectMode}
+            colorPalette="blue"
+            size="lg"
+            onCheckedChange={(event) => setIsMultiselectMode(event.checked)}
+          >
+            <Switch.HiddenInput />
+            <Switch.Control>
+              <Switch.Thumb />
+              <Switch.Indicator fallback={<Icon as={GrCheckbox} />}>
+                <Icon as={GrMultiple} />
+              </Switch.Indicator>
+            </Switch.Control>
+          </Switch.Root>
+          <Text
+            alignSelf="center"
+            fontWeight="semibold"
+            hideBelow="md"
+            justifySelf="center"
+          >
+            Multiselect
+          </Text>
+        </Stack>
+      </Tooltip>
+    </GridItem>
+  );
+};
 // #endregion
 
 // #region Clear Button
@@ -920,13 +922,17 @@ export const InputPad = ({
         handleNumberKeyDown(digit);
       } else if (key === "Escape" || key === "Backspace" || key === "Delete") {
         handleClearButton(puzzleHistory, setPuzzleHistory);
+      } else if (key.toLowerCase() === "m") {
+        setIsMultiselectMode(
+          (previousMultiselectMode) => !previousMultiselectMode,
+        );
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
 
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [inputMode, puzzleHistory, setPuzzleHistory]);
+  }, [inputMode, puzzleHistory, setPuzzleHistory, setIsMultiselectMode]);
 
   return (
     <SimpleGrid

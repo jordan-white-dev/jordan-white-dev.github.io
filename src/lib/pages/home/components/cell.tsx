@@ -471,12 +471,12 @@ export const Cell = memo(
     const interiorCellBorderStyle = userSettings.dashedGrid
       ? "1px dashed black"
       : "1px solid black";
-    const invisibleEdgeBorderStyle = "1px solid transparent";
+    const edgeCellBorderStyle = "1px solid transparent";
 
-    const isCellOnTopEdgeOfBox = cellState.rowNumber % 3 === 1;
-    const isCellOnBottomEdgeOfBox = cellState.rowNumber % 3 === 0;
-    const isCellOnLeftEdgeOfBox = cellState.columnNumber % 3 === 1;
-    const isCellOnRightEdgeOfBox = cellState.columnNumber % 3 === 0;
+    const isCellOnTopBoxEdge = cellState.rowNumber % 3 === 1;
+    const isCellOnBottomBoxEdge = cellState.rowNumber % 3 === 0;
+    const isCellOnLeftBoxEdge = cellState.columnNumber % 3 === 1;
+    const isCellOnRightBoxEdge = cellState.columnNumber % 3 === 0;
 
     const cellContent = cellState.cellContent;
 
@@ -491,24 +491,16 @@ export const Cell = memo(
       <Button
         background={getCellBackground(cellState.markupColors)}
         borderTop={
-          isCellOnTopEdgeOfBox
-            ? invisibleEdgeBorderStyle
-            : interiorCellBorderStyle
+          isCellOnTopBoxEdge ? edgeCellBorderStyle : interiorCellBorderStyle
         }
         borderBottom={
-          isCellOnBottomEdgeOfBox
-            ? invisibleEdgeBorderStyle
-            : interiorCellBorderStyle
+          isCellOnBottomBoxEdge ? edgeCellBorderStyle : interiorCellBorderStyle
         }
         borderLeft={
-          isCellOnLeftEdgeOfBox
-            ? invisibleEdgeBorderStyle
-            : interiorCellBorderStyle
+          isCellOnLeftBoxEdge ? edgeCellBorderStyle : interiorCellBorderStyle
         }
         borderRight={
-          isCellOnRightEdgeOfBox
-            ? invisibleEdgeBorderStyle
-            : interiorCellBorderStyle
+          isCellOnRightBoxEdge ? edgeCellBorderStyle : interiorCellBorderStyle
         }
         borderRadius="0"
         color={isStartingDigitInCellContent(cellContent) ? "black" : "#1212f0"}

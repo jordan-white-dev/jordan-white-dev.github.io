@@ -13,7 +13,6 @@ import { PuzzleActions } from "./puzzle-actions";
 
 type PlayerInterfaceProps = {
   isMultiselectMode: boolean;
-  isStayPausedMode: boolean;
   puzzleHistory: PuzzleHistory;
   rawBoardState: RawBoardState;
   setIsMultiselectMode: Dispatch<SetStateAction<boolean>>;
@@ -22,7 +21,6 @@ type PlayerInterfaceProps = {
 
 export const PlayerInterface = ({
   isMultiselectMode,
-  isStayPausedMode,
   puzzleHistory,
   rawBoardState,
   setIsMultiselectMode,
@@ -38,7 +36,6 @@ export const PlayerInterface = ({
       minWidth={{ lg: "52" }}
     >
       <PuzzleActions
-        isStayPausedMode={isStayPausedMode}
         puzzleHistory={puzzleHistory}
         rawBoardState={rawBoardState}
         setPuzzleHistory={setPuzzleHistory}

@@ -54,13 +54,12 @@ const handleClearAllSelections = (
 };
 
 type PuzzleProps = {
-  isStayPausedMode: boolean;
   rawBoardState: RawBoardState;
   startingBoardState: BoardState;
 };
 
 export const Puzzle = memo(
-  ({ isStayPausedMode, rawBoardState, startingBoardState }: PuzzleProps) => {
+  ({ rawBoardState, startingBoardState }: PuzzleProps) => {
     const [isMultiselectMode, setIsMultiselectMode] = useState(false);
     const [puzzleHistory, setPuzzleHistory] = useState<PuzzleHistory>({
       currentBoardStateIndex: 0,
@@ -99,7 +98,6 @@ export const Puzzle = memo(
         />
         <PlayerInterface
           isMultiselectMode={isMultiselectMode}
-          isStayPausedMode={isStayPausedMode}
           puzzleHistory={puzzleHistory}
           rawBoardState={rawBoardState}
           setIsMultiselectMode={setIsMultiselectMode}

@@ -9,12 +9,11 @@ import {
   Portal,
   VStack,
 } from "@chakra-ui/react";
-import type { Dispatch, SetStateAction } from "react";
 import { ImKeyboard } from "react-icons/im";
 import { MdOutlineSettings } from "react-icons/md";
 
 import { type UserSettings, useUserSettings } from "..";
-import { Stopwatch } from "./stopwatch";
+import { Stopwatch, useStopwatchCommands } from "./stopwatch";
 
 // #region Shortcuts Menu
 const nonClearCellShortcutItems = [
@@ -97,7 +96,7 @@ type SettingCheckboxProps = {
   settingKey: keyof UserSettings;
   settingLabel: string;
   userSettings: UserSettings;
-  setUserSettings: React.Dispatch<React.SetStateAction<UserSettings>>;
+  onCheckedChange: (checked: boolean) => void;
 };
 
 const SettingsCheckbox = ({
@@ -105,7 +104,7 @@ const SettingsCheckbox = ({
   settingKey,
   settingLabel,
   userSettings,
-  setUserSettings,
+  onCheckedChange,
 }: SettingCheckboxProps) => (
   <Menu.CheckboxItem
     checked={userSettings[settingKey]}
@@ -113,12 +112,7 @@ const SettingsCheckbox = ({
     disabled={disabled}
     key={settingKey}
     value={settingKey}
-    onCheckedChange={() =>
-      setUserSettings((previousUserSettings) => ({
-        ...previousUserSettings,
-        [settingKey]: !previousUserSettings[settingKey],
-      }))
-    }
+    onCheckedChange={onCheckedChange}
   >
     {settingLabel}
     <Menu.ItemIndicator />
@@ -127,6 +121,7 @@ const SettingsCheckbox = ({
 // #endregion
 
 const SettingsMenu = () => {
+  const { pause, start } = useStopwatchCommands();
   const { userSettings, setUserSettings } = useUserSettings();
 
   return (
@@ -146,7 +141,12 @@ const SettingsMenu = () => {
                 settingKey="conflictChecker"
                 settingLabel="Conflict Checker"
                 userSettings={userSettings}
-                setUserSettings={setUserSettings}
+                onCheckedChange={() =>
+                  setUserSettings((previousUserSettings) => ({
+                    ...previousUserSettings,
+                    conflictChecker: !previousUserSettings.conflictChecker,
+                  }))
+                }
               />
 
               <SettingsCheckbox
@@ -154,7 +154,12 @@ const SettingsMenu = () => {
                 settingKey="showSeenCells"
                 settingLabel="Show Seen Cells"
                 userSettings={userSettings}
-                setUserSettings={setUserSettings}
+                onCheckedChange={() =>
+                  setUserSettings((previousUserSettings) => ({
+                    ...previousUserSettings,
+                    showSeenCells: !previousUserSettings.showSeenCells,
+                  }))
+                }
               />
             </Menu.ItemGroup>
             <Menu.Separator />
@@ -165,7 +170,12 @@ const SettingsMenu = () => {
                 settingKey="flipKeypad"
                 settingLabel="Flip Keypad"
                 userSettings={userSettings}
-                setUserSettings={setUserSettings}
+                onCheckedChange={() =>
+                  setUserSettings((previousUserSettings) => ({
+                    ...previousUserSettings,
+                    flipKeypad: !previousUserSettings.flipKeypad,
+                  }))
+                }
               />
 
               <SettingsCheckbox
@@ -173,15 +183,28 @@ const SettingsMenu = () => {
                 settingKey="dashedGrid"
                 settingLabel="Dashed Grid"
                 userSettings={userSettings}
-                setUserSettings={setUserSettings}
+                onCheckedChange={() =>
+                  setUserSettings((previousUserSettings) => ({
+                    ...previousUserSettings,
+                    dashedGrid: !previousUserSettings.dashedGrid,
+                  }))
+                }
               />
 
               <SettingsCheckbox
-                disabled={true}
+                disabled={false}
                 settingKey="disableStopwatch"
                 settingLabel="Disable Stopwatch"
                 userSettings={userSettings}
-                setUserSettings={setUserSettings}
+                onCheckedChange={() => {
+                  if (!userSettings.disableStopwatch) pause();
+                  else start();
+
+                  setUserSettings((previousUserSettings) => ({
+                    ...previousUserSettings,
+                    disableStopwatch: !previousUserSettings.disableStopwatch,
+                  }));
+                }}
               />
 
               <SettingsCheckbox
@@ -189,7 +212,13 @@ const SettingsMenu = () => {
                 settingKey="showRowAndColumnLabels"
                 settingLabel="Show Row + Column Labels"
                 userSettings={userSettings}
-                setUserSettings={setUserSettings}
+                onCheckedChange={() =>
+                  setUserSettings((previousUserSettings) => ({
+                    ...previousUserSettings,
+                    showRowAndColumnLabels:
+                      !previousUserSettings.showRowAndColumnLabels,
+                  }))
+                }
               />
             </Menu.ItemGroup>
           </Menu.Content>
@@ -200,15 +229,7 @@ const SettingsMenu = () => {
 };
 // #endregion
 
-type HeaderProps = {
-  isStayPausedMode: boolean;
-  setIsStayPausedMode: Dispatch<SetStateAction<boolean>>;
-};
-
-export const Header = ({
-  isStayPausedMode,
-  setIsStayPausedMode,
-}: HeaderProps) => (
+export const Header = () => (
   <Flex
     align="start"
     as="header"
@@ -218,10 +239,7 @@ export const Header = ({
     padding="0.625rem 1rem"
     width="full"
   >
-    <Stopwatch
-      isStayPausedMode={isStayPausedMode}
-      setIsStayPausedMode={setIsStayPausedMode}
-    />
+    <Stopwatch />
     <Group alignSelf="center">
       <ShortcutsMenu />
       <SettingsMenu />

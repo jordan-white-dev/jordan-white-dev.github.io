@@ -88,8 +88,6 @@ const Home = () => {
     from: "/puzzle/$encoded",
   }) as LoaderData;
 
-  const [isStayPausedMode, setIsStayPausedMode] = useState(false);
-
   const { hours, isRunning, minutes, seconds, pause, reset, start } =
     useStopwatch({
       interval: 500,
@@ -121,14 +119,10 @@ const Home = () => {
     <UserSettingsProvider>
       <StopwatchCommandsProvider value={stopwatchCommandsValue}>
         <StopwatchTimeProvider value={stopwatchTimeValue}>
-          <Header
-            isStayPausedMode={isStayPausedMode}
-            setIsStayPausedMode={setIsStayPausedMode}
-          />
+          <Header />
           <Box width="full" as="main" justifyItems="center" marginY={22}>
             <Puzzle
               key={JSON.stringify(rawBoardState)}
-              isStayPausedMode={isStayPausedMode}
               rawBoardState={rawBoardState}
               startingBoardState={boardState}
             />

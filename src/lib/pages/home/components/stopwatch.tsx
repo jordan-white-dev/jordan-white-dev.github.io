@@ -7,14 +7,11 @@ import {
   Portal,
   Text,
 } from "@chakra-ui/react";
-import {
-  createContext,
-  type Dispatch,
-  type SetStateAction,
-  useContext,
-} from "react";
+import { createContext, useContext } from "react";
 import { ImStopwatch } from "react-icons/im";
 import { MdOutlinePauseCircle, MdOutlinePlayCircle } from "react-icons/md";
+
+import { useUserSettings } from "..";
 
 // #region Stopwatch Commands Context
 type StopwatchCommands = {
@@ -91,14 +88,9 @@ const StopwatchDialogTrigger = () => {
   );
 };
 
-type StopwatchDialogFooterProps = {
-  setIsStayPausedMode: Dispatch<SetStateAction<boolean>>;
-};
-
-const StopwatchDialogFooter = ({
-  setIsStayPausedMode,
-}: StopwatchDialogFooterProps) => {
+const StopwatchDialogFooter = () => {
   const { pause, start } = useStopwatchCommands();
+  const { setUserSettings } = useUserSettings();
 
   return (
     <Dialog.Footer justifyContent="center">
@@ -107,7 +99,12 @@ const StopwatchDialogFooter = ({
           variant="outline"
           onClick={() => {
             start();
-            setIsStayPausedMode(false);
+            setUserSettings((previousUserSettings) => {
+              return {
+                ...previousUserSettings,
+                disableStopwatch: false,
+              };
+            });
           }}
         >
           Resume <MdOutlinePlayCircle />
@@ -119,7 +116,12 @@ const StopwatchDialogFooter = ({
           variant="outline"
           onClick={() => {
             pause();
-            setIsStayPausedMode(true);
+            setUserSettings((previousUserSettings) => {
+              return {
+                ...previousUserSettings,
+                disableStopwatch: true,
+              };
+            });
           }}
         >
           Stay Paused <MdOutlinePauseCircle />
@@ -129,23 +131,16 @@ const StopwatchDialogFooter = ({
   );
 };
 
-const startStopwatchIfNotInStayPausedMode = (
-  isStayPausedMode: boolean,
+const startStopwatchIfEnabled = (
+  disableStopwatchSetting: boolean,
   start: () => void,
 ) => {
-  if (!isStayPausedMode) start();
+  if (!disableStopwatchSetting) start();
 };
 
-type StopwatchProps = {
-  isStayPausedMode: boolean;
-  setIsStayPausedMode: Dispatch<SetStateAction<boolean>>;
-};
-
-export const Stopwatch = ({
-  isStayPausedMode,
-  setIsStayPausedMode,
-}: StopwatchProps) => {
+export const Stopwatch = () => {
   const { start } = useStopwatchCommands();
+  const { userSettings } = useUserSettings();
 
   return (
     <Flex gap="1.5" textAlign="center">
@@ -154,10 +149,10 @@ export const Stopwatch = ({
         size="xs"
         motionPreset="slide-in-bottom"
         onEscapeKeyDown={() =>
-          startStopwatchIfNotInStayPausedMode(isStayPausedMode, start)
+          startStopwatchIfEnabled(userSettings.disableStopwatch, start)
         }
         onPointerDownOutside={() =>
-          startStopwatchIfNotInStayPausedMode(isStayPausedMode, start)
+          startStopwatchIfEnabled(userSettings.disableStopwatch, start)
         }
       >
         <StopwatchDialogTrigger />
@@ -176,9 +171,7 @@ export const Stopwatch = ({
                 </Dialog.Title>
               </Dialog.Header>
 
-              <StopwatchDialogFooter
-                setIsStayPausedMode={setIsStayPausedMode}
-              />
+              <StopwatchDialogFooter />
             </Dialog.Content>
           </Dialog.Positioner>
         </Portal>

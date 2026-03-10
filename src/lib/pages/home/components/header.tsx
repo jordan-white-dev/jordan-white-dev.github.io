@@ -213,7 +213,7 @@ export const Header = ({
       isStayPausedMode={isStayPausedMode}
       setIsStayPausedMode={setIsStayPausedMode}
     />
-    <Group>
+    <Group alignSelf="center">
       <ShortcutsMenu />
       <SettingsMenu />
     </Group>

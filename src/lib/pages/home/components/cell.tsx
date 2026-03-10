@@ -26,6 +26,8 @@ import {
   type SudokuDigit,
 } from "@/lib/shared/types";
 
+import { useUserSettings } from "..";
+
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
   base: "33px",
@@ -72,7 +74,6 @@ const CENTER_TEXT_STYLE_LENGTH_9: ButtonProps["fontSize"] = {
   sm: "0.475rem",
   md: "0.775rem",
 };
-const THIN_BORDER: SquareProps["border"] = "1px solid black";
 // #endregion
 
 // #region Functions
@@ -459,6 +460,18 @@ type CellProps = {
 
 export const Cell = memo(
   ({ cellState, isMultiselectMode, setPuzzleHistory }: CellProps) => {
+    const { userSettings } = useUserSettings();
+
+    const interiorCellBorderStyle = userSettings.dashedGrid
+      ? "1px dashed black"
+      : "1px solid black";
+    const invisibleEdgeBorderStyle = "1px solid transparent";
+
+    const isCellOnTopEdgeOfBox = cellState.rowNumber % 3 === 1;
+    const isCellOnBottomEdgeOfBox = cellState.rowNumber % 3 === 0;
+    const isCellOnLeftEdgeOfBox = cellState.columnNumber % 3 === 1;
+    const isCellOnRightEdgeOfBox = cellState.columnNumber % 3 === 0;
+
     const cellContent = cellState.cellContent;
 
     const nonCornerDigitsInCellAsString =
@@ -471,7 +484,26 @@ export const Cell = memo(
     return (
       <Button
         background={getCellBackground(cellState.markupColors)}
-        border={THIN_BORDER}
+        borderTop={
+          isCellOnTopEdgeOfBox
+            ? invisibleEdgeBorderStyle
+            : interiorCellBorderStyle
+        }
+        borderBottom={
+          isCellOnBottomEdgeOfBox
+            ? invisibleEdgeBorderStyle
+            : interiorCellBorderStyle
+        }
+        borderLeft={
+          isCellOnLeftEdgeOfBox
+            ? invisibleEdgeBorderStyle
+            : interiorCellBorderStyle
+        }
+        borderRight={
+          isCellOnRightEdgeOfBox
+            ? invisibleEdgeBorderStyle
+            : interiorCellBorderStyle
+        }
         borderRadius="0"
         color={isStartingDigitInCellContent(cellContent) ? "black" : "#1212f0"}
         fontSize={getFontSize(cellContent)}

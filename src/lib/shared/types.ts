@@ -19,6 +19,17 @@ export const markupColors = [
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_PURPLE,
 ] as const;
+export const flippedKeypadMarkupColors = [
+  MARKUP_COLOR_GREEN,
+  MARKUP_COLOR_BLUE,
+  MARKUP_COLOR_PURPLE,
+  MARKUP_COLOR_RED,
+  MARKUP_COLOR_ORANGE,
+  MARKUP_COLOR_YELLOW,
+  MARKUP_COLOR_GRAY,
+  MARKUP_COLOR_WHITE,
+  MARKUP_COLOR_PINK,
+] as const;
 export type MarkupColor = (typeof markupColors)[number];
 
 export const keypadModes = ["Digit", "Color", "Center", "Corner"] as const;
@@ -38,6 +49,17 @@ export const sudokuDigits = [
   "7",
   "8",
   "9",
+] as const;
+export const flippedKeypadSudokuDigits = [
+  "7",
+  "8",
+  "9",
+  "4",
+  "5",
+  "6",
+  "1",
+  "2",
+  "3",
 ] as const;
 export type SudokuDigit = (typeof sudokuDigits)[number];
 

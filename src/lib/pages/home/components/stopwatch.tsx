@@ -30,7 +30,7 @@ const StopwatchCommandsContext = createContext<StopwatchCommands | undefined>(
 export const useStopwatchCommands = () => {
   const context = useContext(StopwatchCommandsContext);
   if (!context)
-    throw new Error(
+    throw Error(
       "useStopwatchCommands must be used within StopwatchCommandsProvider",
     );
 
@@ -53,9 +53,7 @@ export const StopwatchTimeContext = createContext<StopwatchTime | undefined>(
 export const useStopwatchTime = () => {
   const context = useContext(StopwatchTimeContext);
   if (!context)
-    throw new Error(
-      "useStopwatchTime must be used within StopwatchTimeProvider",
-    );
+    throw Error("useStopwatchTime must be used within StopwatchTimeProvider");
 
   return context;
 };

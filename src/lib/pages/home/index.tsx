@@ -1,6 +1,14 @@
 import { Box } from "@chakra-ui/react";
 import { useLoaderData } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import {
+  createContext,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { useStopwatch } from "react-timer-hook";
 
 import type { BoardState, RawBoardState } from "@/lib/shared/types";
@@ -11,6 +19,64 @@ import {
   StopwatchCommandsProvider,
   StopwatchTimeProvider,
 } from "./components/stopwatch";
+
+// #region User Settings
+export type UserSettings = {
+  conflictChecker: boolean;
+  showSeenCells: boolean;
+  flipKeypad: boolean;
+  disableStopwatch: boolean;
+  dashedGrid: boolean;
+  showRowAndColumnLabels: boolean;
+};
+
+type UserSettingsContextValue = {
+  userSettings: UserSettings;
+  setUserSettings: Dispatch<SetStateAction<UserSettings>>;
+};
+
+const defaultSettings: UserSettings = {
+  conflictChecker: false,
+  showSeenCells: false,
+  flipKeypad: false,
+  disableStopwatch: false,
+  dashedGrid: false,
+  showRowAndColumnLabels: false,
+};
+
+const UserSettingsContext = createContext<UserSettingsContextValue | undefined>(
+  undefined,
+);
+
+export const UserSettingsProvider = ({ children }: { children: ReactNode }) => {
+  const [userSettings, setUserSettings] =
+    useState<UserSettings>(defaultSettings);
+
+  const value = useMemo(
+    () => ({
+      userSettings,
+      setUserSettings,
+    }),
+    [userSettings],
+  );
+
+  return (
+    <UserSettingsContext.Provider value={value}>
+      {children}
+    </UserSettingsContext.Provider>
+  );
+};
+
+export const useUserSettings = () => {
+  const context = useContext(UserSettingsContext);
+
+  if (!context) {
+    throw Error("useUserSettings must be used inside UserSettingsProvider");
+  }
+
+  return context;
+};
+// #endregion
 
 type LoaderData = {
   rawBoardState: RawBoardState;
@@ -52,22 +118,24 @@ const Home = () => {
   }, [isRunning, hours, minutes, seconds]);
 
   return (
-    <StopwatchCommandsProvider value={stopwatchCommandsValue}>
-      <StopwatchTimeProvider value={stopwatchTimeValue}>
-        <Header
-          isStayPausedMode={isStayPausedMode}
-          setIsStayPausedMode={setIsStayPausedMode}
-        />
-        <Box width="full" as="main" justifyItems="center" marginY={22}>
-          <Puzzle
-            key={JSON.stringify(rawBoardState)}
+    <UserSettingsProvider>
+      <StopwatchCommandsProvider value={stopwatchCommandsValue}>
+        <StopwatchTimeProvider value={stopwatchTimeValue}>
+          <Header
             isStayPausedMode={isStayPausedMode}
-            rawBoardState={rawBoardState}
-            startingBoardState={boardState}
+            setIsStayPausedMode={setIsStayPausedMode}
           />
-        </Box>
-      </StopwatchTimeProvider>
-    </StopwatchCommandsProvider>
+          <Box width="full" as="main" justifyItems="center" marginY={22}>
+            <Puzzle
+              key={JSON.stringify(rawBoardState)}
+              isStayPausedMode={isStayPausedMode}
+              rawBoardState={rawBoardState}
+              startingBoardState={boardState}
+            />
+          </Box>
+        </StopwatchTimeProvider>
+      </StopwatchCommandsProvider>
+    </UserSettingsProvider>
   );
 };
 

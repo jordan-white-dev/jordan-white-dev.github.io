@@ -25,6 +25,8 @@ import {
 import {
   type BoardState,
   type CellState,
+  flippedKeypadMarkupColors,
+  flippedKeypadSudokuDigits,
   type KeypadMode,
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_GRAY,
@@ -44,6 +46,7 @@ import {
   sudokuDigits,
 } from "@/lib/shared/types";
 
+import { useUserSettings } from "..";
 import { Tooltip } from "./tooltip";
 
 // #region CSS Properties
@@ -443,19 +446,26 @@ type ColorPadProps = {
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => (
-  <>
-    {markupColors.map((markupColor) => (
-      <ColorButton
-        key={markupColor}
-        markupColor={markupColor}
-        puzzleHistory={puzzleHistory}
-        tooltipText={colorPadTooltipTexts[markupColor]}
-        setPuzzleHistory={setPuzzleHistory}
-      />
-    ))}
-  </>
-);
+const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => {
+  const { userSettings } = useUserSettings();
+  const markupColorsInOrder = userSettings.flipKeypad
+    ? flippedKeypadMarkupColors
+    : markupColors;
+
+  return (
+    <>
+      {markupColorsInOrder.map((markupColor) => (
+        <ColorButton
+          key={markupColor}
+          markupColor={markupColor}
+          puzzleHistory={puzzleHistory}
+          tooltipText={colorPadTooltipTexts[markupColor]}
+          setPuzzleHistory={setPuzzleHistory}
+        />
+      ))}
+    </>
+  );
+};
 // #endregion
 
 // #region Number Pad
@@ -655,54 +665,61 @@ const NumberPad = ({
   keypadMode,
   puzzleHistory,
   setPuzzleHistory,
-}: NumberPadProps) => (
-  <>
-    {sudokuDigits.map((buttonValue, index) => {
-      if (keypadMode === "Digit") {
-        return (
-          <NumberButton
-            buttonValue={buttonValue}
-            textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
-            onClick={() =>
-              handleDigitInput(buttonValue, puzzleHistory, setPuzzleHistory)
-            }
-          />
-        );
-      } else if (keypadMode === "Center")
-        return (
-          <NumberButton
-            buttonValue={buttonValue}
-            textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
-            onClick={() =>
-              handleCenterMarkupInput(
-                buttonValue,
-                puzzleHistory,
-                setPuzzleHistory,
-              )
-            }
-          />
-        );
-      else {
-        return (
-          <NumberButton
-            alignItems={getAlignItems(index + 1)}
-            buttonValue={buttonValue}
-            justifyContent={getJustifyContent(index + 1)}
-            padding={{ base: "1", md: "1.5" }}
-            textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
-            onClick={() =>
-              handleCornerMarkupInput(
-                buttonValue,
-                puzzleHistory,
-                setPuzzleHistory,
-              )
-            }
-          />
-        );
-      }
-    })}
-  </>
-);
+}: NumberPadProps) => {
+  const { userSettings } = useUserSettings();
+  const sudokuDigitsInOrder = userSettings.flipKeypad
+    ? flippedKeypadSudokuDigits
+    : sudokuDigits;
+
+  return (
+    <>
+      {sudokuDigitsInOrder.map((buttonValue, index) => {
+        if (keypadMode === "Digit") {
+          return (
+            <NumberButton
+              buttonValue={buttonValue}
+              textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
+              onClick={() =>
+                handleDigitInput(buttonValue, puzzleHistory, setPuzzleHistory)
+              }
+            />
+          );
+        } else if (keypadMode === "Center")
+          return (
+            <NumberButton
+              buttonValue={buttonValue}
+              textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
+              onClick={() =>
+                handleCenterMarkupInput(
+                  buttonValue,
+                  puzzleHistory,
+                  setPuzzleHistory,
+                )
+              }
+            />
+          );
+        else {
+          return (
+            <NumberButton
+              alignItems={getAlignItems(index + 1)}
+              buttonValue={buttonValue}
+              justifyContent={getJustifyContent(index + 1)}
+              padding={{ base: "1", md: "1.5" }}
+              textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
+              onClick={() =>
+                handleCornerMarkupInput(
+                  buttonValue,
+                  puzzleHistory,
+                  setPuzzleHistory,
+                )
+              }
+            />
+          );
+        }
+      })}
+    </>
+  );
+};
 // #endregion
 
 // #region Multiselect Switch

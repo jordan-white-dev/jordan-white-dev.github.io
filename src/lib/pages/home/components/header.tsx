@@ -7,13 +7,13 @@ import {
   Kbd,
   Menu,
   Portal,
-  useCheckboxGroup,
   VStack,
 } from "@chakra-ui/react";
 import type { Dispatch, SetStateAction } from "react";
 import { ImKeyboard } from "react-icons/im";
 import { MdOutlineSettings } from "react-icons/md";
 
+import { type UserSettings, useUserSettings } from "..";
 import { Stopwatch } from "./stopwatch";
 
 // #region Shortcuts Menu
@@ -90,32 +90,46 @@ const ShortcutsMenu = () => (
 // #endregion
 
 // #region Settings Menu
-const gameplayCheckboxItems = [
-  { settingName: "Conflict Checker", value: "conflict-checker" },
-  { settingName: "Show Seen Cells", value: "show-seen-cells" },
-];
 
-const visualCheckboxItems = [
-  { settingName: "Flip Keypad", value: "flip-keypad" },
-  { settingName: "Disable Stopwatch", value: "disable-stopwatch" },
-  { settingName: "Dashed Grid", value: "dashed-grid" },
-  { settingName: "Show Row/Column Labels", value: "show-row-column-labels" },
-];
+// #region Settings Checkbox
+type SettingCheckboxProps = {
+  settingKey: keyof UserSettings;
+  settingLabel: string;
+  userSettings: UserSettings;
+  setUserSettings: React.Dispatch<React.SetStateAction<UserSettings>>;
+};
+
+const SettingsCheckbox = ({
+  settingKey,
+  settingLabel,
+  userSettings,
+  setUserSettings,
+}: SettingCheckboxProps) => (
+  <Menu.CheckboxItem
+    checked={userSettings[settingKey]}
+    closeOnSelect={false}
+    key={settingKey}
+    value={settingKey}
+    onCheckedChange={() =>
+      setUserSettings((previousUserSettings) => ({
+        ...previousUserSettings,
+        [settingKey]: !previousUserSettings[settingKey],
+      }))
+    }
+  >
+    {settingLabel}
+    <Menu.ItemIndicator />
+  </Menu.CheckboxItem>
+);
+// #endregion
 
 const SettingsMenu = () => {
-  const checkboxGroup = useCheckboxGroup();
+  const { userSettings, setUserSettings } = useUserSettings();
+
   return (
     <Menu.Root>
       <Menu.Trigger asChild>
-        <IconButton
-          alignSelf="center"
-          color="white"
-          cursor="pointer"
-          onClick={() => {
-            return;
-          }}
-          unstyled
-        >
+        <IconButton alignSelf="center" color="white" cursor="pointer" unstyled>
           <MdOutlineSettings />
         </IconButton>
       </Menu.Trigger>
@@ -124,36 +138,50 @@ const SettingsMenu = () => {
           <Menu.Content>
             <Menu.ItemGroup>
               <Menu.ItemGroupLabel>Gameplay</Menu.ItemGroupLabel>
-              {gameplayCheckboxItems.map(({ settingName, value }) => (
-                <Menu.CheckboxItem
-                  checked={checkboxGroup.isChecked(value)}
-                  closeOnSelect={false}
-                  disabled={true}
-                  key={value}
-                  value={value}
-                  onCheckedChange={() => checkboxGroup.toggleValue(value)}
-                >
-                  {settingName}
-                  <Menu.ItemIndicator />
-                </Menu.CheckboxItem>
-              ))}
+              <SettingsCheckbox
+                settingKey="conflictChecker"
+                settingLabel="Conflict Checker"
+                userSettings={userSettings}
+                setUserSettings={setUserSettings}
+              />
+
+              <SettingsCheckbox
+                settingKey="showSeenCells"
+                settingLabel="Show Seen Cells"
+                userSettings={userSettings}
+                setUserSettings={setUserSettings}
+              />
             </Menu.ItemGroup>
             <Menu.Separator />
             <Menu.ItemGroup>
               <Menu.ItemGroupLabel>Visual</Menu.ItemGroupLabel>
-              {visualCheckboxItems.map(({ settingName, value }) => (
-                <Menu.CheckboxItem
-                  checked={checkboxGroup.isChecked(value)}
-                  closeOnSelect={false}
-                  disabled={true}
-                  key={value}
-                  value={value}
-                  onCheckedChange={() => checkboxGroup.toggleValue(value)}
-                >
-                  {settingName}
-                  <Menu.ItemIndicator />
-                </Menu.CheckboxItem>
-              ))}
+              <SettingsCheckbox
+                settingKey="flipKeypad"
+                settingLabel="Flip Keypad"
+                userSettings={userSettings}
+                setUserSettings={setUserSettings}
+              />
+
+              <SettingsCheckbox
+                settingKey="disableStopwatch"
+                settingLabel="Disable Stopwatch"
+                userSettings={userSettings}
+                setUserSettings={setUserSettings}
+              />
+
+              <SettingsCheckbox
+                settingKey="dashedGrid"
+                settingLabel="Dashed Grid"
+                userSettings={userSettings}
+                setUserSettings={setUserSettings}
+              />
+
+              <SettingsCheckbox
+                settingKey="showRowAndColumnLabels"
+                settingLabel="Show Row + Column Labels"
+                userSettings={userSettings}
+                setUserSettings={setUserSettings}
+              />
             </Menu.ItemGroup>
           </Menu.Content>
         </Menu.Positioner>

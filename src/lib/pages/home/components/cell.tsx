@@ -44,32 +44,37 @@ const CELL_OUTLINE_OFFSET: ButtonProps["outlineOffset"] = {
   sm: "-6px",
   md: "-9px",
 };
-const DIGIT_TEXT_STYLE: ButtonProps["textStyle"] = {
+const DIGIT_FONT_SIZE: ButtonProps["fontSize"] = {
   base: "2xl",
   sm: "4xl",
   md: "6xl",
 };
-const CENTER_TEXT_STYLE_LENGTH_5_OR_LESS: ButtonProps["fontSize"] = {
+const CORNER_FONT_SIZE: ButtonProps["fontSize"] = {
   base: "0.625rem",
   sm: "0.875rem",
   md: "1.35rem",
 };
-const CENTER_TEXT_STYLE_LENGTH_6: ButtonProps["fontSize"] = {
+const CENTER_FONT_SIZE_LENGTH_5_OR_LESS: ButtonProps["fontSize"] = {
+  base: "0.625rem",
+  sm: "0.875rem",
+  md: "1.35rem",
+};
+const CENTER_FONT_SIZE_LENGTH_6: ButtonProps["fontSize"] = {
   base: "0.5rem",
   sm: "0.75rem",
   md: "1.15rem",
 };
-const CENTER_TEXT_STYLE_LENGTH_7: ButtonProps["fontSize"] = {
+const CENTER_FONT_SIZE_LENGTH_7: ButtonProps["fontSize"] = {
   base: "0.4rem",
   sm: "0.625rem",
   md: "1rem",
 };
-const CENTER_TEXT_STYLE_LENGTH_8: ButtonProps["fontSize"] = {
+const CENTER_FONT_SIZE_LENGTH_8: ButtonProps["fontSize"] = {
   base: "0.375rem",
   sm: "0.55rem",
   md: "0.875rem",
 };
-const CENTER_TEXT_STYLE_LENGTH_9: ButtonProps["fontSize"] = {
+const CENTER_FONT_SIZE_LENGTH_9: ButtonProps["fontSize"] = {
   base: "0.345rem",
   sm: "0.475rem",
   md: "0.775rem",
@@ -109,21 +114,21 @@ const getCellBackground = (
 
 const getFontSize = (cellContent: CellContent): ButtonProps["fontSize"] => {
   if (isStartingOrPlayerDigitInCellContent(cellContent)) {
-    return DIGIT_TEXT_STYLE;
+    return DIGIT_FONT_SIZE;
   } else if (isMarkupDigitsInCellContent(cellContent)) {
     const centerMarkupsLength = cellContent.centerMarkups.length;
 
     switch (centerMarkupsLength) {
       case 9:
-        return CENTER_TEXT_STYLE_LENGTH_9;
+        return CENTER_FONT_SIZE_LENGTH_9;
       case 8:
-        return CENTER_TEXT_STYLE_LENGTH_8;
+        return CENTER_FONT_SIZE_LENGTH_8;
       case 7:
-        return CENTER_TEXT_STYLE_LENGTH_7;
+        return CENTER_FONT_SIZE_LENGTH_7;
       case 6:
-        return CENTER_TEXT_STYLE_LENGTH_6;
+        return CENTER_FONT_SIZE_LENGTH_6;
       default:
-        return CENTER_TEXT_STYLE_LENGTH_5_OR_LESS;
+        return CENTER_FONT_SIZE_LENGTH_5_OR_LESS;
     }
   }
 };
@@ -188,6 +193,7 @@ const getCornerMarkupFloats = (
 
       floats.push(
         <Float
+          fontSize={CORNER_FONT_SIZE}
           key={cornerMarkup}
           offsetX={{ base: "1.5", sm: "2.5", md: "4" }}
           offsetY={{ base: "0.438rem", sm: "3", md: "5" }}

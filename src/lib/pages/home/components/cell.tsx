@@ -32,15 +32,10 @@ const CELL_SIZE: SquareProps["minWidth"] = {
   sm: "3.188rem", // 51px
   md: "5rem", // 80px
 };
-const CELL_OUTLINE: ButtonProps["outline"] = {
-  base: "3px solid #4ca4ff",
-  sm: "5px solid #4ca4ff",
-  md: "8px solid #4ca4ff",
-};
-const CELL_OUTLINE_OFFSET: ButtonProps["outlineOffset"] = {
-  base: "-4px",
-  sm: "-6px",
-  md: "-9px",
+const CELL_SELECTION_SHADOW: ButtonProps["boxShadow"] = {
+  base: "inset 0 0 0 3px #4ca4ff",
+  sm: "inset 0 0 0 5px #4ca4ff",
+  md: "inset 0 0 0 8px #4ca4ff",
 };
 const DIGIT_FONT_SIZE: ButtonProps["fontSize"] = {
   base: "2xl",
@@ -495,10 +490,10 @@ export const Cell = memo(
         textShadow={{
           sm: "1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff",
         }}
+        transition="none"
         width={CELL_SIZE}
         {...(cellState.isSelected && {
-          outline: CELL_OUTLINE,
-          outlineOffset: CELL_OUTLINE_OFFSET,
+          boxShadow: CELL_SELECTION_SHADOW,
         })}
         onClick={() =>
           handleCellClick(

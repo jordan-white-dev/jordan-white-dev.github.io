@@ -110,6 +110,13 @@ const getCellBackground = (
   return `conic-gradient(${gradientParts.join(", ")})`;
 };
 
+const getCellBorderWidths = (rowNumber: number, columnNumber: number) => ({
+  borderTopWidth: rowNumber % 3 === 1 ? "2px" : "1px",
+  borderLeftWidth: columnNumber % 3 === 1 ? "2px" : "1px",
+  borderRightWidth: columnNumber % 3 === 0 ? "2px" : "1px",
+  borderBottomWidth: rowNumber % 3 === 0 ? "2px" : "1px",
+});
+
 const getFontSize = (cellContent: CellContent): ButtonProps["fontSize"] => {
   if (isStartingOrPlayerDigitInCellContent(cellContent)) {
     return DIGIT_FONT_SIZE;
@@ -476,8 +483,10 @@ export const Cell = memo(
     return (
       <Button
         background={getCellBackground(cellState.markupColors)}
-        border="1px solid black"
+        {...getCellBorderWidths(cellState.rowNumber, cellState.columnNumber)}
+        borderColor="black"
         borderRadius="0"
+        borderStyle="solid"
         color={isStartingDigitInCellContent(cellContent) ? "black" : "#1212f0"}
         fontSize={getFontSize(cellContent)}
         height={CELL_SIZE}

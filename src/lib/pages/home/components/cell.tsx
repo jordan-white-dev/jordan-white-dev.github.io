@@ -26,8 +26,6 @@ import {
   type SudokuDigit,
 } from "@/lib/shared/types";
 
-import { useUserSettings } from "..";
-
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
   base: "33px",
@@ -40,7 +38,7 @@ const CELL_OUTLINE: ButtonProps["outline"] = {
   md: "8px solid #4ca4ff",
 };
 const CELL_OUTLINE_OFFSET: ButtonProps["outlineOffset"] = {
-  base: "-3px",
+  base: "-4px",
   sm: "-6px",
   md: "-9px",
 };
@@ -466,18 +464,6 @@ type CellProps = {
 
 export const Cell = memo(
   ({ cellState, isMultiselectMode, setPuzzleHistory }: CellProps) => {
-    const { userSettings } = useUserSettings();
-
-    const interiorCellBorderStyle = userSettings.dashedGrid
-      ? "1px dashed black"
-      : "1px solid black";
-    const edgeCellBorderStyle = "1px solid transparent";
-
-    const isCellOnTopBoxEdge = cellState.rowNumber % 3 === 1;
-    const isCellOnBottomBoxEdge = cellState.rowNumber % 3 === 0;
-    const isCellOnLeftBoxEdge = cellState.columnNumber % 3 === 1;
-    const isCellOnRightBoxEdge = cellState.columnNumber % 3 === 0;
-
     const cellContent = cellState.cellContent;
 
     const nonCornerDigitsInCellAsString =
@@ -490,18 +476,7 @@ export const Cell = memo(
     return (
       <Button
         background={getCellBackground(cellState.markupColors)}
-        borderTop={
-          isCellOnTopBoxEdge ? edgeCellBorderStyle : interiorCellBorderStyle
-        }
-        borderBottom={
-          isCellOnBottomBoxEdge ? edgeCellBorderStyle : interiorCellBorderStyle
-        }
-        borderLeft={
-          isCellOnLeftBoxEdge ? edgeCellBorderStyle : interiorCellBorderStyle
-        }
-        borderRight={
-          isCellOnRightBoxEdge ? edgeCellBorderStyle : interiorCellBorderStyle
-        }
+        border="1px solid black"
         borderRadius="0"
         color={isStartingDigitInCellContent(cellContent) ? "black" : "#1212f0"}
         fontSize={getFontSize(cellContent)}

@@ -147,29 +147,34 @@ const getCellBorderStyles = (
   dashedGridSetting: boolean,
   rowNumber: number,
 ) => {
-  const isCellOnTopBoxEdge = rowNumber % 3 === 1;
   const isCellOnBottomBoxEdge = rowNumber % 3 === 0;
   const isCellOnLeftBoxEdge = columnNumber % 3 === 1;
   const isCellOnRightBoxEdge = columnNumber % 3 === 0;
+  const isCellOnTopBoxEdge = rowNumber % 3 === 1;
 
   return {
-    borderTopStyle:
-      !isCellOnTopBoxEdge && dashedGridSetting ? "dashed" : "solid",
     borderBottomStyle:
       !isCellOnBottomBoxEdge && dashedGridSetting ? "dashed" : "solid",
     borderLeftStyle:
       !isCellOnLeftBoxEdge && dashedGridSetting ? "dashed" : "solid",
     borderRightStyle:
       !isCellOnRightBoxEdge && dashedGridSetting ? "dashed" : "solid",
+    borderTopStyle:
+      !isCellOnTopBoxEdge && dashedGridSetting ? "dashed" : "solid",
   };
 };
 
-const getCellBorderWidths = (rowNumber: number, columnNumber: number) => ({
-  borderTopWidth: rowNumber % 3 === 1 ? "2px" : "1px",
-  borderLeftWidth: columnNumber % 3 === 1 ? "2px" : "1px",
-  borderRightWidth: columnNumber % 3 === 0 ? "2px" : "1px",
-  borderBottomWidth: rowNumber % 3 === 0 ? "2px" : "1px",
-});
+const getCellBorderWidths = (columnNumber: number, rowNumber: number) => {
+  const isCellOnLeftBoxEdge = columnNumber % 3 === 1;
+  const isCellOnTopBoxEdge = rowNumber % 3 === 1;
+
+  return {
+    borderBottomWidth: "2px",
+    borderLeftWidth: isCellOnLeftBoxEdge ? "2px" : "0",
+    borderRightWidth: "2px",
+    borderTopWidth: isCellOnTopBoxEdge ? "2px" : "0",
+  };
+};
 
 // #region Float Handling
 const getCornerMarkups = (cellContent: CellContent): Array<string> => {
@@ -533,7 +538,7 @@ export const Cell = memo(
           userSettings.dashedGrid,
           cellState.rowNumber,
         )}
-        {...getCellBorderWidths(cellState.rowNumber, cellState.columnNumber)}
+        {...getCellBorderWidths(cellState.columnNumber, cellState.rowNumber)}
         {...(cellState.isSelected && {
           boxShadow: CELL_SELECTION_BOX_SHADOW,
         })}

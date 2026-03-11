@@ -20,7 +20,6 @@ import {
   isMarkupDigitsInCellContent,
   isPlayerDigitInCellContent,
   isStartingDigitInCellContent,
-  isStartingOrPlayerDigitInCellContent,
 } from "@/lib/shared/constants";
 import {
   type BoardState,
@@ -263,19 +262,24 @@ const areAllSelectedCellsStartingPlayerOrContainButtonValueAsMarkup = (
   markupType: Extract<KeypadMode, "Center" | "Corner">,
   previousBoardState: BoardState,
 ): boolean =>
-  previousBoardState.every(
-    (previousCellState) =>
+  previousBoardState.every((previousCellState) => {
+    const cellContent = previousCellState.cellContent;
+
+    return (
       !previousCellState.isSelected ||
-      isStartingOrPlayerDigitInCellContent(previousCellState.cellContent) ||
-      (isMarkupDigitsInCellContent(previousCellState.cellContent) &&
-      markupType === "Center"
-        ? previousCellState.cellContent.centerMarkups
-            .filter((centerMarkup) => centerMarkup !== "")
-            .includes(buttonValue)
-        : previousCellState.cellContent.cornerMarkups
-            .filter((cornerMarkup) => cornerMarkup !== "")
-            .includes(buttonValue)),
-  );
+      isStartingDigitInCellContent(cellContent) ||
+      (isPlayerDigitInCellContent(cellContent) &&
+        cellContent.playerDigit !== "") ||
+      (isMarkupDigitsInCellContent(cellContent) &&
+        (markupType === "Center"
+          ? cellContent.centerMarkups
+              .filter((centerMarkup) => centerMarkup !== "")
+              .includes(buttonValue)
+          : cellContent.cornerMarkups
+              .filter((cornerMarkup) => cornerMarkup !== "")
+              .includes(buttonValue)))
+    );
+  });
 // #endregion
 
 // #region Color Pad

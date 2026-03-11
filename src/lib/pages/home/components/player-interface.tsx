@@ -1,5 +1,6 @@
 import { Stack } from "@chakra-ui/react";
-import { type Dispatch, type SetStateAction, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import useLocalStorageState from "use-local-storage-state";
 
 import type {
   KeypadMode,
@@ -26,7 +27,12 @@ export const PlayerInterface = ({
   setIsMultiselectMode,
   setPuzzleHistory,
 }: PlayerInterfaceProps) => {
-  const [keypadMode, setKeypadMode] = useState<KeypadMode>("Digit");
+  const [keypadMode, setKeypadMode] = useLocalStorageState<KeypadMode>(
+    "keypad-mode",
+    {
+      defaultValue: "Digit",
+    },
+  );
 
   return (
     <Stack

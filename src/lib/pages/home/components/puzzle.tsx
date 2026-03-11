@@ -5,8 +5,8 @@ import {
   type SetStateAction,
   useEffect,
   useRef,
-  useState,
 } from "react";
+import useLocalStorageState from "use-local-storage-state";
 
 import type {
   BoardState,
@@ -60,11 +60,20 @@ type PuzzleProps = {
 
 export const Puzzle = memo(
   ({ rawBoardState, startingBoardState }: PuzzleProps) => {
-    const [isMultiselectMode, setIsMultiselectMode] = useState(false);
-    const [puzzleHistory, setPuzzleHistory] = useState<PuzzleHistory>({
-      currentBoardStateIndex: 0,
-      boardStateHistory: [startingBoardState],
-    });
+    const [isMultiselectMode, setIsMultiselectMode] =
+      useLocalStorageState<boolean>("multiselect-mode", {
+        defaultValue: false,
+      });
+    const [puzzleHistory, setPuzzleHistory] =
+      useLocalStorageState<PuzzleHistory>(
+        `puzzle-history-${JSON.stringify(rawBoardState)}`,
+        {
+          defaultValue: {
+            currentBoardStateIndex: 0,
+            boardStateHistory: [startingBoardState],
+          },
+        },
+      );
     const puzzleRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -81,7 +90,7 @@ export const Puzzle = memo(
 
       return () =>
         document.removeEventListener("pointerdown", handlePointerDownOutside);
-    }, []);
+    }, [setPuzzleHistory]);
 
     return (
       <Flex

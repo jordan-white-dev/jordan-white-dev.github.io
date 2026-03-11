@@ -12,15 +12,11 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useNavigate } from "@tanstack/react-router";
-import {
-  type Dispatch,
-  type ReactNode,
-  type SetStateAction,
-  useState,
-} from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 import { makepuzzle } from "sudoku";
+import useLocalStorageState from "use-local-storage-state";
 
 import {
   buildBoardState,
@@ -583,7 +579,9 @@ export const PuzzleActions = ({
   setPuzzleHistory,
 }: PuzzleActionsProps) => {
   const [startingRawBoardState, setStartingRawBoardState] =
-    useState(rawBoardState);
+    useLocalStorageState<RawBoardState>("raw-board-state", {
+      defaultValue: rawBoardState,
+    });
 
   return (
     <SimpleGrid

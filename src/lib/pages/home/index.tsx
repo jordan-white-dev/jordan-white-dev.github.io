@@ -7,9 +7,9 @@ import {
   type SetStateAction,
   useContext,
   useMemo,
-  useState,
 } from "react";
 import { useStopwatch } from "react-timer-hook";
+import useLocalStorageState from "use-local-storage-state";
 
 import type { BoardState, RawBoardState } from "@/lib/shared/types";
 
@@ -49,15 +49,19 @@ const UserSettingsContext = createContext<UserSettingsContextValue | undefined>(
 );
 
 export const UserSettingsProvider = ({ children }: { children: ReactNode }) => {
-  const [userSettings, setUserSettings] =
-    useState<UserSettings>(defaultSettings);
+  const [userSettings, setUserSettings] = useLocalStorageState<UserSettings>(
+    "user-settings",
+    {
+      defaultValue: defaultSettings,
+    },
+  );
 
   const value = useMemo(
     () => ({
       userSettings,
       setUserSettings,
     }),
-    [userSettings],
+    [userSettings, setUserSettings],
   );
 
   return (

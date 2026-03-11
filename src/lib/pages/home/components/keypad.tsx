@@ -873,15 +873,16 @@ export const Keypad = ({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       const key = event.key;
+      const code = event.code;
 
-      // Equivalent to: /^[1-9]$/
-      const validNumberKey = SuperExpressive()
-        .startOfInput.range("1", "9")
+      // Equivalent to: "/^Digit[1-9]$/"
+      const validNumberCode = SuperExpressive()
+        .startOfInput.string("Digit")
+        .range("1", "9")
         .endOfInput.toRegex();
 
-      if (validNumberKey.test(key)) {
-        const digit = key as SudokuDigit;
-
+      if (validNumberCode.test(code)) {
+        const digit = code.replace("Digit", "") as SudokuDigit;
         handleNumberKeyDown(digit);
       } else if (key === "Escape" || key === "Backspace" || key === "Delete") {
         handleClearButton(puzzleHistory, setPuzzleHistory);

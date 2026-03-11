@@ -32,7 +32,7 @@ const CELL_SIZE: SquareProps["minWidth"] = {
   sm: "3.188rem", // 51px
   md: "5rem", // 80px
 };
-const CELL_SELECTION_SHADOW: ButtonProps["boxShadow"] = {
+const CELL_SELECTION_BOX_SHADOW: ButtonProps["boxShadow"] = {
   base: "inset 0 0 0 3px #4ca4ff",
   sm: "inset 0 0 0 5px #4ca4ff",
   md: "inset 0 0 0 8px #4ca4ff",
@@ -506,7 +506,7 @@ export const Cell = memo(
         transition="none"
         width={CELL_SIZE}
         {...(cellState.isSelected && {
-          boxShadow: CELL_SELECTION_SHADOW,
+          boxShadow: CELL_SELECTION_BOX_SHADOW,
         })}
         onClick={() =>
           handleCellClick(

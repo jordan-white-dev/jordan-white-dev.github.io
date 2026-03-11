@@ -179,7 +179,7 @@ const SettingsMenu = () => {
               />
 
               <SettingsCheckbox
-                disabled={true}
+                disabled={false}
                 settingKey="dashedGrid"
                 settingLabel="Dashed Grid"
                 userSettings={userSettings}

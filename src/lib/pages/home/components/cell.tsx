@@ -26,6 +26,8 @@ import {
   type SudokuDigit,
 } from "@/lib/shared/types";
 
+import { useUserSettings } from "..";
+
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {
   base: "33px",
@@ -113,13 +115,6 @@ const getCellBackground = (
   return `conic-gradient(${gradientParts.join(", ")})`;
 };
 
-const getCellBorderWidths = (rowNumber: number, columnNumber: number) => ({
-  borderTopWidth: rowNumber % 3 === 1 ? "2px" : "1px",
-  borderLeftWidth: columnNumber % 3 === 1 ? "2px" : "1px",
-  borderRightWidth: columnNumber % 3 === 0 ? "2px" : "1px",
-  borderBottomWidth: rowNumber % 3 === 0 ? "2px" : "1px",
-});
-
 const getFontSize = (cellContent: CellContent): ButtonProps["fontSize"] => {
   if (isStartingOrPlayerDigitInCellContent(cellContent)) {
     return DIGIT_FONT_SIZE;
@@ -146,6 +141,35 @@ const getTextShadow = (cellContent: CellContent): ButtonProps["textShadow"] =>
   cellContent.centerMarkups[0] !== ""
     ? MARKUP_TEXT_SHADOW
     : DIGIT_TEXT_SHADOW;
+
+const getCellBorderStyles = (
+  columnNumber: number,
+  dashedGridSetting: boolean,
+  rowNumber: number,
+) => {
+  const isCellOnTopBoxEdge = rowNumber % 3 === 1;
+  const isCellOnBottomBoxEdge = rowNumber % 3 === 0;
+  const isCellOnLeftBoxEdge = columnNumber % 3 === 1;
+  const isCellOnRightBoxEdge = columnNumber % 3 === 0;
+
+  return {
+    borderTopStyle:
+      !isCellOnTopBoxEdge && dashedGridSetting ? "dashed" : "solid",
+    borderBottomStyle:
+      !isCellOnBottomBoxEdge && dashedGridSetting ? "dashed" : "solid",
+    borderLeftStyle:
+      !isCellOnLeftBoxEdge && dashedGridSetting ? "dashed" : "solid",
+    borderRightStyle:
+      !isCellOnRightBoxEdge && dashedGridSetting ? "dashed" : "solid",
+  };
+};
+
+const getCellBorderWidths = (rowNumber: number, columnNumber: number) => ({
+  borderTopWidth: rowNumber % 3 === 1 ? "2px" : "1px",
+  borderLeftWidth: columnNumber % 3 === 1 ? "2px" : "1px",
+  borderRightWidth: columnNumber % 3 === 0 ? "2px" : "1px",
+  borderBottomWidth: rowNumber % 3 === 0 ? "2px" : "1px",
+});
 
 // #region Float Handling
 const getCornerMarkups = (cellContent: CellContent): Array<string> => {
@@ -481,22 +505,21 @@ type CellProps = {
 
 export const Cell = memo(
   ({ cellState, isMultiselectMode, setPuzzleHistory }: CellProps) => {
+    const { userSettings } = useUserSettings();
+
     const cellContent = cellState.cellContent;
 
     const nonCornerDigitsInCellAsString =
       getNonCornerDigitsInCellAsString(cellContent);
 
     const cornerMarkups = getCornerMarkups(cellContent);
-
     const cornerMarkupFloats = getCornerMarkupFloats(cornerMarkups);
 
     return (
       <Button
         background={getCellBackground(cellState.markupColors)}
-        {...getCellBorderWidths(cellState.rowNumber, cellState.columnNumber)}
         borderColor="black"
         borderRadius="0"
-        borderStyle="solid"
         color={isStartingDigitInCellContent(cellContent) ? "black" : "#1212f0"}
         fontSize={getFontSize(cellContent)}
         height={CELL_SIZE}
@@ -505,6 +528,12 @@ export const Cell = memo(
         textShadow={getTextShadow(cellContent)}
         transition="none"
         width={CELL_SIZE}
+        {...getCellBorderStyles(
+          cellState.columnNumber,
+          userSettings.dashedGrid,
+          cellState.rowNumber,
+        )}
+        {...getCellBorderWidths(cellState.rowNumber, cellState.columnNumber)}
         {...(cellState.isSelected && {
           boxShadow: CELL_SELECTION_BOX_SHADOW,
         })}

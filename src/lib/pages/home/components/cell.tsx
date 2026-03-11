@@ -43,34 +43,42 @@ const DIGIT_FONT_SIZE: ButtonProps["fontSize"] = {
   md: "6xl",
 };
 const CORNER_FONT_SIZE: ButtonProps["fontSize"] = {
-  base: "0.625rem",
+  base: "0.5rem",
   sm: "0.875rem",
   md: "1.35rem",
 };
 const CENTER_FONT_SIZE_LENGTH_5_OR_LESS: ButtonProps["fontSize"] = {
-  base: "0.625rem",
-  sm: "0.875rem",
+  base: "0.525rem",
+  sm: "0.8rem",
   md: "1.35rem",
 };
 const CENTER_FONT_SIZE_LENGTH_6: ButtonProps["fontSize"] = {
-  base: "0.5rem",
-  sm: "0.75rem",
-  md: "1.15rem",
+  base: "0.425rem",
+  sm: "0.675rem",
+  md: "1.1rem",
 };
 const CENTER_FONT_SIZE_LENGTH_7: ButtonProps["fontSize"] = {
-  base: "0.4rem",
-  sm: "0.625rem",
-  md: "1rem",
+  base: "0.375rem",
+  sm: "0.575rem",
+  md: "0.95rem",
 };
 const CENTER_FONT_SIZE_LENGTH_8: ButtonProps["fontSize"] = {
-  base: "0.375rem",
-  sm: "0.55rem",
-  md: "0.875rem",
+  base: "0.33rem",
+  sm: "0.5rem",
+  md: "0.825rem",
 };
 const CENTER_FONT_SIZE_LENGTH_9: ButtonProps["fontSize"] = {
-  base: "0.345rem",
-  sm: "0.475rem",
-  md: "0.775rem",
+  base: "0.3rem",
+  sm: "0.455rem",
+  md: "0.725rem",
+};
+const DIGIT_TEXT_SHADOW: ButtonProps["textShadow"] = {
+  base: "1px 1px 0 #fff",
+  sm: "1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff",
+};
+const MARKUP_TEXT_SHADOW: ButtonProps["textShadow"] = {
+  base: "none",
+  sm: "1px 0 0 #fff",
 };
 // #endregion
 
@@ -198,6 +206,7 @@ const getCornerMarkupFloats = (
           offsetX={{ base: "1.5", sm: "2.5", md: "4" }}
           offsetY={{ base: "0.438rem", sm: "3", md: "5" }}
           placement={placement}
+          textShadow={MARKUP_TEXT_SHADOW}
         >
           {cornerMarkup}
         </Float>,
@@ -458,6 +467,12 @@ const handleCellDoubleClick = (
 
 // #endregion
 
+const getTextShadow = (cellContent: CellContent): ButtonProps["textShadow"] =>
+  isMarkupDigitsInCellContent(cellContent) &&
+  cellContent.centerMarkups[0] !== ""
+    ? MARKUP_TEXT_SHADOW
+    : DIGIT_TEXT_SHADOW;
+
 type CellProps = {
   cellState: CellState;
   isMultiselectMode: boolean;
@@ -487,9 +502,7 @@ export const Cell = memo(
         height={CELL_SIZE}
         minWidth={CELL_SIZE}
         padding="0"
-        textShadow={{
-          sm: "1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff",
-        }}
+        textShadow={getTextShadow(cellContent)}
         transition="none"
         width={CELL_SIZE}
         {...(cellState.isSelected && {

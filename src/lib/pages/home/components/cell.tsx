@@ -44,7 +44,7 @@ const DIGIT_FONT_SIZE: ButtonProps["fontSize"] = {
   sm: "4xl",
   md: "6xl",
 };
-const CORNER_FONT_SIZE: ButtonProps["fontSize"] = {
+const CORNER_AND_LABEL_FONT_SIZE: ButtonProps["fontSize"] = {
   base: "0.5rem",
   sm: "0.875rem",
   md: "1.35rem",
@@ -236,7 +236,7 @@ const getCornerMarkupFloats = (
 
       floats.push(
         <Float
-          fontSize={CORNER_FONT_SIZE}
+          fontSize={CORNER_AND_LABEL_FONT_SIZE}
           key={cornerMarkup}
           offsetX={{ base: "1.5", sm: "2.5", md: "4" }}
           offsetY={{ base: "0.438rem", sm: "3", md: "5" }}
@@ -253,6 +253,34 @@ const getCornerMarkupFloats = (
   );
 
   return cornerMarkupFloats;
+};
+
+const getRowLabelFloat = (labelNumber: number): ReactNode => {
+  return (
+    <Float
+      color="black"
+      fontSize={CORNER_AND_LABEL_FONT_SIZE}
+      key={`row-label-${labelNumber}`}
+      offsetX={{ base: "-8px", md: "-15px" }}
+      placement="middle-start"
+    >
+      {labelNumber.toString()}
+    </Float>
+  );
+};
+
+const getColumnLabelFloat = (labelNumber: number): ReactNode => {
+  return (
+    <Float
+      color="black"
+      fontSize={CORNER_AND_LABEL_FONT_SIZE}
+      key={`column-label-${labelNumber}`}
+      offsetY={{ base: "-8px", sm: "-12px", md: "-15px" }}
+      placement="top-center"
+    >
+      {labelNumber.toString()}
+    </Float>
+  );
 };
 // #endregion
 
@@ -511,6 +539,7 @@ type CellProps = {
 export const Cell = memo(
   ({ cellState, isMultiselectMode, setPuzzleHistory }: CellProps) => {
     const { userSettings } = useUserSettings();
+    const showRowAndColumnLabels = userSettings.showRowAndColumnLabels;
 
     const cellContent = cellState.cellContent;
 
@@ -551,6 +580,12 @@ export const Cell = memo(
         }
         onDoubleClick={() => handleCellDoubleClick(cellState, setPuzzleHistory)}
       >
+        {showRowAndColumnLabels &&
+          cellState.columnNumber === 1 &&
+          getRowLabelFloat(cellState.rowNumber)}
+        {showRowAndColumnLabels &&
+          cellState.rowNumber === 1 &&
+          getColumnLabelFloat(cellState.columnNumber)}
         {cornerMarkupFloats}
         {nonCornerDigitsInCellAsString}
       </Button>

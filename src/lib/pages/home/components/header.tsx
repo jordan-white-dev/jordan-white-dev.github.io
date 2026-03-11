@@ -208,7 +208,7 @@ const SettingsMenu = () => {
               />
 
               <SettingsCheckbox
-                disabled={true}
+                disabled={false}
                 settingKey="showRowAndColumnLabels"
                 settingLabel="Show Row + Column Labels"
                 userSettings={userSettings}

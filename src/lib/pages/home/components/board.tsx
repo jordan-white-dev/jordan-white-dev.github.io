@@ -25,9 +25,9 @@ export const Board = ({
       columns={9}
       gap="0"
       minWidth={{
-        base: "301px", // 313px
-        sm: "463px", // 475px
-        md: "724px", // 736px
+        base: "301px",
+        sm: "463px",
+        md: "724px",
       }}
     >
       {cellStates.map((cellState) => (

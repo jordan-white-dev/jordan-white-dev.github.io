@@ -89,6 +89,7 @@ export const Puzzle = memo(
         direction={{ base: "column", lg: "row" }}
         fontFamily="sans-serif"
         gap={{ base: "4", md: "8" }}
+        marginTop={{ sm: "2.5" }}
         ref={puzzleRef}
       >
         <Board

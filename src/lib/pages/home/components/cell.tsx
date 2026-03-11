@@ -141,6 +141,12 @@ const getFontSize = (cellContent: CellContent): ButtonProps["fontSize"] => {
   }
 };
 
+const getTextShadow = (cellContent: CellContent): ButtonProps["textShadow"] =>
+  isMarkupDigitsInCellContent(cellContent) &&
+  cellContent.centerMarkups[0] !== ""
+    ? MARKUP_TEXT_SHADOW
+    : DIGIT_TEXT_SHADOW;
+
 // #region Float Handling
 const getCornerMarkups = (cellContent: CellContent): Array<string> => {
   if (
@@ -466,12 +472,6 @@ const handleCellDoubleClick = (
 // #endregion
 
 // #endregion
-
-const getTextShadow = (cellContent: CellContent): ButtonProps["textShadow"] =>
-  isMarkupDigitsInCellContent(cellContent) &&
-  cellContent.centerMarkups[0] !== ""
-    ? MARKUP_TEXT_SHADOW
-    : DIGIT_TEXT_SHADOW;
 
 type CellProps = {
   cellState: CellState;

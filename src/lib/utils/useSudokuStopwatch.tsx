@@ -7,7 +7,7 @@ import {
 } from "react";
 import { useStopwatch } from "react-timer-hook";
 
-import { useUserSettings } from "../pages/home";
+import { useUserSettings } from "./useUserSettings";
 
 type SudokuStopwatchContextValue = {
   isStopwatchRunning: boolean;

@@ -12,8 +12,12 @@ import {
 import { ImKeyboard } from "react-icons/im";
 import { MdOutlineSettings } from "react-icons/md";
 
+import {
+  type UserSettings,
+  useUserSettings,
+} from "@/lib/utils/useUserSettings";
+
 import { useSudokuStopwatch } from "../../../utils/useSudokuStopwatch";
-import { type UserSettings, useUserSettings } from "..";
 import { Stopwatch } from "./stopwatch";
 
 // #region Shortcuts Menu

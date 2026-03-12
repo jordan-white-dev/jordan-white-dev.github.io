@@ -44,8 +44,8 @@ import {
   type SudokuDigit,
   sudokuDigits,
 } from "@/lib/shared/types";
+import { useUserSettings } from "@/lib/utils/useUserSettings";
 
-import { useUserSettings } from "..";
 import { Tooltip } from "./tooltip";
 
 // #region CSS Properties

@@ -28,9 +28,9 @@ import type {
   PuzzleHistory,
   RawBoardState,
 } from "@/lib/shared/types";
+import { useUserSettings } from "@/lib/utils/useUserSettings";
 
 import { useSudokuStopwatch } from "../../../utils/useSudokuStopwatch";
-import { useUserSettings } from "..";
 import { Tooltip } from "./tooltip";
 
 // #region CSS Properties

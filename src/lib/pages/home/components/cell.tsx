@@ -25,8 +25,7 @@ import {
   type PuzzleHistory,
   type SudokuDigit,
 } from "@/lib/shared/types";
-
-import { useUserSettings } from "..";
+import { useUserSettings } from "@/lib/utils/useUserSettings";
 
 // #region CSS Properties
 const CELL_SIZE: SquareProps["minWidth"] = {

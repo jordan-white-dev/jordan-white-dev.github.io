@@ -16,7 +16,6 @@ import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 import { makepuzzle } from "sudoku";
-import useLocalStorageState from "use-local-storage-state";
 
 import {
   buildBoardState,
@@ -184,53 +183,20 @@ const ActionDialog = ({
 // #endregion
 
 // #region New Puzzle Button
-type StartingBoardStates = {
-  rawBoardState: RawBoardState;
-  boardState: BoardState;
-};
-
-const getNewStartingBoardStates = (): StartingBoardStates => {
-  const rawBoardState: RawBoardState = makepuzzle();
-  const boardState: BoardState = buildBoardState(rawBoardState);
-
-  const startingBoardStates = { rawBoardState, boardState };
-
-  return startingBoardStates;
-};
-
 const handleResetStopwatchAndNewPuzzleConfirmation = (
   reset: () => void,
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-  setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>,
   navigate: ReturnType<typeof useNavigate>,
 ) => {
   reset();
 
-  const newStartingBoardStates = getNewStartingBoardStates();
-  setStartingRawBoardState(newStartingBoardStates.rawBoardState);
-  const newPuzzleHistory = {
-    currentBoardStateIndex: 0,
-    boardStateHistory: [newStartingBoardStates.boardState],
-  };
-  setPuzzleHistory(newPuzzleHistory);
-
-  const rawSudokuString = rawBoardStateToRawSudokuString(
-    newStartingBoardStates.rawBoardState,
-  );
+  const newRawBoardState: RawBoardState = makepuzzle();
+  const rawSudokuString = rawBoardStateToRawSudokuString(newRawBoardState);
   const encodedBase36String =
     encodeRawSudokuStringAsBase36String(rawSudokuString);
   navigate({ to: `/puzzle/${encodedBase36String}` });
 };
 
-type NewPuzzleButtonProps = {
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
-  setStartingRawBoardState: Dispatch<SetStateAction<RawBoardState>>;
-};
-
-const NewPuzzleButton = ({
-  setPuzzleHistory,
-  setStartingRawBoardState,
-}: NewPuzzleButtonProps) => {
+const NewPuzzleButton = () => {
   const { pause, reset, start } = useStopwatchCommands();
   const { userSettings } = useUserSettings();
 
@@ -258,12 +224,7 @@ const NewPuzzleButton = ({
               <Button
                 colorPalette="blue"
                 onClick={() =>
-                  handleResetStopwatchAndNewPuzzleConfirmation(
-                    reset,
-                    setPuzzleHistory,
-                    setStartingRawBoardState,
-                    navigate,
-                  )
+                  handleResetStopwatchAndNewPuzzleConfirmation(reset, navigate)
                 }
               >
                 New Puzzle
@@ -454,18 +415,16 @@ const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
 // #endregion
 
 // #region Restart Puzzle Button
-const getRestartedBoardState = (
-  startingRawBoardState: RawBoardState,
-): BoardState => {
-  const restartedBoardState = buildBoardState(startingRawBoardState);
+const getRestartedBoardState = (rawBoardState: RawBoardState): BoardState => {
+  const restartedBoardState = buildBoardState(rawBoardState);
   return restartedBoardState;
 };
 
 const handleRestartPuzzleConfirmation = (
-  startingRawBoardState: RawBoardState,
+  rawBoardState: RawBoardState,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
-  const restartedBoardState = getRestartedBoardState(startingRawBoardState);
+  const restartedBoardState = getRestartedBoardState(rawBoardState);
   const newPuzzleHistory = {
     currentBoardStateIndex: 0,
     boardStateHistory: [restartedBoardState],
@@ -474,12 +433,12 @@ const handleRestartPuzzleConfirmation = (
 };
 
 type RestartPuzzleDialogFooterProps = {
-  startingRawBoardState: RawBoardState;
+  rawBoardState: RawBoardState;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const RestartPuzzleDialogFooter = ({
-  startingRawBoardState,
+  rawBoardState,
   setPuzzleHistory,
 }: RestartPuzzleDialogFooterProps) => {
   const { reset, start } = useStopwatchCommands();
@@ -505,10 +464,7 @@ const RestartPuzzleDialogFooter = ({
             colorPalette="blue"
             onClick={() => {
               reset();
-              handleRestartPuzzleConfirmation(
-                startingRawBoardState,
-                setPuzzleHistory,
-              );
+              handleRestartPuzzleConfirmation(rawBoardState, setPuzzleHistory);
             }}
           >
             <MdRestartAlt /> Restart
@@ -520,10 +476,7 @@ const RestartPuzzleDialogFooter = ({
             colorPalette="blue"
             onClick={() => {
               start();
-              handleRestartPuzzleConfirmation(
-                startingRawBoardState,
-                setPuzzleHistory,
-              );
+              handleRestartPuzzleConfirmation(rawBoardState, setPuzzleHistory);
             }}
           >
             <MdRestartAlt /> + <ImStopwatch /> Keep Time
@@ -535,12 +488,12 @@ const RestartPuzzleDialogFooter = ({
 };
 
 type RestartPuzzleButtonProps = {
-  startingRawBoardState: RawBoardState;
+  rawBoardState: RawBoardState;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 const RestartPuzzleButton = ({
-  startingRawBoardState,
+  rawBoardState,
   setPuzzleHistory,
 }: RestartPuzzleButtonProps) => {
   const { pause } = useStopwatchCommands();
@@ -550,7 +503,7 @@ const RestartPuzzleButton = ({
       dialogBodyText="Are you sure you want to restart the puzzle? All progress will be lost!"
       dialogFooter={
         <RestartPuzzleDialogFooter
-          startingRawBoardState={startingRawBoardState}
+          rawBoardState={rawBoardState}
           setPuzzleHistory={setPuzzleHistory}
         />
       }
@@ -578,11 +531,6 @@ export const PuzzleActions = ({
   rawBoardState,
   setPuzzleHistory,
 }: PuzzleActionsProps) => {
-  const [startingRawBoardState, setStartingRawBoardState] =
-    useLocalStorageState<RawBoardState>("raw-board-state", {
-      defaultValue: rawBoardState,
-    });
-
   return (
     <SimpleGrid
       columnGap={{ base: "0.5", lg: "3" }}
@@ -590,10 +538,7 @@ export const PuzzleActions = ({
       maxWidth="12.75rem"
       rowGap={{ base: "0.125rem", md: "0.2875rem" }}
     >
-      <NewPuzzleButton
-        setPuzzleHistory={setPuzzleHistory}
-        setStartingRawBoardState={setStartingRawBoardState}
-      />
+      <NewPuzzleButton />
       <UndoButton
         puzzleHistory={puzzleHistory}
         setPuzzleHistory={setPuzzleHistory}
@@ -604,7 +549,7 @@ export const PuzzleActions = ({
       />
       <CheckSolutionButton puzzleHistory={puzzleHistory} />
       <RestartPuzzleButton
-        startingRawBoardState={startingRawBoardState}
+        rawBoardState={rawBoardState}
         setPuzzleHistory={setPuzzleHistory}
       />
     </SimpleGrid>

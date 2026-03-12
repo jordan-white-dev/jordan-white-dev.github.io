@@ -12,8 +12,9 @@ import {
 import { ImKeyboard } from "react-icons/im";
 import { MdOutlineSettings } from "react-icons/md";
 
+import { useSudokuStopwatch } from "../../../utils/useSudokuStopwatch";
 import { type UserSettings, useUserSettings } from "..";
-import { Stopwatch, useStopwatchCommands } from "./stopwatch";
+import { Stopwatch } from "./stopwatch";
 
 // #region Shortcuts Menu
 const nonClearCellShortcutItems = [
@@ -121,7 +122,7 @@ const SettingsCheckbox = ({
 // #endregion
 
 const SettingsMenu = () => {
-  const { pause, start } = useStopwatchCommands();
+  const { pauseStopwatch, startStopwatch } = useSudokuStopwatch();
   const { userSettings, setUserSettings } = useUserSettings();
 
   return (
@@ -197,8 +198,8 @@ const SettingsMenu = () => {
                 settingLabel="Disable Stopwatch"
                 userSettings={userSettings}
                 onCheckedChange={() => {
-                  if (!userSettings.disableStopwatch) pause();
-                  else start();
+                  if (!userSettings.disableStopwatch) pauseStopwatch();
+                  else startStopwatch();
 
                   setUserSettings((previousUserSettings) => ({
                     ...previousUserSettings,

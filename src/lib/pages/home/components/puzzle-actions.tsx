@@ -29,8 +29,8 @@ import type {
   RawBoardState,
 } from "@/lib/shared/types";
 
+import { useSudokuStopwatch } from "../../../utils/useSudokuStopwatch";
 import { useUserSettings } from "..";
-import { useStopwatchCommands, useStopwatchTime } from "./stopwatch";
 import { Tooltip } from "./tooltip";
 
 // #region CSS Properties
@@ -83,13 +83,6 @@ const handleSetPuzzleHistory = (
 
     return newPuzzleHistory;
   });
-};
-
-const startStopwatchIfEnabled = (
-  disableStopwatchSetting: boolean,
-  start: () => void,
-) => {
-  if (!disableStopwatchSetting) start();
 };
 
 // #region Action Button
@@ -148,19 +141,14 @@ const ActionDialog = ({
   dialogTitleText,
   dialogTrigger,
 }: ActionDialogProps) => {
-  const { start } = useStopwatchCommands();
-  const { userSettings } = useUserSettings();
+  const { startStopwatchIfEnabled } = useSudokuStopwatch();
 
   return (
     <Dialog.Root
       placement="center"
       size="sm"
-      onEscapeKeyDown={() =>
-        startStopwatchIfEnabled(userSettings.disableStopwatch, start)
-      }
-      onPointerDownOutside={() =>
-        startStopwatchIfEnabled(userSettings.disableStopwatch, start)
-      }
+      onEscapeKeyDown={startStopwatchIfEnabled}
+      onPointerDownOutside={startStopwatchIfEnabled}
     >
       {dialogTrigger}
       <Portal>
@@ -184,21 +172,21 @@ const ActionDialog = ({
 
 // #region New Puzzle Button
 const handleResetStopwatchAndNewPuzzleConfirmation = (
-  reset: () => void,
-  navigate: ReturnType<typeof useNavigate>,
+  resetStopwatch: () => void,
+  navigateToNewPuzzle: ReturnType<typeof useNavigate>,
 ) => {
-  reset();
+  resetStopwatch();
 
   const newRawBoardState: RawBoardState = makepuzzle();
   const rawSudokuString = rawBoardStateToRawSudokuString(newRawBoardState);
   const encodedBase36String =
     encodeRawSudokuStringAsBase36String(rawSudokuString);
-  navigate({ to: `/puzzle/${encodedBase36String}` });
+  navigateToNewPuzzle({ to: `/puzzle/${encodedBase36String}` });
 };
 
 const NewPuzzleButton = () => {
-  const { pause, reset, start } = useStopwatchCommands();
-  const { userSettings } = useUserSettings();
+  const { pauseStopwatch, resetStopwatch, startStopwatchIfEnabled } =
+    useSudokuStopwatch();
 
   const navigate = useNavigate();
 
@@ -212,9 +200,7 @@ const NewPuzzleButton = () => {
               <Button
                 colorPalette="gray"
                 variant="outline"
-                onClick={() =>
-                  startStopwatchIfEnabled(userSettings.disableStopwatch, start)
-                }
+                onClick={startStopwatchIfEnabled}
               >
                 Cancel
               </Button>
@@ -224,7 +210,10 @@ const NewPuzzleButton = () => {
               <Button
                 colorPalette="blue"
                 onClick={() =>
-                  handleResetStopwatchAndNewPuzzleConfirmation(reset, navigate)
+                  handleResetStopwatchAndNewPuzzleConfirmation(
+                    resetStopwatch,
+                    navigate,
+                  )
                 }
               >
                 New Puzzle
@@ -235,7 +224,7 @@ const NewPuzzleButton = () => {
         dialogTitleText="Confirm New"
         dialogTrigger={
           <ActionTooltip tooltipText="Start a new puzzle">
-            <Dialog.Trigger asChild onClick={pause}>
+            <Dialog.Trigger asChild onClick={pauseStopwatch}>
               <ActionButton
                 icon={<MdOutlineFiberNew />}
                 iconSize={MD_ICON_SIZE_ALT}
@@ -352,13 +341,13 @@ const getDialogBodyText = (
   return isPuzzleSolved ? solvedText : notSolvedText;
 };
 
-const startStopwatchIfUnsolvedAndEnabled = (
+const startStopwatchAfterSolutionCheckIfAppropriate = (
   isPuzzleSolved: boolean,
-  disableStopwatchSetting: boolean,
-  start: () => void,
+  isStopwatchDisabled: boolean,
+  startStopwatch: () => void,
 ) => {
-  if (!(isPuzzleSolved || disableStopwatchSetting)) {
-    start();
+  if (!(isPuzzleSolved || isStopwatchDisabled)) {
+    startStopwatch();
   }
 };
 
@@ -367,8 +356,8 @@ type CheckSolutionButtonProps = {
 };
 
 const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
-  const { pause, start } = useStopwatchCommands();
-  const { stopwatchTime } = useStopwatchTime();
+  const { formattedStopwatchTime, pauseStopwatch, startStopwatch } =
+    useSudokuStopwatch();
   const { userSettings } = useUserSettings();
 
   const isPuzzleSolved = getIsPuzzleSolved(
@@ -380,7 +369,7 @@ const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
       dialogBodyText={getDialogBodyText(
         isPuzzleSolved,
         userSettings.disableStopwatch,
-        stopwatchTime,
+        formattedStopwatchTime,
       )}
       dialogFooter={
         <Dialog.Footer>
@@ -389,10 +378,10 @@ const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
               colorPalette={isPuzzleSolved ? "blue" : "red"}
               variant="solid"
               onClick={() =>
-                startStopwatchIfUnsolvedAndEnabled(
+                startStopwatchAfterSolutionCheckIfAppropriate(
                   isPuzzleSolved,
                   userSettings.disableStopwatch,
-                  start,
+                  startStopwatch,
                 )
               }
             >
@@ -404,7 +393,7 @@ const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
       dialogTitleText={isPuzzleSolved ? "Congratulations" : "Try Again"}
       dialogTrigger={
         <ActionTooltip tooltipText="Check the current solution">
-          <Dialog.Trigger asChild onClick={pause}>
+          <Dialog.Trigger asChild onClick={pauseStopwatch}>
             <ActionButton icon={<ImCheckmark />} iconSize={IM_ICON_SIZE} />
           </Dialog.Trigger>
         </ActionTooltip>
@@ -441,8 +430,8 @@ const RestartPuzzleDialogFooter = ({
   rawBoardState,
   setPuzzleHistory,
 }: RestartPuzzleDialogFooterProps) => {
-  const { reset, start } = useStopwatchCommands();
-  const { userSettings } = useUserSettings();
+  const { resetStopwatch, startStopwatch, startStopwatchIfEnabled } =
+    useSudokuStopwatch();
 
   return (
     <Dialog.Footer justifyContent="center">
@@ -451,9 +440,7 @@ const RestartPuzzleDialogFooter = ({
           <Button
             colorPalette="gray"
             variant="outline"
-            onClick={() =>
-              startStopwatchIfEnabled(userSettings.disableStopwatch, start)
-            }
+            onClick={startStopwatchIfEnabled}
           >
             Cancel
           </Button>
@@ -463,7 +450,7 @@ const RestartPuzzleDialogFooter = ({
           <Button
             colorPalette="blue"
             onClick={() => {
-              reset();
+              resetStopwatch();
               handleRestartPuzzleConfirmation(rawBoardState, setPuzzleHistory);
             }}
           >
@@ -475,7 +462,7 @@ const RestartPuzzleDialogFooter = ({
           <Button
             colorPalette="blue"
             onClick={() => {
-              start();
+              startStopwatch();
               handleRestartPuzzleConfirmation(rawBoardState, setPuzzleHistory);
             }}
           >
@@ -496,7 +483,7 @@ const RestartPuzzleButton = ({
   rawBoardState,
   setPuzzleHistory,
 }: RestartPuzzleButtonProps) => {
-  const { pause } = useStopwatchCommands();
+  const { pauseStopwatch } = useSudokuStopwatch();
 
   return (
     <ActionDialog
@@ -510,7 +497,7 @@ const RestartPuzzleButton = ({
       dialogTitleText="Confirm Restart"
       dialogTrigger={
         <ActionTooltip tooltipText="Restart the puzzle">
-          <Dialog.Trigger asChild onClick={pause}>
+          <Dialog.Trigger asChild onClick={pauseStopwatch}>
             <ActionButton icon={<MdRestartAlt />} iconSize={MD_ICON_SIZE} />
           </Dialog.Trigger>
         </ActionTooltip>

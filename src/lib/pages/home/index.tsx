@@ -8,17 +8,13 @@ import {
   useContext,
   useMemo,
 } from "react";
-import { useStopwatch } from "react-timer-hook";
 import useLocalStorageState from "use-local-storage-state";
 
 import type { BoardState, RawBoardState } from "@/lib/shared/types";
 
+import { SudokuStopwatchProvider } from "../../utils/useSudokuStopwatch";
 import { Header } from "./components/header";
 import { Puzzle } from "./components/puzzle";
-import {
-  StopwatchCommandsProvider,
-  StopwatchTimeProvider,
-} from "./components/stopwatch";
 
 // #region User Settings
 export type UserSettings = {
@@ -92,47 +88,18 @@ const Home = () => {
     from: "/puzzle/$encoded",
   }) as LoaderData;
 
-  const { hours, isRunning, minutes, seconds, pause, reset, start } =
-    useStopwatch({
-      interval: 500,
-    });
-
-  const stopwatchCommandsValue = useMemo(
-    () => ({ pause, reset, start }),
-    [pause, reset, start],
-  );
-
-  const stopwatchTimeValue = useMemo(() => {
-    const getPaddedMinutes = () => {
-      if (hours >= 1) {
-        const hoursToMinutes = 60 * hours;
-        const totalMinutes = minutes + hoursToMinutes;
-        const paddedTotalMinutesAsString = `${String(totalMinutes).padStart(3, "0")}`;
-        return paddedTotalMinutesAsString;
-      } else return `${String(minutes).padStart(2, "0")}`;
-    };
-
-    const paddedMinutes = getPaddedMinutes();
-    const paddedSeconds = `${String(seconds).padStart(2, "0")}`;
-    const stopwatchTime = `${paddedMinutes}:${paddedSeconds}`;
-
-    return { isRunning, stopwatchTime };
-  }, [isRunning, hours, minutes, seconds]);
-
   return (
     <UserSettingsProvider>
-      <StopwatchCommandsProvider value={stopwatchCommandsValue}>
-        <StopwatchTimeProvider value={stopwatchTimeValue}>
-          <Header />
-          <Box width="full" as="main" justifyItems="center" marginY={22}>
-            <Puzzle
-              key={JSON.stringify(rawBoardState)}
-              rawBoardState={rawBoardState}
-              startingBoardState={boardState}
-            />
-          </Box>
-        </StopwatchTimeProvider>
-      </StopwatchCommandsProvider>
+      <SudokuStopwatchProvider>
+        <Header />
+        <Box width="full" as="main" justifyItems="center" marginY={22}>
+          <Puzzle
+            key={JSON.stringify(rawBoardState)}
+            rawBoardState={rawBoardState}
+            startingBoardState={boardState}
+          />
+        </Box>
+      </SudokuStopwatchProvider>
     </UserSettingsProvider>
   );
 };

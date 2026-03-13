@@ -56,6 +56,9 @@ importers:
       use-local-storage-state:
         specifier: ^19.5.0
         version: 19.5.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      use-session-storage-state:
+        specifier: ^19.0.1
+        version: 19.0.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.2
@@ -4954,6 +4957,13 @@ packages:
 
   use-local-storage-state@19.5.0:
     resolution: {integrity: sha512-sUJAyFvsmqMpBhdwaRr7GTKkkoxb6PWeNVvpBDrLuwQF1PpbJRKIbOYeLLeqJI7B3wdfFlLLCBbmOdopiSTBOw==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+
+  use-session-storage-state@19.0.1:
+    resolution: {integrity: sha512-TK1K+UyTGNyOPN2K3yLOt0nTfeRlYRrLlNRN0kiI4irDng3HU4P0BArSAib0eD/VaQNlYs5WCdjeoEK1y/fIZA==}
     engines: {node: '>=14'}
     peerDependencies:
       react: '>=18'
@@ -10740,6 +10750,11 @@ snapshots:
     optional: true
 
   use-local-storage-state@19.5.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+
+  use-session-storage-state@19.0.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)

@@ -171,12 +171,9 @@ const ActionDialog = ({
 // #endregion
 
 // #region New Puzzle Button
-const handleResetStopwatchAndNewPuzzleConfirmation = (
-  resetStopwatch: () => void,
+const handleNewPuzzleConfirmation = (
   navigateToNewPuzzle: ReturnType<typeof useNavigate>,
 ) => {
-  resetStopwatch();
-
   const newRawBoardState: RawBoardState = makepuzzle();
   const rawSudokuString = rawBoardStateToRawSudokuString(newRawBoardState);
   const encodedBase36String =
@@ -185,8 +182,7 @@ const handleResetStopwatchAndNewPuzzleConfirmation = (
 };
 
 const NewPuzzleButton = () => {
-  const { pauseStopwatch, resetStopwatch, startStopwatchIfEnabled } =
-    useSudokuStopwatch();
+  const { pauseStopwatch, startStopwatchIfEnabled } = useSudokuStopwatch();
 
   const navigate = useNavigate();
 
@@ -209,12 +205,7 @@ const NewPuzzleButton = () => {
             <Dialog.ActionTrigger asChild>
               <Button
                 colorPalette="blue"
-                onClick={() =>
-                  handleResetStopwatchAndNewPuzzleConfirmation(
-                    resetStopwatch,
-                    navigate,
-                  )
-                }
+                onClick={() => handleNewPuzzleConfirmation(navigate)}
               >
                 New Puzzle
               </Button>

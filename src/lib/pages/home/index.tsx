@@ -20,7 +20,10 @@ const Home = () => {
 
   return (
     <UserSettingsProvider rawBoardState={rawBoardState}>
-      <SudokuStopwatchProvider>
+      <SudokuStopwatchProvider
+        key={JSON.stringify(rawBoardState)}
+        rawBoardState={rawBoardState}
+      >
         <Header />
         <Box width="full" as="main" justifyItems="center" marginY={22}>
           <Puzzle

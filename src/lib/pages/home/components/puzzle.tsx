@@ -6,7 +6,7 @@ import {
   useEffect,
   useRef,
 } from "react";
-import useLocalStorageState from "use-local-storage-state";
+import useSessionStorageState from "use-session-storage-state";
 
 import type {
   BoardState,
@@ -61,11 +61,14 @@ type PuzzleProps = {
 export const Puzzle = memo(
   ({ rawBoardState, startingBoardState }: PuzzleProps) => {
     const [isMultiselectMode, setIsMultiselectMode] =
-      useLocalStorageState<boolean>("multiselect-mode", {
-        defaultValue: false,
-      });
+      useSessionStorageState<boolean>(
+        `multiselect-mode-${JSON.stringify(rawBoardState)}`,
+        {
+          defaultValue: false,
+        },
+      );
     const [puzzleHistory, setPuzzleHistory] =
-      useLocalStorageState<PuzzleHistory>(
+      useSessionStorageState<PuzzleHistory>(
         `puzzle-history-${JSON.stringify(rawBoardState)}`,
         {
           defaultValue: {

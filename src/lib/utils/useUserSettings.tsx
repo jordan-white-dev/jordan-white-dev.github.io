@@ -6,7 +6,9 @@ import {
   useContext,
   useMemo,
 } from "react";
-import useLocalStorageState from "use-local-storage-state";
+import useSessionStorageState from "use-session-storage-state";
+
+import type { RawBoardState } from "../shared/types";
 
 export type UserSettings = {
   conflictChecker: boolean;
@@ -35,9 +37,15 @@ const UserSettingsContext = createContext<UserSettingsContextValue | undefined>(
   undefined,
 );
 
-export const UserSettingsProvider = ({ children }: { children: ReactNode }) => {
-  const [userSettings, setUserSettings] = useLocalStorageState<UserSettings>(
-    "user-settings",
+export const UserSettingsProvider = ({
+  children,
+  rawBoardState,
+}: {
+  children: ReactNode;
+  rawBoardState: RawBoardState;
+}) => {
+  const [userSettings, setUserSettings] = useSessionStorageState<UserSettings>(
+    `user-settings-${JSON.stringify(rawBoardState)}`,
     {
       defaultValue: defaultSettings,
     },

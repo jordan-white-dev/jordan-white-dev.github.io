@@ -19,7 +19,7 @@ const Home = () => {
   }) as LoaderData;
 
   return (
-    <UserSettingsProvider>
+    <UserSettingsProvider rawBoardState={rawBoardState}>
       <SudokuStopwatchProvider>
         <Header />
         <Box width="full" as="main" justifyItems="center" marginY={22}>

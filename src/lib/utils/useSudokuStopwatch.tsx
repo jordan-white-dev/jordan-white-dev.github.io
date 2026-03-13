@@ -25,11 +25,11 @@ const getFormattedStopwatchMinutes = (hours: number, minutes: number) => {
   return String(minutes).padStart(2, "0");
 };
 
-const getOffsetDateFromTotalSeconds = (totalSeconds: number): Date => {
-  const offsetDate = new Date();
-  offsetDate.setSeconds(offsetDate.getSeconds() + totalSeconds);
+const getOffsetTimestampFromTotalSeconds = (totalSeconds: number): Date => {
+  const offsetTimestamp = new Date();
+  offsetTimestamp.setSeconds(offsetTimestamp.getSeconds() + totalSeconds);
 
-  return offsetDate;
+  return offsetTimestamp;
 };
 // #endregion
 
@@ -81,7 +81,9 @@ export const SudokuStopwatchProvider = ({
   } = useStopwatch({
     autoStart: false,
     interval: 500,
-    offsetDate: getOffsetDateFromTotalSeconds(persistedStopwatchTotalSeconds),
+    offsetTimestamp: getOffsetTimestampFromTotalSeconds(
+      persistedStopwatchTotalSeconds,
+    ),
   });
   // #endregion
 
@@ -93,7 +95,7 @@ export const SudokuStopwatchProvider = ({
 
     hasHydratedStopwatchFromSessionStorageRef.current = true;
 
-    const hydratedOffsetDate = getOffsetDateFromTotalSeconds(
+    const hydratedOffsetDate = getOffsetTimestampFromTotalSeconds(
       persistedStopwatchTotalSeconds,
     );
 
@@ -169,7 +171,7 @@ export const SudokuStopwatchProvider = ({
   }, [pauseStopwatch, setUserSettings]);
 
   const resetStopwatch = useCallback(() => {
-    reset(getOffsetDateFromTotalSeconds(0), true);
+    reset(getOffsetTimestampFromTotalSeconds(0), true);
     setPersistedStopwatchTotalSeconds(0);
   }, [reset, setPersistedStopwatchTotalSeconds]);
 

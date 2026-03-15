@@ -15,6 +15,7 @@ export type UserSettings = {
   showSeenCells: boolean;
   flipKeypad: boolean;
   disableStopwatch: boolean;
+  hideStopwatch: boolean;
   dashedGrid: boolean;
   showRowAndColumnLabels: boolean;
 };
@@ -29,6 +30,7 @@ const defaultSettings: UserSettings = {
   showSeenCells: false,
   flipKeypad: false,
   disableStopwatch: false,
+  hideStopwatch: false,
   dashedGrid: false,
   showRowAndColumnLabels: false,
 };

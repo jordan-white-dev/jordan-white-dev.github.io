@@ -10,6 +10,8 @@ import {
 import { ImStopwatch } from "react-icons/im";
 import { MdOutlinePauseCircle, MdOutlinePlayCircle } from "react-icons/md";
 
+import { useUserSettings } from "@/lib/utils/useUserSettings";
+
 import { useSudokuStopwatch } from "../../../utils/useSudokuStopwatch";
 
 const StopwatchDialogTrigger = () => {
@@ -68,10 +70,11 @@ const StopwatchDialogFooter = () => {
 };
 
 export const Stopwatch = () => {
+  const { userSettings } = useUserSettings();
   const { startStopwatchIfEnabled } = useSudokuStopwatch();
 
   return (
-    <Flex gap="1.5" textAlign="center">
+    <Flex gap="1.5" hidden={userSettings.hideStopwatch} textAlign="center">
       <Dialog.Root
         placement="center"
         size="xs"

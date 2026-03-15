@@ -259,6 +259,19 @@ const SettingsMenu = () => {
 
               <SettingsCheckbox
                 disabled={false}
+                settingKey="hideStopwatch"
+                settingLabel="Hide Stopwatch"
+                userSettings={userSettings}
+                onCheckedChange={() => {
+                  setUserSettings((previousUserSettings) => ({
+                    ...previousUserSettings,
+                    hideStopwatch: !previousUserSettings.hideStopwatch,
+                  }));
+                }}
+              />
+
+              <SettingsCheckbox
+                disabled={false}
                 settingKey="showRowAndColumnLabels"
                 settingLabel="Show Row + Column Labels"
                 userSettings={userSettings}
@@ -279,20 +292,23 @@ const SettingsMenu = () => {
 };
 // #endregion
 
-export const Header = () => (
-  <Flex
-    align="start"
-    as="header"
-    backgroundColor="gray.fg"
-    height="fit-content"
-    justifyContent="space-between"
-    padding="0.625rem 1rem"
-    width="full"
-  >
-    <Stopwatch />
-    <Group alignSelf="center">
-      <ShortcutsMenu />
-      <SettingsMenu />
-    </Group>
-  </Flex>
-);
+export const Header = () => {
+  const { userSettings } = useUserSettings();
+  return (
+    <Flex
+      align="start"
+      as="header"
+      backgroundColor="gray.fg"
+      height="12"
+      justifyContent={userSettings.hideStopwatch ? "end" : "space-between"}
+      padding="0.625rem 1rem"
+      width="full"
+    >
+      <Stopwatch />
+      <Group alignSelf="center">
+        <ShortcutsMenu />
+        <SettingsMenu />
+      </Group>
+    </Flex>
+  );
+};

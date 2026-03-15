@@ -14,8 +14,12 @@ import type { RawBoardState } from "../shared/types";
 import { useUserSettings } from "./useUserSettings";
 
 // #region Helper Functions
-const getFormattedStopwatchMinutes = (hours: number, minutes: number) => {
-  if (hours >= 2 || (hours >= 1 && minutes >= 40)) {
+const getFormattedStopwatchMinutes = (
+  hours: number,
+  minutes: number,
+  totalSeconds: number,
+) => {
+  if (totalSeconds >= 6000) {
     const hoursConvertedToMinutes = hours * 60;
     const totalMinutes = minutes + hoursConvertedToMinutes;
 
@@ -156,11 +160,15 @@ export const SudokuStopwatchProvider = ({
 
   // #region Context Values + Actions
   const formattedStopwatchTime = useMemo(() => {
-    const formattedMinutes = getFormattedStopwatchMinutes(hours, minutes);
+    const formattedMinutes = getFormattedStopwatchMinutes(
+      hours,
+      minutes,
+      totalSeconds,
+    );
     const formattedSeconds = String(seconds).padStart(2, "0");
 
     return `${formattedMinutes}:${formattedSeconds}`;
-  }, [hours, minutes, seconds]);
+  }, [hours, minutes, seconds, totalSeconds]);
 
   const pauseStopwatchAndDisable = useCallback(() => {
     pauseStopwatch();

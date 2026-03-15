@@ -9,6 +9,7 @@ import {
   Portal,
   VStack,
 } from "@chakra-ui/react";
+import type { ReactNode } from "react";
 import { ImKeyboard } from "react-icons/im";
 import { MdOutlineSettings } from "react-icons/md";
 
@@ -19,27 +20,73 @@ import {
 
 import { useSudokuStopwatch } from "../../../utils/useSudokuStopwatch";
 import { Stopwatch } from "./stopwatch";
+import { Tooltip } from "./tooltip";
 
 // #region Shortcuts Menu
-const nonClearCellShortcutItems = [
+type ShortcutItems = Array<{
+  keyboardShortcut: string;
+  shortcutName: string;
+  tooltipText: ReactNode | string;
+  value: string;
+}>;
+
+const DoubleClickTooltipText = () => (
+  <>
+    <Kbd>Double Click</Kbd> &nbsp;selects all cells with matching digits,
+    colors, and/or markups. Strict highlighting selects only cells with
+    identical contents.
+  </>
+);
+const CtrlTooltipText = () => (
+  <>
+    <Kbd>Ctrl</Kbd> &nbsp;temporarily switches to the center markup mode.
+  </>
+);
+const ShiftTooltipText = () => (
+  <>
+    <Kbd>Shift</Kbd> &nbsp;temporarily switches to the corner markup mode.
+  </>
+);
+const AltTooltipText = () => (
+  <>
+    <Kbd>Ctrl</Kbd> &nbsp;temporarily switches to the color markup mode.
+  </>
+);
+const MultiselectTooltipText = () => (
+  <>
+    <Kbd>M</Kbd> &nbsp;switches between single select and multiselect modes.
+  </>
+);
+
+const nonClearCellShortcutItems: ShortcutItems = [
+  {
+    keyboardShortcut: "Double Click",
+    shortcutName: "Highlight Matches",
+    tooltipText: <DoubleClickTooltipText />,
+    value: "highlight-matches",
+  },
   {
     keyboardShortcut: "Ctrl",
     shortcutName: "Center Markup",
+    tooltipText: <CtrlTooltipText />,
     value: "center-markup",
   },
   {
     keyboardShortcut: "Shift",
     shortcutName: "Corner Markup",
+    tooltipText: <ShiftTooltipText />,
     value: "corner-markup",
   },
   {
     keyboardShortcut: "Alt",
     shortcutName: "Color Markup",
+    tooltipText: <AltTooltipText />,
     value: "color-markup",
   },
   {
     keyboardShortcut: "M",
     shortcutName: "Multiselect Toggle",
+    tooltipText: <MultiselectTooltipText />,
     value: "multiselect-toggle",
   },
 ];
@@ -61,17 +108,15 @@ const ShortcutsMenu = () => (
       <Menu.Positioner>
         <Menu.Content>
           {nonClearCellShortcutItems.map(
-            ({ keyboardShortcut, shortcutName, value }) => (
-              <Menu.Item
-                backgroundColor="transparent"
-                key={value}
-                value={value}
-              >
-                <Box flex="1">{shortcutName}</Box>
-                <Menu.ItemCommand>
-                  <Kbd>{keyboardShortcut}</Kbd>
-                </Menu.ItemCommand>
-              </Menu.Item>
+            ({ keyboardShortcut, shortcutName, tooltipText, value }) => (
+              <Tooltip content={tooltipText} key={value}>
+                <Menu.Item backgroundColor="transparent" value={value}>
+                  <Box flex="1">{shortcutName}</Box>
+                  <Menu.ItemCommand>
+                    <Kbd>{keyboardShortcut}</Kbd>
+                  </Menu.ItemCommand>
+                </Menu.Item>
+              </Tooltip>
             ),
           )}
           <Menu.Item backgroundColor="transparent" value="clear-cell">

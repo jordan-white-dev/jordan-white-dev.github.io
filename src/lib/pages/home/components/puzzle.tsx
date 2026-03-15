@@ -26,7 +26,7 @@ const handleClearAllSelections = (
         previousPuzzleHistory.currentBoardStateIndex
       ];
 
-    const boardStateWithClearedCellSelections: BoardState =
+    const newBoardStateWithClearedCellSelections: BoardState =
       previousBoardState.map((previousCellState) => {
         const updatedCellState = {
           ...previousCellState,
@@ -36,20 +36,16 @@ const handleClearAllSelections = (
         return updatedCellState;
       });
 
-    const updatedBoardStateHistory =
-      previousPuzzleHistory.boardStateHistory.map(
-        (previousBoardState, index) =>
-          index === previousPuzzleHistory.currentBoardStateIndex
-            ? boardStateWithClearedCellSelections
-            : previousBoardState,
-      );
+    const newBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
+    newBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
+      newBoardStateWithClearedCellSelections;
 
-    const updatedPuzzleHistory: PuzzleHistory = {
+    const newPuzzleHistory: PuzzleHistory = {
       currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
-      boardStateHistory: updatedBoardStateHistory,
+      boardStateHistory: newBoardStateHistory,
     };
 
-    return updatedPuzzleHistory;
+    return newPuzzleHistory;
   });
 };
 

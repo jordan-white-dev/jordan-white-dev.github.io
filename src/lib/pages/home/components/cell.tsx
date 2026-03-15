@@ -83,14 +83,14 @@ const MARKUP_TEXT_SHADOW: ButtonProps["textShadow"] = {
 };
 // #endregion
 
-// #region Functions
+// #region Cell Content & Styling
 const getNonCornerDigitsInCellAsString = (cellContent: CellContent): string => {
   if (isStartingDigitInCellContent(cellContent))
     return cellContent.startingDigit;
   else if (isPlayerDigitInCellContent(cellContent))
     return cellContent.playerDigit;
   else if (isMarkupDigitsInCellContent(cellContent))
-    return cellContent.centerMarkups.sort().join("");
+    return [...cellContent.centerMarkups].sort().join("");
   else return "";
 };
 
@@ -174,6 +174,7 @@ const getCellBorderWidths = (columnNumber: number, rowNumber: number) => {
     borderTopWidth: isCellOnTopBoxEdge ? "2px" : "0",
   };
 };
+// #endregion
 
 // #region Float Handling
 const getCornerMarkups = (cellContent: CellContent): Array<string> => {
@@ -181,7 +182,7 @@ const getCornerMarkups = (cellContent: CellContent): Array<string> => {
     isMarkupDigitsInCellContent(cellContent) &&
     cellContent.cornerMarkups[0] !== ""
   ) {
-    const sortedCornerMarkups = cellContent.cornerMarkups.sort();
+    const sortedCornerMarkups = [...cellContent.cornerMarkups].sort();
     return sortedCornerMarkups;
   } else return [""];
 };
@@ -280,72 +281,6 @@ const getColumnLabelFloat = (labelNumber: number): ReactNode => {
       {labelNumber.toString()}
     </Float>
   );
-};
-// #endregion
-
-// #region Handle Click
-const handleCellClick = (
-  cellNumber: number,
-  isMultiselectMode: boolean,
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-) => {
-  setPuzzleHistory((previousPuzzleHistory) => {
-    const previousBoardState =
-      previousPuzzleHistory.boardStateHistory[
-        previousPuzzleHistory.currentBoardStateIndex
-      ];
-
-    const selectedCells = previousBoardState.filter(
-      (previousCellState) => previousCellState.isSelected,
-    );
-
-    const newBoardStateWithUpdatedCellSelections: BoardState =
-      previousBoardState.map((previousCellState) => {
-        if (isMultiselectMode) {
-          const isSelected =
-            previousCellState.cellNumber === cellNumber
-              ? !previousCellState.isSelected
-              : previousCellState.isSelected;
-
-          const newCellState = {
-            ...previousCellState,
-            isSelected: isSelected,
-          };
-
-          return newCellState;
-        }
-
-        const isThisTheOnlySelectedCell =
-          selectedCells.length === 1 &&
-          selectedCells[0].cellNumber === cellNumber;
-
-        const isSelected =
-          previousCellState.cellNumber === cellNumber
-            ? !isThisTheOnlySelectedCell
-            : false;
-
-        const newCellState = {
-          ...previousCellState,
-          isSelected: isSelected,
-        };
-
-        return newCellState;
-      });
-
-    const newBoardStateHistory = previousPuzzleHistory.boardStateHistory.map(
-      (previousBoardState, index) =>
-        index === previousPuzzleHistory.currentBoardStateIndex
-          ? newBoardStateWithUpdatedCellSelections
-          : previousBoardState,
-    );
-
-    const newPuzzleHistory: PuzzleHistory = {
-      currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
-      boardStateHistory: newBoardStateHistory,
-    };
-
-    return newPuzzleHistory;
-  });
 };
 // #endregion
 
@@ -512,35 +447,32 @@ const handleCellDoubleClick = (
         getNewCellStateWithUpdatedCellSelections(cellState, previousCellState),
       );
 
-    const newBoardStateHistory = previousPuzzleHistory.boardStateHistory.map(
-      (previousBoardState, index) =>
-        index === previousPuzzleHistory.currentBoardStateIndex
-          ? newBoardStateWithUpdatedCellSelections
-          : previousBoardState,
-    );
+    const newBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
+    newBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
+      newBoardStateWithUpdatedCellSelections;
+
     const newPuzzleHistory: PuzzleHistory = {
       currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
       boardStateHistory: newBoardStateHistory,
     };
+
     return newPuzzleHistory;
   });
 };
 // #endregion
 
-// #endregion
-
 type CellProps = {
   cellState: CellState;
-  isMultiselectMode: boolean;
+  handleCellPointerDown: (cellNumber: number) => void;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
 export const Cell = memo(
-  ({ cellState, isMultiselectMode, setPuzzleHistory }: CellProps) => {
+  ({ cellState, handleCellPointerDown, setPuzzleHistory }: CellProps) => {
     const { userSettings } = useUserSettings();
     const showRowAndColumnLabels = userSettings.showRowAndColumnLabels;
 
-    const cellContent = cellState.cellContent;
+    const { cellContent } = cellState;
 
     const nonCornerDigitsInCellAsString =
       getNonCornerDigitsInCellAsString(cellContent);
@@ -554,6 +486,7 @@ export const Cell = memo(
         borderColor="black"
         borderRadius="0"
         color={isStartingDigitInCellContent(cellContent) ? "black" : "#1212f0"}
+        data-cell-number={cellState.cellNumber}
         fontSize={getFontSize(cellContent)}
         height={CELL_SIZE}
         minWidth={CELL_SIZE}
@@ -570,14 +503,8 @@ export const Cell = memo(
         {...(cellState.isSelected && {
           boxShadow: CELL_SELECTION_BOX_SHADOW,
         })}
-        onClick={() =>
-          handleCellClick(
-            cellState.cellNumber,
-            isMultiselectMode,
-            setPuzzleHistory,
-          )
-        }
         onDoubleClick={() => handleCellDoubleClick(cellState, setPuzzleHistory)}
+        onPointerDown={() => handleCellPointerDown(cellState.cellNumber)}
       >
         {showRowAndColumnLabels &&
           cellState.columnNumber === 1 &&

@@ -13,6 +13,7 @@ import type { RawBoardState } from "../shared/types";
 export type UserSettings = {
   conflictChecker: boolean;
   showSeenCells: boolean;
+  strictHighlights: boolean;
   flipKeypad: boolean;
   disableStopwatch: boolean;
   hideStopwatch: boolean;
@@ -28,6 +29,7 @@ type UserSettingsContextValue = {
 const defaultSettings: UserSettings = {
   conflictChecker: false,
   showSeenCells: false,
+  strictHighlights: false,
   flipKeypad: false,
   disableStopwatch: false,
   hideStopwatch: false,

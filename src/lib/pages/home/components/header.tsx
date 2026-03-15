@@ -211,6 +211,19 @@ const SettingsMenu = () => {
                   }))
                 }
               />
+
+              <SettingsCheckbox
+                disabled={true}
+                settingKey="strictHighlights"
+                settingLabel="Strict Highlights"
+                userSettings={userSettings}
+                onCheckedChange={() =>
+                  setUserSettings((previousUserSettings) => ({
+                    ...previousUserSettings,
+                    strictHighlights: !previousUserSettings.strictHighlights,
+                  }))
+                }
+              />
             </Menu.ItemGroup>
             <Menu.Separator />
             <Menu.ItemGroup>

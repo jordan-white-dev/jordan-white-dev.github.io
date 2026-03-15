@@ -15,7 +15,7 @@ import { useUserSettings } from "./useUserSettings";
 
 // #region Helper Functions
 const getFormattedStopwatchMinutes = (hours: number, minutes: number) => {
-  if (hours >= 1) {
+  if (hours >= 2 || (hours >= 1 && minutes >= 40)) {
     const hoursConvertedToMinutes = hours * 60;
     const totalMinutes = minutes + hoursConvertedToMinutes;
 

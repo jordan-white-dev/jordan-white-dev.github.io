@@ -879,14 +879,18 @@ export const Keypad = ({
       const key = event.key;
       const code = event.code;
 
-      // Equivalent to: "/^Digit[1-9]$/"
-      const validNumberCode = SuperExpressive()
-        .startOfInput.string("Digit")
+      // Equivalent to: /^(?:Digit|Numpad)[1-9]$/
+      const validNumberCodeRegex = SuperExpressive()
+        .startOfInput.anyOf.string("Digit")
+        .string("Numpad")
+        .end()
         .range("1", "9")
         .endOfInput.toRegex();
 
-      if (validNumberCode.test(code)) {
-        const digit = code.replace("Digit", "") as SudokuDigit;
+      if (validNumberCodeRegex.test(code)) {
+        const digit = code
+          .replace("Digit", "")
+          .replace("Numpad", "") as SudokuDigit;
         handleNumberKeyDown(digit);
       } else if (key === "Escape" || key === "Backspace" || key === "Delete") {
         handleClearButton(puzzleHistory, setPuzzleHistory);

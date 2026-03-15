@@ -26,7 +26,7 @@ import { Tooltip } from "./tooltip";
 type ShortcutItems = Array<{
   keyboardShortcut: string;
   shortcutName: string;
-  tooltipText: ReactNode | string;
+  tooltipText: ReactNode;
   value: string;
 }>;
 
@@ -39,17 +39,17 @@ const DoubleClickTooltipText = () => (
 );
 const CtrlTooltipText = () => (
   <>
-    <Kbd>Ctrl</Kbd> &nbsp;temporarily switches to the center markup mode.
+    <Kbd>Ctrl</Kbd> &nbsp;temporarily switches to center markup mode.
   </>
 );
 const ShiftTooltipText = () => (
   <>
-    <Kbd>Shift</Kbd> &nbsp;temporarily switches to the corner markup mode.
+    <Kbd>Shift</Kbd> &nbsp;temporarily switches to corner markup mode.
   </>
 );
 const AltTooltipText = () => (
   <>
-    <Kbd>Ctrl</Kbd> &nbsp;temporarily switches to the color markup mode.
+    <Kbd>Ctrl</Kbd> &nbsp;temporarily switches to color markup mode.
   </>
 );
 const MultiselectTooltipText = () => (
@@ -257,18 +257,26 @@ const SettingsMenu = () => {
                 }}
               />
 
-              <SettingsCheckbox
-                disabled={false}
-                settingKey="hideStopwatch"
-                settingLabel="Hide Stopwatch"
-                userSettings={userSettings}
-                onCheckedChange={() => {
-                  setUserSettings((previousUserSettings) => ({
-                    ...previousUserSettings,
-                    hideStopwatch: !previousUserSettings.hideStopwatch,
-                  }));
-                }}
-              />
+              <Tooltip
+                content="Unless disabled, the stopwatch continues to run and appears on the end screen as your final time."
+                key="hideStopwatch"
+              >
+                <Menu.CheckboxItem
+                  checked={userSettings.hideStopwatch}
+                  closeOnSelect={false}
+                  disabled={false}
+                  value={"hideStopwatch"}
+                  onCheckedChange={() => {
+                    setUserSettings((previousUserSettings) => ({
+                      ...previousUserSettings,
+                      hideStopwatch: !previousUserSettings.hideStopwatch,
+                    }));
+                  }}
+                >
+                  Hide Stopwatch
+                  <Menu.ItemIndicator />
+                </Menu.CheckboxItem>
+              </Tooltip>
 
               <SettingsCheckbox
                 disabled={false}

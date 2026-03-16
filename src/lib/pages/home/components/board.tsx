@@ -1,12 +1,17 @@
 import { SimpleGrid } from "@chakra-ui/react";
-import type { Dispatch, PointerEvent, RefObject, SetStateAction } from "react";
-import { useRef } from "react";
+import type {
+  Dispatch,
+  PointerEvent as ReactPointerEvent,
+  RefObject,
+  SetStateAction,
+} from "react";
+import { useCallback, useRef } from "react";
 
 import type { BoardState, PuzzleHistory } from "@/lib/shared/types";
 
 import { Cell } from "./cell";
 
-// #region Cell Selection & Pointer Movement
+// #region Cell Selection
 const getNewCellStateWithUpdatedCellSelections = (
   cellNumber: number,
   isMultiselectMode: boolean,
@@ -87,169 +92,262 @@ const handleCellSelection = (
         previousCellState !== newBoardStateWithUpdatedCellSelections[cellIndex],
     );
 
-    if (!didBoardStateChange) {
-      return previousPuzzleHistory;
-    }
+    if (!didBoardStateChange) return previousPuzzleHistory;
+
+    const newBoardStateHistory = previousPuzzleHistory.boardStateHistory.map(
+      (previousBoardState, previousBoardStateIndex) =>
+        previousBoardStateIndex === previousPuzzleHistory.currentBoardStateIndex
+          ? newBoardStateWithUpdatedCellSelections
+          : previousBoardState,
+    );
 
     const newPuzzleHistory = {
       currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
-      boardStateHistory: previousPuzzleHistory.boardStateHistory.map(
-        (previousBoardState, previousBoardStateIndex) =>
-          previousBoardStateIndex ===
-          previousPuzzleHistory.currentBoardStateIndex
-            ? newBoardStateWithUpdatedCellSelections
-            : previousBoardState,
-      ),
+      boardStateHistory: newBoardStateHistory,
     };
 
     return newPuzzleHistory;
   });
 };
 
-const getCellNumberUnderPointerFromCoordinates = (
-  pointerClientX: number,
-  pointerClientY: number,
-): number | undefined => {
-  const elementUnderPointer = document.elementFromPoint(
-    pointerClientX,
-    pointerClientY,
-  );
-
-  const closestCellElement = elementUnderPointer?.closest("[data-cell-number]");
-  if (!(closestCellElement instanceof HTMLElement)) return undefined;
-
-  const cellNumberAttribute = closestCellElement.dataset.cellNumber;
-  if (cellNumberAttribute === undefined) return undefined;
-
-  const cellNumber = Number(cellNumberAttribute);
-  return Number.isNaN(cellNumber) ? undefined : cellNumber;
-};
-
-type PointerCoordinates = {
-  pointerClientX: number;
-  pointerClientY: number;
-};
-
-const processLatestPointerPositionDuringCurrentPointerDrag = (
-  animationFrameRequestIdRef: RefObject<number | undefined>,
-  cellNumbersAlreadyHandledDuringCurrentPointerDragRef: RefObject<Set<number>>,
-  isPointerCurrentlyDraggingAcrossBoardRef: RefObject<boolean>,
-  latestPointerCoordinatesDuringCurrentPointerDragRef: RefObject<
-    PointerCoordinates | undefined
-  >,
+const handleMultiCellSelectionDuringPointerDrag = (
+  cellNumbersToSelect: Array<number>,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
-  animationFrameRequestIdRef.current = undefined;
+  setPuzzleHistory((previousPuzzleHistory) => {
+    const previousBoardState =
+      previousPuzzleHistory.boardStateHistory[
+        previousPuzzleHistory.currentBoardStateIndex
+      ];
 
-  if (!isPointerCurrentlyDraggingAcrossBoardRef.current) return;
+    const cellNumbersToSelectSet = new Set(cellNumbersToSelect);
 
-  const latestPointerCoordinates =
-    latestPointerCoordinatesDuringCurrentPointerDragRef.current;
-  if (latestPointerCoordinates === undefined) return;
+    const newBoardStateWithUpdatedCellSelections = previousBoardState.map(
+      (previousCellState) => {
+        const shouldSelectCell = cellNumbersToSelectSet.has(
+          previousCellState.cellNumber,
+        );
 
-  const cellNumberUnderPointer = getCellNumberUnderPointerFromCoordinates(
-    latestPointerCoordinates.pointerClientX,
-    latestPointerCoordinates.pointerClientY,
-  );
-  if (cellNumberUnderPointer === undefined) return;
+        if (!shouldSelectCell || previousCellState.isSelected)
+          return previousCellState;
 
-  const wasCellAlreadyHandledDuringCurrentPointerDrag =
-    cellNumbersAlreadyHandledDuringCurrentPointerDragRef.current.has(
-      cellNumberUnderPointer,
+        const newCellState = {
+          ...previousCellState,
+          isSelected: true,
+        };
+
+        return newCellState;
+      },
     );
 
-  if (wasCellAlreadyHandledDuringCurrentPointerDrag) return;
+    const didBoardStateChange = previousBoardState.some(
+      (previousCellState, cellIndex) =>
+        previousCellState !== newBoardStateWithUpdatedCellSelections[cellIndex],
+    );
 
-  cellNumbersAlreadyHandledDuringCurrentPointerDragRef.current.add(
-    cellNumberUnderPointer,
-  );
+    if (!didBoardStateChange) return previousPuzzleHistory;
 
-  handleCellSelection(cellNumberUnderPointer, true, setPuzzleHistory);
+    const newBoardStateHistory = previousPuzzleHistory.boardStateHistory.map(
+      (previousBoardState, previousBoardStateIndex) =>
+        previousBoardStateIndex === previousPuzzleHistory.currentBoardStateIndex
+          ? newBoardStateWithUpdatedCellSelections
+          : previousBoardState,
+    );
+
+    const newPuzzleHistory = {
+      currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
+      boardStateHistory: newBoardStateHistory,
+    };
+
+    return newPuzzleHistory;
+  });
+};
+// #endregion
+
+// #region Pointer Position To Board Position
+type BoardPosition = {
+  cellNumber: number;
+  columnNumber: number;
+  rowNumber: number;
 };
 
-const requestProcessingOfLatestPointerPositionDuringCurrentPointerDrag = (
-  animationFrameRequestIdRef: RefObject<number | undefined>,
-  cellNumbersAlreadyHandledDuringCurrentPointerDragRef: RefObject<Set<number>>,
-  isPointerCurrentlyDraggingAcrossBoardRef: RefObject<boolean>,
-  latestPointerCoordinatesDuringCurrentPointerDragRef: RefObject<
-    PointerCoordinates | undefined
-  >,
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-) => {
-  const isAnimationFrameAlreadyScheduled =
-    animationFrameRequestIdRef.current !== undefined;
+const getBoardPositionFromPointerCoordinates = (
+  boardElement: HTMLDivElement,
+  pointerClientX: number,
+  pointerClientY: number,
+): BoardPosition | undefined => {
+  const boardBoundingClientRect = boardElement.getBoundingClientRect();
 
-  if (isAnimationFrameAlreadyScheduled) return;
+  const isPointerOutsideBoardHorizontally =
+    pointerClientX < boardBoundingClientRect.left ||
+    pointerClientX > boardBoundingClientRect.right;
+  const isPointerOutsideBoardVertically =
+    pointerClientY < boardBoundingClientRect.top ||
+    pointerClientY > boardBoundingClientRect.bottom;
 
-  animationFrameRequestIdRef.current = window.requestAnimationFrame(() =>
-    processLatestPointerPositionDuringCurrentPointerDrag(
-      animationFrameRequestIdRef,
-      cellNumbersAlreadyHandledDuringCurrentPointerDragRef,
-      isPointerCurrentlyDraggingAcrossBoardRef,
-      latestPointerCoordinatesDuringCurrentPointerDragRef,
-      setPuzzleHistory,
+  if (isPointerOutsideBoardHorizontally || isPointerOutsideBoardVertically)
+    return undefined;
+
+  const cellWidth = boardBoundingClientRect.width / 9;
+  const cellHeight = boardBoundingClientRect.height / 9;
+
+  const zeroBasedColumnNumber = Math.min(
+    8,
+    Math.max(
+      0,
+      Math.floor((pointerClientX - boardBoundingClientRect.left) / cellWidth),
     ),
   );
+  const zeroBasedRowNumber = Math.min(
+    8,
+    Math.max(
+      0,
+      Math.floor((pointerClientY - boardBoundingClientRect.top) / cellHeight),
+    ),
+  );
+
+  const columnNumber = zeroBasedColumnNumber + 1;
+  const rowNumber = zeroBasedRowNumber + 1;
+  const cellNumber = zeroBasedRowNumber * 9 + zeroBasedColumnNumber + 1;
+
+  const boardPosition = {
+    columnNumber,
+    rowNumber,
+    cellNumber,
+  };
+
+  return boardPosition;
 };
 
+const getCellNumbersBetweenBoardPositions = (
+  startingBoardPosition: BoardPosition,
+  endingBoardPosition: BoardPosition,
+): Array<number> => {
+  const rowDistance =
+    endingBoardPosition.rowNumber - startingBoardPosition.rowNumber;
+  const columnDistance =
+    endingBoardPosition.columnNumber - startingBoardPosition.columnNumber;
+
+  const interpolationStepCount = Math.max(
+    Math.abs(rowDistance),
+    Math.abs(columnDistance),
+  );
+
+  if (interpolationStepCount === 0) return [startingBoardPosition.cellNumber];
+
+  const crossedCellNumbers = new Set<number>();
+
+  for (
+    let interpolationStep = 0;
+    interpolationStep <= interpolationStepCount;
+    interpolationStep++
+  ) {
+    const interpolationProgress = interpolationStep / interpolationStepCount;
+
+    const interpolatedRowNumber = Math.round(
+      startingBoardPosition.rowNumber + rowDistance * interpolationProgress,
+    );
+    const interpolatedColumnNumber = Math.round(
+      startingBoardPosition.columnNumber +
+        columnDistance * interpolationProgress,
+    );
+    const interpolatedCellNumber =
+      (interpolatedRowNumber - 1) * 9 + interpolatedColumnNumber;
+
+    crossedCellNumbers.add(interpolatedCellNumber);
+  }
+
+  return [...crossedCellNumbers];
+};
+// #endregion
+
+// #region Pointer Drag Handling
 const handleBoardPointerMove = (
-  animationFrameRequestIdRef: RefObject<number | undefined>,
-  cellNumbersAlreadyHandledDuringCurrentPointerDragRef: RefObject<Set<number>>,
-  event: PointerEvent<HTMLDivElement>,
+  boardRef: RefObject<HTMLDivElement | null>,
+  event: ReactPointerEvent<HTMLDivElement>,
   isPointerCurrentlyDraggingAcrossBoardRef: RefObject<boolean>,
-  latestPointerCoordinatesDuringCurrentPointerDragRef: RefObject<
-    PointerCoordinates | undefined
+  previousBoardPositionDuringCurrentPointerDragRef: RefObject<
+    BoardPosition | undefined
   >,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
   if (!isPointerCurrentlyDraggingAcrossBoardRef.current) return;
 
-  latestPointerCoordinatesDuringCurrentPointerDragRef.current = {
-    pointerClientX: event.clientX,
-    pointerClientY: event.clientY,
-  };
+  const boardElement = boardRef.current;
+  if (boardElement === null) return;
 
-  requestProcessingOfLatestPointerPositionDuringCurrentPointerDrag(
-    animationFrameRequestIdRef,
-    cellNumbersAlreadyHandledDuringCurrentPointerDragRef,
-    isPointerCurrentlyDraggingAcrossBoardRef,
-    latestPointerCoordinatesDuringCurrentPointerDragRef,
+  const currentBoardPosition = getBoardPositionFromPointerCoordinates(
+    boardElement,
+    event.clientX,
+    event.clientY,
+  );
+  if (currentBoardPosition === undefined) return;
+
+  const previousBoardPosition =
+    previousBoardPositionDuringCurrentPointerDragRef.current;
+
+  if (previousBoardPosition === undefined) {
+    previousBoardPositionDuringCurrentPointerDragRef.current =
+      currentBoardPosition;
+
+    handleMultiCellSelectionDuringPointerDrag(
+      [currentBoardPosition.cellNumber],
+      setPuzzleHistory,
+    );
+
+    return;
+  }
+
+  const cellNumbersBetweenPreviousAndCurrentBoardPositions =
+    getCellNumbersBetweenBoardPositions(
+      previousBoardPosition,
+      currentBoardPosition,
+    );
+
+  handleMultiCellSelectionDuringPointerDrag(
+    cellNumbersBetweenPreviousAndCurrentBoardPositions,
     setPuzzleHistory,
   );
+
+  previousBoardPositionDuringCurrentPointerDragRef.current =
+    currentBoardPosition;
 };
 
 const handleBoardPointerUpOrCancel = (
-  animationFrameRequestIdRef: RefObject<number | undefined>,
-  cellNumbersAlreadyHandledDuringCurrentPointerDragRef: RefObject<Set<number>>,
   isPointerCurrentlyDraggingAcrossBoardRef: RefObject<boolean>,
-  latestPointerCoordinatesDuringCurrentPointerDragRef: RefObject<
-    PointerCoordinates | undefined
+  previousBoardPositionDuringCurrentPointerDragRef: RefObject<
+    BoardPosition | undefined
   >,
 ) => {
   isPointerCurrentlyDraggingAcrossBoardRef.current = false;
-  cellNumbersAlreadyHandledDuringCurrentPointerDragRef.current.clear();
-  latestPointerCoordinatesDuringCurrentPointerDragRef.current = undefined;
-
-  if (animationFrameRequestIdRef.current !== undefined) {
-    window.cancelAnimationFrame(animationFrameRequestIdRef.current);
-    animationFrameRequestIdRef.current = undefined;
-  }
+  previousBoardPositionDuringCurrentPointerDragRef.current = undefined;
 };
 
 const handleCellPointerDown = (
+  boardRef: RefObject<HTMLDivElement | null>,
   cellNumber: number,
-  cellNumbersAlreadyHandledDuringCurrentPointerDragRef: RefObject<Set<number>>,
   isPointerCurrentlyDraggingAcrossBoardRef: RefObject<boolean>,
   isMultiselectMode: boolean,
-  latestPointerCoordinatesDuringCurrentPointerDragRef: RefObject<
-    PointerCoordinates | undefined
+  previousBoardPositionDuringCurrentPointerDragRef: RefObject<
+    BoardPosition | undefined
   >,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
   isPointerCurrentlyDraggingAcrossBoardRef.current = true;
-  cellNumbersAlreadyHandledDuringCurrentPointerDragRef.current.clear();
-  cellNumbersAlreadyHandledDuringCurrentPointerDragRef.current.add(cellNumber);
-  latestPointerCoordinatesDuringCurrentPointerDragRef.current = undefined;
+
+  const boardElement = boardRef.current;
+
+  if (boardElement !== null) {
+    const zeroBasedCellNumber = cellNumber - 1;
+    const rowNumber = Math.floor(zeroBasedCellNumber / 9) + 1;
+    const columnNumber = (zeroBasedCellNumber % 9) + 1;
+
+    previousBoardPositionDuringCurrentPointerDragRef.current = {
+      cellNumber,
+      columnNumber,
+      rowNumber,
+    };
+  } else previousBoardPositionDuringCurrentPointerDragRef.current = undefined;
 
   handleCellSelection(cellNumber, isMultiselectMode, setPuzzleHistory);
 };
@@ -269,17 +367,29 @@ export const Board = ({
   const cellStates =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
+  const boardRef = useRef<HTMLDivElement | null>(null);
   const isPointerCurrentlyDraggingAcrossBoardRef = useRef(false);
-  const cellNumbersAlreadyHandledDuringCurrentPointerDragRef = useRef<
-    Set<number>
-  >(new Set());
-  const latestPointerCoordinatesDuringCurrentPointerDragRef = useRef<
-    PointerCoordinates | undefined
+  const previousBoardPositionDuringCurrentPointerDragRef = useRef<
+    BoardPosition | undefined
   >(undefined);
-  const animationFrameRequestIdRef = useRef<number | undefined>(undefined);
+
+  const handleBoardCellPointerDown = useCallback(
+    (cellNumber: number) => {
+      handleCellPointerDown(
+        boardRef,
+        cellNumber,
+        isPointerCurrentlyDraggingAcrossBoardRef,
+        isMultiselectMode,
+        previousBoardPositionDuringCurrentPointerDragRef,
+        setPuzzleHistory,
+      );
+    },
+    [isMultiselectMode, setPuzzleHistory],
+  );
 
   return (
     <SimpleGrid
+      ref={boardRef}
       border="2px solid black"
       columns={9}
       gap="0"
@@ -288,30 +398,31 @@ export const Board = ({
         sm: "463px",
         md: "724px",
       }}
+      onLostPointerCapture={() =>
+        handleBoardPointerUpOrCancel(
+          isPointerCurrentlyDraggingAcrossBoardRef,
+          previousBoardPositionDuringCurrentPointerDragRef,
+        )
+      }
       onPointerCancel={() =>
         handleBoardPointerUpOrCancel(
-          animationFrameRequestIdRef,
-          cellNumbersAlreadyHandledDuringCurrentPointerDragRef,
           isPointerCurrentlyDraggingAcrossBoardRef,
-          latestPointerCoordinatesDuringCurrentPointerDragRef,
+          previousBoardPositionDuringCurrentPointerDragRef,
         )
       }
       onPointerMove={(event) =>
         handleBoardPointerMove(
-          animationFrameRequestIdRef,
-          cellNumbersAlreadyHandledDuringCurrentPointerDragRef,
+          boardRef,
           event,
           isPointerCurrentlyDraggingAcrossBoardRef,
-          latestPointerCoordinatesDuringCurrentPointerDragRef,
+          previousBoardPositionDuringCurrentPointerDragRef,
           setPuzzleHistory,
         )
       }
       onPointerUp={() =>
         handleBoardPointerUpOrCancel(
-          animationFrameRequestIdRef,
-          cellNumbersAlreadyHandledDuringCurrentPointerDragRef,
           isPointerCurrentlyDraggingAcrossBoardRef,
-          latestPointerCoordinatesDuringCurrentPointerDragRef,
+          previousBoardPositionDuringCurrentPointerDragRef,
         )
       }
       touchAction="none"
@@ -319,17 +430,8 @@ export const Board = ({
       {cellStates.map((cellState) => (
         <Cell
           cellState={cellState}
+          handleCellPointerDown={handleBoardCellPointerDown}
           key={cellState.cellNumber}
-          handleCellPointerDown={(cellNumber) =>
-            handleCellPointerDown(
-              cellNumber,
-              cellNumbersAlreadyHandledDuringCurrentPointerDragRef,
-              isPointerCurrentlyDraggingAcrossBoardRef,
-              isMultiselectMode,
-              latestPointerCoordinatesDuringCurrentPointerDragRef,
-              setPuzzleHistory,
-            )
-          }
           setPuzzleHistory={setPuzzleHistory}
         />
       ))}

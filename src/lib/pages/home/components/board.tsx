@@ -1,12 +1,52 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import type { Dispatch, PointerEvent, RefObject, SetStateAction } from "react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 import type { BoardState, PuzzleHistory } from "@/lib/shared/types";
 
 import { Cell } from "./cell";
 
 // #region Cell Selection & Pointer Movement
+const getNewCellStateWithUpdatedCellSelections = (
+  cellNumber: number,
+  isMultiselectMode: boolean,
+  previousCellState: BoardState[number],
+  selectedCellCount: number,
+  selectedCellNumberWhenOnlyOneCellIsSelected: number | undefined,
+): BoardState[number] => {
+  if (isMultiselectMode) {
+    const isSelectedCell = previousCellState.cellNumber === cellNumber;
+
+    const newCellState = isSelectedCell
+      ? {
+          ...previousCellState,
+          isSelected: !previousCellState.isSelected,
+        }
+      : previousCellState;
+
+    return newCellState;
+  }
+
+  const isThisTheOnlySelectedCell =
+    selectedCellCount === 1 &&
+    selectedCellNumberWhenOnlyOneCellIsSelected === cellNumber;
+
+  const isSelectedCell =
+    previousCellState.cellNumber === cellNumber
+      ? !isThisTheOnlySelectedCell
+      : false;
+
+  const newCellState =
+    isSelectedCell === previousCellState.isSelected
+      ? previousCellState
+      : {
+          ...previousCellState,
+          isSelected: isSelectedCell,
+        };
+
+  return newCellState;
+};
+
 const handleCellSelection = (
   cellNumber: number,
   isMultiselectMode: boolean,
@@ -18,50 +58,48 @@ const handleCellSelection = (
         previousPuzzleHistory.currentBoardStateIndex
       ];
 
-    const selectedCells = previousBoardState.filter(
-      (previousCellState) => previousCellState.isSelected,
+    const selectedCellCount = previousBoardState.reduce(
+      (count, previousCellState) =>
+        previousCellState.isSelected ? count + 1 : count,
+      0,
     );
 
-    const newBoardStateWithUpdatedCellSelections: BoardState =
-      previousBoardState.map((previousCellState) => {
-        if (isMultiselectMode) {
-          const isSelected =
-            previousCellState.cellNumber === cellNumber
-              ? !previousCellState.isSelected
-              : previousCellState.isSelected;
+    const selectedCellNumberWhenOnlyOneCellIsSelected =
+      selectedCellCount === 1
+        ? previousBoardState.find(
+            (previousCellState) => previousCellState.isSelected,
+          )?.cellNumber
+        : undefined;
 
-          const newCellState = {
-            ...previousCellState,
-            isSelected,
-          };
+    const newBoardStateWithUpdatedCellSelections = previousBoardState.map(
+      (previousCellState) =>
+        getNewCellStateWithUpdatedCellSelections(
+          cellNumber,
+          isMultiselectMode,
+          previousCellState,
+          selectedCellCount,
+          selectedCellNumberWhenOnlyOneCellIsSelected,
+        ),
+    );
 
-          return newCellState;
-        }
+    const didBoardStateChange = previousBoardState.some(
+      (previousCellState, cellIndex) =>
+        previousCellState !== newBoardStateWithUpdatedCellSelections[cellIndex],
+    );
 
-        const isThisTheOnlySelectedCell =
-          selectedCells.length === 1 &&
-          selectedCells[0].cellNumber === cellNumber;
+    if (!didBoardStateChange) {
+      return previousPuzzleHistory;
+    }
 
-        const isSelected =
-          previousCellState.cellNumber === cellNumber
-            ? !isThisTheOnlySelectedCell
-            : false;
-
-        const newCellState = {
-          ...previousCellState,
-          isSelected,
-        };
-
-        return newCellState;
-      });
-
-    const newBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
-    newBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
-      newBoardStateWithUpdatedCellSelections;
-
-    const newPuzzleHistory: PuzzleHistory = {
+    const newPuzzleHistory = {
       currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
-      boardStateHistory: newBoardStateHistory,
+      boardStateHistory: previousPuzzleHistory.boardStateHistory.map(
+        (previousBoardState, previousBoardStateIndex) =>
+          previousBoardStateIndex ===
+          previousPuzzleHistory.currentBoardStateIndex
+            ? newBoardStateWithUpdatedCellSelections
+            : previousBoardState,
+      ),
     };
 
     return newPuzzleHistory;
@@ -215,15 +253,7 @@ const handleCellPointerDown = (
 
   handleCellSelection(cellNumber, isMultiselectMode, setPuzzleHistory);
 };
-
-const handleBoardUnmount = (
-  animationFrameRequestIdRef: RefObject<number | undefined>,
-) => {
-  if (animationFrameRequestIdRef.current !== undefined) {
-    window.cancelAnimationFrame(animationFrameRequestIdRef.current);
-    animationFrameRequestIdRef.current = undefined;
-  }
-};
+// #endregion
 
 type BoardProps = {
   isMultiselectMode: boolean;
@@ -247,8 +277,6 @@ export const Board = ({
     PointerCoordinates | undefined
   >(undefined);
   const animationFrameRequestIdRef = useRef<number | undefined>(undefined);
-
-  useEffect(() => handleBoardUnmount(animationFrameRequestIdRef), []);
 
   return (
     <SimpleGrid

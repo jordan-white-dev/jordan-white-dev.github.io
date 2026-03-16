@@ -398,6 +398,7 @@ const getNewCellStateWithUpdatedCellSelections = (
       previousCellState.markupColors,
       previousCellState,
     );
+
     return newCellState;
   } else if (
     isMarkupDigitsInCellContent(cellContent) &&
@@ -408,6 +409,7 @@ const getNewCellStateWithUpdatedCellSelections = (
       previousCellContent,
       previousCellState,
     );
+
     return newCellState;
   } else if (
     isStartingOrPlayerDigitInCellContent(cellContent) &&
@@ -419,6 +421,7 @@ const getNewCellStateWithUpdatedCellSelections = (
       ...previousCellState,
       isSelected: true,
     };
+
     return newCellState;
   }
 
@@ -430,7 +433,7 @@ const handleCellDoubleClick = (
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
   setPuzzleHistory((previousPuzzleHistory) => {
-    const boardStateWithClearedCellSelections: BoardState =
+    const newBoardStateWithClearedCellSelections: BoardState =
       previousPuzzleHistory.boardStateHistory[
         previousPuzzleHistory.currentBoardStateIndex
       ].map((previousCellState) => {
@@ -443,7 +446,7 @@ const handleCellDoubleClick = (
       });
 
     const newBoardStateWithUpdatedCellSelections: BoardState =
-      boardStateWithClearedCellSelections.map((previousCellState) =>
+      newBoardStateWithClearedCellSelections.map((previousCellState) =>
         getNewCellStateWithUpdatedCellSelections(cellState, previousCellState),
       );
 
@@ -504,7 +507,10 @@ export const Cell = memo(
           boxShadow: CELL_SELECTION_BOX_SHADOW,
         })}
         onDoubleClick={() => handleCellDoubleClick(cellState, setPuzzleHistory)}
-        onPointerDown={() => handleCellPointerDown(cellState.cellNumber)}
+        onPointerDown={(event) => {
+          event.currentTarget.setPointerCapture(event.pointerId);
+          handleCellPointerDown(cellState.cellNumber);
+        }}
       >
         {showRowAndColumnLabels &&
           cellState.columnNumber === 1 &&

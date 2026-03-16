@@ -1,11 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import {
-  type Dispatch,
-  memo,
-  type SetStateAction,
-  useEffect,
-  useRef,
-} from "react";
+import { memo } from "react";
 import useSessionStorageState from "use-session-storage-state";
 
 import type {
@@ -16,38 +10,6 @@ import type {
 
 import { Board } from "./board";
 import { PlayerInterface } from "./player-interface";
-
-const handleClearAllSelections = (
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-) => {
-  setPuzzleHistory((previousPuzzleHistory) => {
-    const previousBoardState =
-      previousPuzzleHistory.boardStateHistory[
-        previousPuzzleHistory.currentBoardStateIndex
-      ];
-
-    const newBoardStateWithClearedCellSelections: BoardState =
-      previousBoardState.map((previousCellState) => {
-        const updatedCellState = {
-          ...previousCellState,
-          isSelected: false,
-        };
-
-        return updatedCellState;
-      });
-
-    const newBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
-    newBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
-      newBoardStateWithClearedCellSelections;
-
-    const newPuzzleHistory: PuzzleHistory = {
-      currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
-      boardStateHistory: newBoardStateHistory,
-    };
-
-    return newPuzzleHistory;
-  });
-};
 
 type PuzzleProps = {
   rawBoardState: RawBoardState;
@@ -73,23 +35,6 @@ export const Puzzle = memo(
           },
         },
       );
-    const puzzleRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-      const handlePointerDownOutside = (event: PointerEvent) => {
-        if (
-          puzzleRef.current &&
-          !puzzleRef.current.contains(event.target as Node)
-        ) {
-          handleClearAllSelections(setPuzzleHistory);
-        }
-      };
-
-      document.addEventListener("pointerdown", handlePointerDownOutside);
-
-      return () =>
-        document.removeEventListener("pointerdown", handlePointerDownOutside);
-    }, [setPuzzleHistory]);
 
     return (
       <Flex
@@ -98,7 +43,6 @@ export const Puzzle = memo(
         fontFamily="sans-serif"
         gap={{ base: "4", md: "8" }}
         marginTop={{ sm: "2.5" }}
-        ref={puzzleRef}
       >
         <Board
           isMultiselectMode={isMultiselectMode}

@@ -5,13 +5,45 @@ import type {
   RefObject,
   SetStateAction,
 } from "react";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import type { BoardState, PuzzleHistory } from "@/lib/shared/types";
 
 import { Cell } from "./cell";
 
 // #region Cell Selection
+const handleClearAllSelections = (
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => {
+  setPuzzleHistory((previousPuzzleHistory) => {
+    const previousBoardState =
+      previousPuzzleHistory.boardStateHistory[
+        previousPuzzleHistory.currentBoardStateIndex
+      ];
+
+    const newBoardStateWithClearedCellSelections: BoardState =
+      previousBoardState.map((previousCellState) => {
+        const updatedCellState = {
+          ...previousCellState,
+          isSelected: false,
+        };
+
+        return updatedCellState;
+      });
+
+    const newBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
+    newBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
+      newBoardStateWithClearedCellSelections;
+
+    const newPuzzleHistory: PuzzleHistory = {
+      currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
+      boardStateHistory: newBoardStateHistory,
+    };
+
+    return newPuzzleHistory;
+  });
+};
+
 const getNewCellStateWithUpdatedCellSelections = (
   cellNumber: number,
   isMultiselectMode: boolean,
@@ -373,6 +405,22 @@ export const Board = ({
     BoardPosition | undefined
   >(undefined);
 
+  useEffect(() => {
+    const handlePointerDownOutside = (event: PointerEvent) => {
+      if (
+        boardRef.current &&
+        !boardRef.current.contains(event.target as Node)
+      ) {
+        handleClearAllSelections(setPuzzleHistory);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDownOutside);
+
+    return () =>
+      document.removeEventListener("pointerdown", handlePointerDownOutside);
+  }, [setPuzzleHistory]);
+
   const handleBoardCellPointerDown = useCallback(
     (cellNumber: number) => {
       handleCellPointerDown(
@@ -389,7 +437,6 @@ export const Board = ({
 
   return (
     <SimpleGrid
-      ref={boardRef}
       border="2px solid black"
       columns={9}
       gap="0"
@@ -398,6 +445,8 @@ export const Board = ({
         sm: "463px",
         md: "724px",
       }}
+      ref={boardRef}
+      touchAction="none"
       onLostPointerCapture={() =>
         handleBoardPointerUpOrCancel(
           isPointerCurrentlyDraggingAcrossBoardRef,
@@ -425,7 +474,6 @@ export const Board = ({
           previousBoardPositionDuringCurrentPointerDragRef,
         )
       }
-      touchAction="none"
     >
       {cellStates.map((cellState) => (
         <Cell

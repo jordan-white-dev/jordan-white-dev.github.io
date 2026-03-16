@@ -252,6 +252,18 @@ export const KeypadModeRadioCard = ({
       defaultValue="Digit"
       value={keypadMode}
       variant="solid"
+      onKeyDownCapture={(event) => {
+        const isNumpadArrow = (event: React.KeyboardEvent) =>
+          event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD &&
+          ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(
+            event.key,
+          );
+
+        if (isNumpadArrow(event)) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }}
       onValueChange={(event) => {
         const newKeypadMode = event.value as KeypadMode;
         setKeypadMode(newKeypadMode);

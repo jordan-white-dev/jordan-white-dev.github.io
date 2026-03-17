@@ -267,6 +267,13 @@ const handleBoardPointerMove = (
 
   const previousBoardPosition = previousBoardPositionDuringDragRef.current;
 
+  if (
+    previousBoardPosition !== undefined &&
+    currentBoardPosition.cellNumber === previousBoardPosition.cellNumber
+  ) {
+    return;
+  }
+
   if (previousBoardPosition === undefined) {
     previousBoardPositionDuringDragRef.current = currentBoardPosition;
 
@@ -431,6 +438,10 @@ export const Board = ({
   const previousBoardState =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
+  const conflictedCellNumbers = userSettings.conflictChecker
+    ? getConflictedCellNumbers(previousBoardState)
+    : new Set<number>();
+
   const selectedCells = previousBoardState.filter(
     (cellState) => cellState.isSelected,
   );
@@ -507,12 +518,8 @@ export const Board = ({
       {previousBoardState.map((cellState) => (
         <Cell
           cellState={cellState}
-          hasDigitConflict={
-            userSettings.conflictChecker &&
-            getConflictedCellNumbers(previousBoardState).has(
-              cellState.cellNumber,
-            )
-          }
+          handleCellPointerDown={handleBoardCellPointerDown}
+          hasDigitConflict={conflictedCellNumbers.has(cellState.cellNumber)}
           isSeenInBox={
             shouldShowSeenCells &&
             selectedCells[0].boxNumber === cellState.boxNumber
@@ -528,7 +535,6 @@ export const Board = ({
           key={cellState.cellNumber}
           selectedColumnNumber={selectedColumnNumber}
           selectedRowNumber={selectedRowNumber}
-          handleCellPointerDown={handleBoardCellPointerDown}
           setPuzzleHistory={setPuzzleHistory}
         />
       ))}

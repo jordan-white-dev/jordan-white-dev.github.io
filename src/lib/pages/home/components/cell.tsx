@@ -95,6 +95,33 @@ const getNonCornerDigitsInCellAsString = (cellContent: CellContent): string => {
   return "";
 };
 
+// #region Conflict Overlay
+const CONFLICT_CELLS_TINT_RGB = "rgb(179, 58, 58)";
+const CONFLICT_CELLS_OPACITY = 0.65;
+
+const getConflictOverlayBackground = (
+  hasDigitConflict: boolean,
+): string | null => {
+  if (!hasDigitConflict) return null;
+
+  const svgMarkup = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <rect
+        x="0"
+        y="0"
+        width="100"
+        height="100"
+        fill="${CONFLICT_CELLS_TINT_RGB}"
+        opacity="${CONFLICT_CELLS_OPACITY}"
+      />
+    </svg>
+  `.trim();
+
+  return `url("data:image/svg+xml,${encodeURIComponent(svgMarkup)}")`;
+};
+// #endregion
+
+// #region Show Seen Cells Overlay
 const SEEN_CELLS_TINT_RGB = "rgb(255, 215, 0)";
 const SEEN_CELLS_OPACITY = 0.25;
 const SEEN_CELLS_STRIP = 8; // percentage-like units in a 100x100 SVG viewBox
@@ -207,18 +234,18 @@ const getSeenInBoxOverlayRect = ({
   return seenInBoxOverlayRect;
 };
 
-const getSeenInRowOverlayRect = (): Rect => ({
-  x: 0,
-  y: SEEN_CELLS_STRIP,
-  width: 100,
-  height: 100 - SEEN_CELLS_STRIP * 2,
-});
-
 const getSeenInColumnOverlayRect = (): Rect => ({
   x: SEEN_CELLS_STRIP,
   y: 0,
   width: 100 - SEEN_CELLS_STRIP * 2,
   height: 100,
+});
+
+const getSeenInRowOverlayRect = (): Rect => ({
+  x: 0,
+  y: SEEN_CELLS_STRIP,
+  width: 100,
+  height: 100 - SEEN_CELLS_STRIP * 2,
 });
 
 const isRectVisible = (rect: Rect): boolean =>
@@ -337,10 +364,12 @@ const getSeenCellsOverlayBackground = ({
 
   return seenCellsOverlayBackground;
 };
+// #endregion
 
 type GetCellBackgroundArgs = {
   cellMarkupColors: Array<MarkupColor> | [""];
   columnNumber: number;
+  hasDigitConflict: boolean;
   isSeenInBox: boolean;
   isSeenInColumn: boolean;
   isSeenInRow: boolean;
@@ -353,6 +382,7 @@ type GetCellBackgroundArgs = {
 const getCellBackground = ({
   cellMarkupColors,
   columnNumber,
+  hasDigitConflict,
   isSeenInBox,
   isSeenInColumn,
   isSeenInRow,
@@ -362,6 +392,7 @@ const getCellBackground = ({
   showSeenCells,
 }: GetCellBackgroundArgs): ButtonProps["background"] => {
   const backgroundLayers = [
+    getConflictOverlayBackground(hasDigitConflict),
     getSeenCellsOverlayBackground({
       columnNumber,
       isSeenInBox,
@@ -417,7 +448,7 @@ const getCellBorderStyles = (
   const isOnRightBoxEdge = columnNumber % 3 === 0;
   const isOnTopBoxEdge = rowNumber % 3 === 1;
 
-  return {
+  const cellBorderStyles = {
     borderBottomStyle:
       !isOnBottomBoxEdge && dashedGridEnabled ? "dashed" : "solid",
     borderLeftStyle: !isOnLeftBoxEdge && dashedGridEnabled ? "dashed" : "solid",
@@ -425,6 +456,8 @@ const getCellBorderStyles = (
       !isOnRightBoxEdge && dashedGridEnabled ? "dashed" : "solid",
     borderTopStyle: !isOnTopBoxEdge && dashedGridEnabled ? "dashed" : "solid",
   };
+
+  return cellBorderStyles;
 };
 
 const getCellBorderWidths = (columnNumber: number, rowNumber: number) => {
@@ -739,11 +772,12 @@ const handleCellDoubleClick = (
 
 type CellProps = {
   cellState: CellState;
-  selectedColumnNumber: number;
-  selectedRowNumber: number;
+  hasDigitConflict: boolean;
   isSeenInBox: boolean;
   isSeenInColumn: boolean;
   isSeenInRow: boolean;
+  selectedColumnNumber: number;
+  selectedRowNumber: number;
   handleCellPointerDown: (cellNumber: number) => void;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
@@ -751,6 +785,7 @@ type CellProps = {
 export const Cell = memo(
   ({
     cellState,
+    hasDigitConflict,
     isSeenInBox,
     isSeenInColumn,
     isSeenInRow,
@@ -777,6 +812,7 @@ export const Cell = memo(
           rowNumber: cellState.rowNumber,
           selectedColumnNumber,
           selectedRowNumber,
+          hasDigitConflict,
           isSeenInBox,
           isSeenInColumn,
           isSeenInRow,

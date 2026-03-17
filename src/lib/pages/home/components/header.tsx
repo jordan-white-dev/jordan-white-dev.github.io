@@ -187,7 +187,7 @@ const SettingsMenu = () => {
             <Menu.ItemGroup>
               <Menu.ItemGroupLabel>Gameplay</Menu.ItemGroupLabel>
               <SettingsCheckbox
-                disabled={true}
+                disabled={false}
                 settingKey="conflictChecker"
                 settingLabel="Conflict Checker"
                 userSettings={userSettings}

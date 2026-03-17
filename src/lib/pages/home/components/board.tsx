@@ -2,6 +2,7 @@ import { SimpleGrid } from "@chakra-ui/react";
 import type { Dispatch, PointerEvent, RefObject, SetStateAction } from "react";
 import { useCallback, useRef } from "react";
 
+import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/shared/constants";
 import type { BoardState, PuzzleHistory } from "@/lib/shared/types";
 import { useUserSettings } from "@/lib/utils/useUserSettings";
 
@@ -327,6 +328,93 @@ const handleCellPointerDown = (
 };
 // #endregion
 
+// #region Conflict Checking
+const addDigitOccurrenceToRegion = (
+  digitOccurrencesByDigit: Map<string, Array<number>>,
+  digit: string,
+  cellNumber: number,
+): void => {
+  const matchingCellNumbers = digitOccurrencesByDigit.get(digit) ?? [];
+  matchingCellNumbers.push(cellNumber);
+  digitOccurrencesByDigit.set(digit, matchingCellNumbers);
+};
+
+const addConflictedCellNumbersFromRegion = (
+  digitOccurrencesByDigit: Map<string, Array<number>>,
+  conflictedCellNumbers: Set<number>,
+): void => {
+  for (const matchingCellNumbers of digitOccurrencesByDigit.values()) {
+    if (matchingCellNumbers.length <= 1) continue;
+
+    for (const cellNumber of matchingCellNumbers) {
+      conflictedCellNumbers.add(cellNumber);
+    }
+  }
+};
+
+const addConflictedCellNumbersFromRegions = (
+  digitOccurrencesByRegion: Array<Map<string, Array<number>>>,
+  conflictedCellNumbers: Set<number>,
+): void => {
+  for (const digitOccurrencesByDigit of digitOccurrencesByRegion) {
+    addConflictedCellNumbersFromRegion(
+      digitOccurrencesByDigit,
+      conflictedCellNumbers,
+    );
+  }
+};
+
+const getEmptyDigitOccurrencesByRegion = (): Array<
+  Map<string, Array<number>>
+> => Array.from({ length: 9 }, () => new Map());
+
+const getConflictedCellNumbers = (boardState: BoardState): Set<number> => {
+  const conflictedCellNumbers = new Set<number>();
+
+  const digitOccurrencesByRow = getEmptyDigitOccurrencesByRegion();
+  const digitOccurrencesByColumn = getEmptyDigitOccurrencesByRegion();
+  const digitOccurrencesByBox = getEmptyDigitOccurrencesByRegion();
+
+  for (const cellState of boardState) {
+    const digit = getStartingOrPlayerDigitInCellIfPresent(
+      cellState.cellContent,
+    );
+    if (digit === "") continue;
+
+    addDigitOccurrenceToRegion(
+      digitOccurrencesByRow[cellState.rowNumber - 1],
+      digit,
+      cellState.cellNumber,
+    );
+    addDigitOccurrenceToRegion(
+      digitOccurrencesByColumn[cellState.columnNumber - 1],
+      digit,
+      cellState.cellNumber,
+    );
+    addDigitOccurrenceToRegion(
+      digitOccurrencesByBox[cellState.boxNumber - 1],
+      digit,
+      cellState.cellNumber,
+    );
+  }
+
+  addConflictedCellNumbersFromRegions(
+    digitOccurrencesByRow,
+    conflictedCellNumbers,
+  );
+  addConflictedCellNumbersFromRegions(
+    digitOccurrencesByColumn,
+    conflictedCellNumbers,
+  );
+  addConflictedCellNumbersFromRegions(
+    digitOccurrencesByBox,
+    conflictedCellNumbers,
+  );
+
+  return conflictedCellNumbers;
+};
+// #endregion
+
 type BoardProps = {
   isMultiselectMode: boolean;
   puzzleHistory: PuzzleHistory;
@@ -419,7 +507,12 @@ export const Board = ({
       {previousBoardState.map((cellState) => (
         <Cell
           cellState={cellState}
-          handleCellPointerDown={handleBoardCellPointerDown}
+          hasDigitConflict={
+            userSettings.conflictChecker &&
+            getConflictedCellNumbers(previousBoardState).has(
+              cellState.cellNumber,
+            )
+          }
           isSeenInBox={
             shouldShowSeenCells &&
             selectedCells[0].boxNumber === cellState.boxNumber
@@ -435,6 +528,7 @@ export const Board = ({
           key={cellState.cellNumber}
           selectedColumnNumber={selectedColumnNumber}
           selectedRowNumber={selectedRowNumber}
+          handleCellPointerDown={handleBoardCellPointerDown}
           setPuzzleHistory={setPuzzleHistory}
         />
       ))}

@@ -28,7 +28,7 @@ export const PlayerInterface = ({
   setPuzzleHistory,
 }: PlayerInterfaceProps) => {
   const [keypadMode, setKeypadMode] = useSessionStorageState<KeypadMode>(
-    `keypad-mode-${JSON.stringify(rawBoardState)}`,
+    "keypad-mode",
     {
       defaultValue: "Digit",
     },

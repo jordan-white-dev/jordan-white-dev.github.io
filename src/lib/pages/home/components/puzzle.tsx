@@ -57,12 +57,9 @@ type PuzzleProps = {
 export const Puzzle = memo(
   ({ rawBoardState, startingBoardState }: PuzzleProps) => {
     const [isMultiselectMode, setIsMultiselectMode] =
-      useSessionStorageState<boolean>(
-        `multiselect-mode-${JSON.stringify(rawBoardState)}`,
-        {
-          defaultValue: false,
-        },
-      );
+      useSessionStorageState<boolean>("multiselect-mode", {
+        defaultValue: false,
+      });
     const [puzzleHistory, setPuzzleHistory] =
       useSessionStorageState<PuzzleHistory>(
         `puzzle-history-${JSON.stringify(rawBoardState)}`,

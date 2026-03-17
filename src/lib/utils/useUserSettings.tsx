@@ -8,8 +8,6 @@ import {
 } from "react";
 import useSessionStorageState from "use-session-storage-state";
 
-import type { RawBoardState } from "../shared/types";
-
 export type UserSettings = {
   conflictChecker: boolean;
   showSeenCells: boolean;
@@ -41,15 +39,9 @@ const UserSettingsContext = createContext<UserSettingsContextValue | undefined>(
   undefined,
 );
 
-export const UserSettingsProvider = ({
-  children,
-  rawBoardState,
-}: {
-  children: ReactNode;
-  rawBoardState: RawBoardState;
-}) => {
+export const UserSettingsProvider = ({ children }: { children: ReactNode }) => {
   const [userSettings, setUserSettings] = useSessionStorageState<UserSettings>(
-    `user-settings-${JSON.stringify(rawBoardState)}`,
+    "user-settings",
     {
       defaultValue: defaultSettings,
     },

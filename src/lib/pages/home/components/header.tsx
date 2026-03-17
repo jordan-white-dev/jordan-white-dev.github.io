@@ -110,7 +110,7 @@ const ShortcutsMenu = () => (
           {nonClearCellShortcutItems.map(
             ({ keyboardShortcut, shortcutName, tooltipText, value }) => (
               <Tooltip content={tooltipText} key={value}>
-                <Menu.Item backgroundColor="transparent" value={value}>
+                <Menu.Item value={value}>
                   <Box flex="1">{shortcutName}</Box>
                   <Menu.ItemCommand>
                     <Kbd>{keyboardShortcut}</Kbd>

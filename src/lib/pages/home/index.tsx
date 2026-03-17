@@ -19,7 +19,7 @@ const Home = () => {
   }) as LoaderData;
 
   return (
-    <UserSettingsProvider rawBoardState={rawBoardState}>
+    <UserSettingsProvider>
       <SudokuStopwatchProvider
         key={JSON.stringify(rawBoardState)}
         rawBoardState={rawBoardState}

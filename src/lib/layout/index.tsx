@@ -11,7 +11,7 @@ type LayoutProps = {
 export const Layout = ({ children }: LayoutProps) => (
   <Box margin="0 auto" transition="0.5s ease-out">
     <Meta />
-    <Flex minHeight="90vh" wrap="wrap">
+    <Flex minHeight="90vh" wrap="wrap" justifyContent="center">
       {children}
 
       <Footer />

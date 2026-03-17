@@ -5,6 +5,8 @@ import type {
   BoardState,
   CellContent,
   CellState,
+  MarkupColor,
+  MarkupDigits,
   PlayerDigitCellContent,
   RawBoardState,
   RawStartingDigit,
@@ -102,3 +104,11 @@ export const getStartingOrPlayerDigitInCellIfPresent = (
     return cellContent.playerDigit;
   else return "";
 };
+
+export const isArrayOfSudokuDigits = (
+  values: MarkupDigits,
+): values is Array<SudokuDigit> => values[0] !== "";
+
+export const isArrayOfMarkupColors = (
+  values: [""] | Array<MarkupColor>,
+): values is Array<MarkupColor> => values[0] !== "";

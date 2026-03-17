@@ -435,16 +435,14 @@ export const Board = ({
 }: BoardProps) => {
   const { userSettings } = useUserSettings();
 
-  const previousBoardState =
+  const boardState =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
   const conflictedCellNumbers = userSettings.conflictChecker
-    ? getConflictedCellNumbers(previousBoardState)
+    ? getConflictedCellNumbers(boardState)
     : new Set<number>();
 
-  const selectedCells = previousBoardState.filter(
-    (cellState) => cellState.isSelected,
-  );
+  const selectedCells = boardState.filter((cellState) => cellState.isSelected);
 
   const shouldShowSeenCells =
     userSettings.showSeenCells && selectedCells.length === 1;
@@ -515,8 +513,9 @@ export const Board = ({
         )
       }
     >
-      {previousBoardState.map((cellState) => (
+      {boardState.map((cellState) => (
         <Cell
+          boardState={boardState}
           cellState={cellState}
           handleCellPointerDown={handleBoardCellPointerDown}
           hasDigitConflict={conflictedCellNumbers.has(cellState.cellNumber)}

@@ -133,30 +133,6 @@ type Rect = {
   height: number;
 };
 
-const getMarkupColorsAsBackgroundCss = (
-  cellMarkupColors: Array<MarkupColor> | [""],
-): ButtonProps["background"] => {
-  const appliedMarkupColors = cellMarkupColors.filter(
-    (markupColor) => markupColor !== "",
-  );
-
-  if (appliedMarkupColors.length === 0) return "transparent";
-
-  const sortedMarkupColors = markupColors.filter((markupColor) =>
-    appliedMarkupColors.includes(markupColor),
-  );
-
-  const degreesPerSlice = 360 / sortedMarkupColors.length;
-  const gradientSegments = sortedMarkupColors.map(
-    (color, index) =>
-      `${color} ${index * degreesPerSlice}deg ${(index + 1) * degreesPerSlice}deg`,
-  );
-
-  const markupColorsAsBackgroundCss = `conic-gradient(${gradientSegments.join(", ")})`;
-
-  return markupColorsAsBackgroundCss;
-};
-
 type BoxAndPuzzleEdges = {
   isOnLeftBoxEdge: boolean;
   isOnRightBoxEdge: boolean;
@@ -366,6 +342,30 @@ const getSeenCellsOverlayBackground = ({
 };
 // #endregion
 
+const getMarkupColorsBackground = (
+  cellMarkupColors: Array<MarkupColor> | [""],
+): ButtonProps["background"] => {
+  const appliedMarkupColors = cellMarkupColors.filter(
+    (markupColor) => markupColor !== "",
+  );
+
+  if (appliedMarkupColors.length === 0) return "transparent";
+
+  const sortedMarkupColors = markupColors.filter((markupColor) =>
+    appliedMarkupColors.includes(markupColor),
+  );
+
+  const degreesPerSlice = 360 / sortedMarkupColors.length;
+  const gradientSegments = sortedMarkupColors.map(
+    (color, index) =>
+      `${color} ${index * degreesPerSlice}deg ${(index + 1) * degreesPerSlice}deg`,
+  );
+
+  const markupColorsAsBackgroundCss = `conic-gradient(${gradientSegments.join(", ")})`;
+
+  return markupColorsAsBackgroundCss;
+};
+
 type GetCellBackgroundArgs = {
   cellMarkupColors: Array<MarkupColor> | [""];
   columnNumber: number;
@@ -403,7 +403,7 @@ const getCellBackground = ({
       selectedRowNumber,
       showSeenCells,
     }),
-    getMarkupColorsAsBackgroundCss(cellMarkupColors),
+    getMarkupColorsBackground(cellMarkupColors),
   ].filter(Boolean);
 
   const cellBackground = backgroundLayers.join(", ");
@@ -680,7 +680,196 @@ const getCellStateWithSelectionIfMatchingMarkupDigitsExist = (
   return candidateCellState;
 };
 
-const getCellStateWithMatchingSelection = (
+const doMarkupColorsMatchExactly = (
+  sourceMarkupColors: [""] | Array<MarkupColor>,
+  candidateMarkupColors: [""] | Array<MarkupColor>,
+): boolean => {
+  if (!isArrayOfMarkupColors(sourceMarkupColors))
+    return !isArrayOfMarkupColors(candidateMarkupColors);
+
+  if (!isArrayOfMarkupColors(candidateMarkupColors)) return false;
+
+  const sourceMarkupColorsSortedInDisplayOrder = markupColors.filter(
+    (markupColor) => sourceMarkupColors.includes(markupColor),
+  );
+
+  const candidateMarkupColorsSortedInDisplayOrder = markupColors.filter(
+    (markupColor) => candidateMarkupColors.includes(markupColor),
+  );
+
+  const doMarkupColorsHaveSameLength =
+    sourceMarkupColorsSortedInDisplayOrder.length ===
+    candidateMarkupColorsSortedInDisplayOrder.length;
+
+  if (!doMarkupColorsHaveSameLength) return false;
+
+  const doAllMarkupColorsMatchByPosition =
+    sourceMarkupColorsSortedInDisplayOrder.every(
+      (markupColor, markupColorIndex) =>
+        markupColor ===
+        candidateMarkupColorsSortedInDisplayOrder[markupColorIndex],
+    );
+
+  return doAllMarkupColorsMatchByPosition;
+};
+
+const isArrayOfMarkupDigits = (
+  values: MarkupDigits,
+): values is Array<SudokuDigit> => values[0] !== "";
+
+const doMarkupDigitsMatchExactly = (
+  sourceMarkupDigits: MarkupDigits,
+  candidateMarkupDigits: MarkupDigits,
+): boolean => {
+  if (!isArrayOfMarkupDigits(sourceMarkupDigits))
+    return !isArrayOfMarkupDigits(candidateMarkupDigits);
+
+  if (!isArrayOfMarkupDigits(candidateMarkupDigits)) return false;
+
+  const sourceMarkupDigitsSorted = [...sourceMarkupDigits].sort();
+  const candidateMarkupDigitsSorted = [...candidateMarkupDigits].sort();
+
+  const doMarkupDigitsHaveSameLength =
+    sourceMarkupDigitsSorted.length === candidateMarkupDigitsSorted.length;
+
+  if (!doMarkupDigitsHaveSameLength) return false;
+
+  const doAllMarkupDigitsMatchByPosition = sourceMarkupDigitsSorted.every(
+    (markupDigit, markupDigitIndex) =>
+      markupDigit === candidateMarkupDigitsSorted[markupDigitIndex],
+  );
+
+  return doAllMarkupDigitsMatchByPosition;
+};
+
+const doesMarkupDigitsCellContentMatchExactly = (
+  sourceCellContent: MarkupDigitsCellContent,
+  candidateCellContent: MarkupDigitsCellContent,
+): boolean => {
+  const doesCenterMarkupsMatchExactly = doMarkupDigitsMatchExactly(
+    sourceCellContent.centerMarkups,
+    candidateCellContent.centerMarkups,
+  );
+
+  const doesCornerMarkupsMatchExactly = doMarkupDigitsMatchExactly(
+    sourceCellContent.cornerMarkups,
+    candidateCellContent.cornerMarkups,
+  );
+
+  const doesSourceCellContainAtLeastOneMarkupDigit =
+    isArrayOfMarkupDigits(sourceCellContent.centerMarkups) ||
+    isArrayOfMarkupDigits(sourceCellContent.cornerMarkups);
+
+  const doesCandidateCellContainAtLeastOneMarkupDigit =
+    isArrayOfMarkupDigits(candidateCellContent.centerMarkups) ||
+    isArrayOfMarkupDigits(candidateCellContent.cornerMarkups);
+
+  const doesMarkupDigitsCellContentMatchExactly =
+    doesCenterMarkupsMatchExactly &&
+    doesCornerMarkupsMatchExactly &&
+    doesSourceCellContainAtLeastOneMarkupDigit &&
+    doesCandidateCellContainAtLeastOneMarkupDigit;
+
+  return doesMarkupDigitsCellContentMatchExactly;
+};
+
+const doesCellContentContainStartingOrPlayerDigit = (
+  cellContent: CellContent,
+): boolean =>
+  isStartingOrPlayerDigitInCellContent(cellContent) &&
+  getStartingOrPlayerDigitInCellIfPresent(cellContent) !== "";
+
+const doesCellContentContainMarkupDigits = (
+  cellContent: CellContent,
+): boolean =>
+  isMarkupDigitsInCellContent(cellContent) &&
+  (isArrayOfMarkupDigits(cellContent.centerMarkups) ||
+    isArrayOfMarkupDigits(cellContent.cornerMarkups));
+
+const doCellsContainOnlyMarkupColors = (
+  sourceCellContent: CellContent,
+  candidateCellContent: CellContent,
+): boolean => {
+  const doesSourceCellContainStartingOrPlayerDigit =
+    doesCellContentContainStartingOrPlayerDigit(sourceCellContent);
+
+  const doesCandidateCellContainStartingOrPlayerDigit =
+    doesCellContentContainStartingOrPlayerDigit(candidateCellContent);
+
+  const doesSourceCellContainMarkupDigits =
+    doesCellContentContainMarkupDigits(sourceCellContent);
+
+  const doesCandidateCellContainMarkupDigits =
+    doesCellContentContainMarkupDigits(candidateCellContent);
+
+  const doCellsContainOnlyMarkupColors = !(
+    doesSourceCellContainStartingOrPlayerDigit ||
+    doesCandidateCellContainStartingOrPlayerDigit ||
+    doesSourceCellContainMarkupDigits ||
+    doesCandidateCellContainMarkupDigits
+  );
+
+  return doCellsContainOnlyMarkupColors;
+};
+
+const getCellStateWithStrictMatchingSelection = (
+  sourceCellState: CellState,
+  candidateCellState: CellState,
+): CellState => {
+  if (isEmptyEditableCellWithoutMarkup(candidateCellState))
+    return candidateCellState;
+
+  const doCellMarkupColorsMatchExactly = doMarkupColorsMatchExactly(
+    sourceCellState.markupColors,
+    candidateCellState.markupColors,
+  );
+
+  if (!doCellMarkupColorsMatchExactly) return candidateCellState;
+
+  const sourceCellContent = sourceCellState.cellContent;
+  const candidateCellContent = candidateCellState.cellContent;
+
+  const sourceStartingOrPlayerDigit =
+    getStartingOrPlayerDigitInCellIfPresent(sourceCellContent);
+
+  const candidateStartingOrPlayerDigit =
+    getStartingOrPlayerDigitInCellIfPresent(candidateCellContent);
+
+  const doStartingOrPlayerDigitsMatchExactly =
+    isStartingOrPlayerDigitInCellContent(sourceCellContent) &&
+    isStartingOrPlayerDigitInCellContent(candidateCellContent) &&
+    sourceStartingOrPlayerDigit === candidateStartingOrPlayerDigit &&
+    sourceStartingOrPlayerDigit !== "" &&
+    candidateStartingOrPlayerDigit !== "";
+
+  const doMarkupDigitsMatchExactlyBetweenCells =
+    isMarkupDigitsInCellContent(sourceCellContent) &&
+    isMarkupDigitsInCellContent(candidateCellContent) &&
+    doesMarkupDigitsCellContentMatchExactly(
+      sourceCellContent,
+      candidateCellContent,
+    );
+
+  const doCellsContainOnlyMarkupColorsAndMatchExactly =
+    doCellsContainOnlyMarkupColors(sourceCellContent, candidateCellContent);
+
+  if (
+    doStartingOrPlayerDigitsMatchExactly ||
+    doMarkupDigitsMatchExactlyBetweenCells ||
+    doCellsContainOnlyMarkupColorsAndMatchExactly
+  ) {
+    const nextCellState = {
+      ...candidateCellState,
+      isSelected: true,
+    };
+
+    return nextCellState;
+  }
+
+  return candidateCellState;
+};
+
+const getCellStateWithPartialMatchingSelection = (
   sourceCellState: CellState,
   candidateCellState: CellState,
 ): CellState => {
@@ -736,6 +925,7 @@ const getCellStateWithMatchingSelection = (
 
 const handleCellDoubleClick = (
   sourceCellState: CellState,
+  strictHighlights: boolean,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
   setPuzzleHistory((previousPuzzleHistory) => {
@@ -751,10 +941,13 @@ const handleCellDoubleClick = (
       }),
     );
 
-    const boardStateWithMatchingSelections: BoardState =
-      boardStateWithClearedSelections.map((cellState) =>
-        getCellStateWithMatchingSelection(sourceCellState, cellState),
-      );
+    const boardStateWithMatchingSelections: BoardState = strictHighlights
+      ? boardStateWithClearedSelections.map((cellState) =>
+          getCellStateWithStrictMatchingSelection(sourceCellState, cellState),
+        )
+      : boardStateWithClearedSelections.map((cellState) =>
+          getCellStateWithPartialMatchingSelection(sourceCellState, cellState),
+        );
 
     const nextBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
     nextBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
@@ -838,7 +1031,13 @@ export const Cell = memo(
         {...(cellState.isSelected && {
           boxShadow: CELL_SELECTION_BOX_SHADOW,
         })}
-        onDoubleClick={() => handleCellDoubleClick(cellState, setPuzzleHistory)}
+        onDoubleClick={() =>
+          handleCellDoubleClick(
+            cellState,
+            userSettings.strictHighlights,
+            setPuzzleHistory,
+          )
+        }
         onPointerDown={(event) => {
           event.currentTarget.setPointerCapture(event.pointerId);
           handleCellPointerDown(cellState.cellNumber);

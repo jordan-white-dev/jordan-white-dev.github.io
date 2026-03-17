@@ -142,7 +142,6 @@ const ShortcutsMenu = () => (
 
 // #region Settings Checkbox
 type SettingCheckboxProps = {
-  disabled: boolean;
   settingKey: keyof UserSettings;
   settingLabel: string;
   userSettings: UserSettings;
@@ -150,7 +149,6 @@ type SettingCheckboxProps = {
 };
 
 const SettingsCheckbox = ({
-  disabled,
   settingKey,
   settingLabel,
   userSettings,
@@ -159,7 +157,6 @@ const SettingsCheckbox = ({
   <Menu.CheckboxItem
     checked={userSettings[settingKey]}
     closeOnSelect={false}
-    disabled={disabled}
     key={settingKey}
     value={settingKey}
     onCheckedChange={onCheckedChange}
@@ -187,7 +184,6 @@ const SettingsMenu = () => {
             <Menu.ItemGroup>
               <Menu.ItemGroupLabel>Gameplay</Menu.ItemGroupLabel>
               <SettingsCheckbox
-                disabled={false}
                 settingKey="conflictChecker"
                 settingLabel="Conflict Checker"
                 userSettings={userSettings}
@@ -200,7 +196,6 @@ const SettingsMenu = () => {
               />
 
               <SettingsCheckbox
-                disabled={false}
                 settingKey="showSeenCells"
                 settingLabel="Show Seen Cells"
                 userSettings={userSettings}
@@ -213,7 +208,6 @@ const SettingsMenu = () => {
               />
 
               <SettingsCheckbox
-                disabled={true}
                 settingKey="strictHighlights"
                 settingLabel="Strict Highlights"
                 userSettings={userSettings}
@@ -229,7 +223,6 @@ const SettingsMenu = () => {
             <Menu.ItemGroup>
               <Menu.ItemGroupLabel>Visual</Menu.ItemGroupLabel>
               <SettingsCheckbox
-                disabled={false}
                 settingKey="flipKeypad"
                 settingLabel="Flip Keypad"
                 userSettings={userSettings}
@@ -242,7 +235,6 @@ const SettingsMenu = () => {
               />
 
               <SettingsCheckbox
-                disabled={false}
                 settingKey="dashedGrid"
                 settingLabel="Dashed Grid"
                 userSettings={userSettings}
@@ -255,7 +247,6 @@ const SettingsMenu = () => {
               />
 
               <SettingsCheckbox
-                disabled={false}
                 settingKey="disableStopwatch"
                 settingLabel="Disable Stopwatch"
                 userSettings={userSettings}
@@ -277,7 +268,6 @@ const SettingsMenu = () => {
                 <Menu.CheckboxItem
                   checked={userSettings.hideStopwatch}
                   closeOnSelect={false}
-                  disabled={false}
                   value={"hideStopwatch"}
                   onCheckedChange={() => {
                     setUserSettings((previousUserSettings) => ({
@@ -292,7 +282,6 @@ const SettingsMenu = () => {
               </Tooltip>
 
               <SettingsCheckbox
-                disabled={false}
                 settingKey="showRowAndColumnLabels"
                 settingLabel="Show Row + Column Labels"
                 userSettings={userSettings}

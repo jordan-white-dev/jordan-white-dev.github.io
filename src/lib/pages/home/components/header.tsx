@@ -200,7 +200,7 @@ const SettingsMenu = () => {
               />
 
               <SettingsCheckbox
-                disabled={true}
+                disabled={false}
                 settingKey="showSeenCells"
                 settingLabel="Show Seen Cells"
                 userSettings={userSettings}

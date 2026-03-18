@@ -1,7 +1,7 @@
 import {
   createContext,
   type Dispatch,
-  type ReactNode,
+  type PropsWithChildren,
   type SetStateAction,
   useContext,
   useMemo,
@@ -10,13 +10,13 @@ import useSessionStorageState from "use-session-storage-state";
 
 export type UserSettings = {
   conflictChecker: boolean;
+  dashedGrid: boolean;
+  disableStopwatch: boolean;
+  flipKeypad: boolean;
+  hideStopwatch: boolean;
+  showRowAndColumnLabels: boolean;
   showSeenCells: boolean;
   strictHighlights: boolean;
-  flipKeypad: boolean;
-  disableStopwatch: boolean;
-  hideStopwatch: boolean;
-  dashedGrid: boolean;
-  showRowAndColumnLabels: boolean;
 };
 
 type UserSettingsContextValue = {
@@ -26,20 +26,20 @@ type UserSettingsContextValue = {
 
 const defaultSettings: UserSettings = {
   conflictChecker: false,
+  dashedGrid: false,
+  disableStopwatch: false,
+  flipKeypad: false,
+  hideStopwatch: false,
+  showRowAndColumnLabels: false,
   showSeenCells: false,
   strictHighlights: false,
-  flipKeypad: false,
-  disableStopwatch: false,
-  hideStopwatch: false,
-  dashedGrid: false,
-  showRowAndColumnLabels: false,
 };
 
 const UserSettingsContext = createContext<UserSettingsContextValue | undefined>(
   undefined,
 );
 
-export const UserSettingsProvider = ({ children }: { children: ReactNode }) => {
+export const UserSettingsProvider = ({ children }: PropsWithChildren) => {
   const [userSettings, setUserSettings] = useSessionStorageState<UserSettings>(
     "user-settings",
     {

@@ -11,8 +11,13 @@ import {
   SimpleGrid,
   Stack,
 } from "@chakra-ui/react";
-import { useNavigate } from "@tanstack/react-router";
-import type { Dispatch, ReactNode, SetStateAction } from "react";
+import { type UseNavigateResult, useNavigate } from "@tanstack/react-router";
+import type {
+  Dispatch,
+  PropsWithChildren,
+  ReactNode,
+  SetStateAction,
+} from "react";
 import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 import { makepuzzle } from "sudoku";
@@ -86,14 +91,13 @@ const handleSetPuzzleHistory = (
 };
 
 // #region Action Button
-type ActionButtonProps = {
-  icon: ReactNode;
+interface ActionButtonProps extends PropsWithChildren {
   iconSize: IconProps["width"];
   onClick?: () => void;
-};
+}
 
 const ActionButton = ({
-  icon,
+  children,
   iconSize,
   onClick,
   ...props
@@ -108,17 +112,16 @@ const ActionButton = ({
     {...props}
   >
     <Icon height={iconSize} width={iconSize}>
-      {icon}
+      {children}
     </Icon>
   </IconButton>
 );
 // #endregion
 
 // #region Action Tooltip
-type ActionTooltipProps = {
-  children: ReactNode;
+interface ActionTooltipProps extends PropsWithChildren {
   tooltipText: string;
-};
+}
 
 const ActionTooltip = ({ children, tooltipText }: ActionTooltipProps) => (
   <Tooltip content={tooltipText} positioning={{ placement: "left-start" }}>
@@ -171,6 +174,53 @@ const ActionDialog = ({
 // #endregion
 
 // #region New Puzzle Button
+type NewPuzzleDialogTriggerProps = {
+  pauseStopwatch: () => void;
+};
+
+const NewPuzzleDialogTrigger = ({
+  pauseStopwatch,
+}: NewPuzzleDialogTriggerProps) => (
+  <ActionTooltip tooltipText="Start a new puzzle">
+    <Dialog.Trigger asChild onClick={pauseStopwatch}>
+      <ActionButton iconSize={MD_ICON_SIZE_ALT}>
+        <MdOutlineFiberNew />
+      </ActionButton>
+    </Dialog.Trigger>
+  </ActionTooltip>
+);
+
+type NewPuzzleDialogFooterProps = {
+  navigate: UseNavigateResult<string>;
+  startStopwatchIfEnabled: () => void;
+};
+
+const NewPuzzleDialogFooter = ({
+  navigate,
+  startStopwatchIfEnabled,
+}: NewPuzzleDialogFooterProps) => (
+  <Dialog.Footer>
+    <Dialog.ActionTrigger asChild>
+      <Button
+        colorPalette="gray"
+        variant="outline"
+        onClick={startStopwatchIfEnabled}
+      >
+        Cancel
+      </Button>
+    </Dialog.ActionTrigger>
+
+    <Dialog.ActionTrigger asChild>
+      <Button
+        colorPalette="blue"
+        onClick={() => handleNewPuzzleConfirmation(navigate)}
+      >
+        New Puzzle
+      </Button>
+    </Dialog.ActionTrigger>
+  </Dialog.Footer>
+);
+
 const handleNewPuzzleConfirmation = (
   navigateToNewPuzzle: ReturnType<typeof useNavigate>,
 ) => {
@@ -191,37 +241,14 @@ const NewPuzzleButton = () => {
       <ActionDialog
         dialogBodyText="Are you sure you want to start a new puzzle? All progress will be lost!"
         dialogFooter={
-          <Dialog.Footer>
-            <Dialog.ActionTrigger asChild>
-              <Button
-                colorPalette="gray"
-                variant="outline"
-                onClick={startStopwatchIfEnabled}
-              >
-                Cancel
-              </Button>
-            </Dialog.ActionTrigger>
-
-            <Dialog.ActionTrigger asChild>
-              <Button
-                colorPalette="blue"
-                onClick={() => handleNewPuzzleConfirmation(navigate)}
-              >
-                New Puzzle
-              </Button>
-            </Dialog.ActionTrigger>
-          </Dialog.Footer>
+          <NewPuzzleDialogFooter
+            navigate={navigate}
+            startStopwatchIfEnabled={startStopwatchIfEnabled}
+          />
         }
         dialogTitleText="Confirm New"
         dialogTrigger={
-          <ActionTooltip tooltipText="Start a new puzzle">
-            <Dialog.Trigger asChild onClick={pauseStopwatch}>
-              <ActionButton
-                icon={<MdOutlineFiberNew />}
-                iconSize={MD_ICON_SIZE_ALT}
-              />
-            </Dialog.Trigger>
-          </ActionTooltip>
+          <NewPuzzleDialogTrigger pauseStopwatch={pauseStopwatch} />
         }
       />
     </GridItem>
@@ -250,10 +277,11 @@ type UndoButtonProps = {
 const UndoButton = ({ puzzleHistory, setPuzzleHistory }: UndoButtonProps) => (
   <ActionTooltip tooltipText="Undo the last move">
     <ActionButton
-      icon={<ImUndo />}
       iconSize={IM_ICON_SIZE}
       onClick={() => handleUndoButton(puzzleHistory, setPuzzleHistory)}
-    />
+    >
+      <ImUndo />
+    </ActionButton>
   </ActionTooltip>
 );
 // #endregion
@@ -279,10 +307,11 @@ type RedoButtonProps = {
 const RedoButton = ({ puzzleHistory, setPuzzleHistory }: RedoButtonProps) => (
   <ActionTooltip tooltipText="Redo the last undone move">
     <ActionButton
-      icon={<ImRedo />}
       iconSize={IM_ICON_SIZE}
       onClick={() => handleRedoButton(puzzleHistory, setPuzzleHistory)}
-    />
+    >
+      <ImRedo />
+    </ActionButton>
   </ActionTooltip>
 );
 // #endregion
@@ -342,6 +371,52 @@ const startStopwatchAfterSolutionCheckIfAppropriate = (
   }
 };
 
+type CheckSolutionDialogTriggerProps = {
+  pauseStopwatch: () => void;
+};
+
+const CheckSolutionDialogTrigger = ({
+  pauseStopwatch,
+}: CheckSolutionDialogTriggerProps) => (
+  <ActionTooltip tooltipText="Check the current solution">
+    <Dialog.Trigger asChild onClick={pauseStopwatch}>
+      <ActionButton iconSize={IM_ICON_SIZE}>
+        <ImCheckmark />
+      </ActionButton>
+    </Dialog.Trigger>
+  </ActionTooltip>
+);
+
+type CheckSolutionDialogFooterProps = {
+  isPuzzleSolved: boolean;
+  isStopwatchDisabled: boolean;
+  startStopwatch: () => void;
+};
+
+const CheckSolutionDialogFooter = ({
+  isPuzzleSolved,
+  isStopwatchDisabled,
+  startStopwatch,
+}: CheckSolutionDialogFooterProps) => (
+  <Dialog.Footer>
+    <Dialog.ActionTrigger asChild>
+      <Button
+        colorPalette={isPuzzleSolved ? "blue" : "red"}
+        variant="solid"
+        onClick={() =>
+          startStopwatchAfterSolutionCheckIfAppropriate(
+            isPuzzleSolved,
+            isStopwatchDisabled,
+            startStopwatch,
+          )
+        }
+      >
+        Okay
+      </Button>
+    </Dialog.ActionTrigger>
+  </Dialog.Footer>
+);
+
 type CheckSolutionButtonProps = {
   puzzleHistory: PuzzleHistory;
 };
@@ -350,44 +425,31 @@ const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
   const { formattedStopwatchTime, pauseStopwatch, startStopwatch } =
     useSudokuStopwatch();
   const { userSettings } = useUserSettings();
+  const { disableStopwatch: isStopwatchDisabled } = userSettings;
 
   const isPuzzleSolved = getIsPuzzleSolved(
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex],
   );
+  const dialogBodyText = getDialogBodyText(
+    isPuzzleSolved,
+    isStopwatchDisabled,
+    formattedStopwatchTime,
+  );
+  const dialogTitleText = isPuzzleSolved ? "Congratulations" : "Try Again";
 
   return (
     <ActionDialog
-      dialogBodyText={getDialogBodyText(
-        isPuzzleSolved,
-        userSettings.disableStopwatch,
-        formattedStopwatchTime,
-      )}
+      dialogBodyText={dialogBodyText}
       dialogFooter={
-        <Dialog.Footer>
-          <Dialog.ActionTrigger asChild>
-            <Button
-              colorPalette={isPuzzleSolved ? "blue" : "red"}
-              variant="solid"
-              onClick={() =>
-                startStopwatchAfterSolutionCheckIfAppropriate(
-                  isPuzzleSolved,
-                  userSettings.disableStopwatch,
-                  startStopwatch,
-                )
-              }
-            >
-              Okay
-            </Button>
-          </Dialog.ActionTrigger>
-        </Dialog.Footer>
+        <CheckSolutionDialogFooter
+          isPuzzleSolved={isPuzzleSolved}
+          isStopwatchDisabled={isStopwatchDisabled}
+          startStopwatch={startStopwatch}
+        />
       }
-      dialogTitleText={isPuzzleSolved ? "Congratulations" : "Try Again"}
+      dialogTitleText={dialogTitleText}
       dialogTrigger={
-        <ActionTooltip tooltipText="Check the current solution">
-          <Dialog.Trigger asChild onClick={pauseStopwatch}>
-            <ActionButton icon={<ImCheckmark />} iconSize={IM_ICON_SIZE} />
-          </Dialog.Trigger>
-        </ActionTooltip>
+        <CheckSolutionDialogTrigger pauseStopwatch={pauseStopwatch} />
       }
     />
   );
@@ -411,6 +473,22 @@ const handleRestartPuzzleConfirmation = (
   };
   setPuzzleHistory(newPuzzleHistory);
 };
+
+type RestartPuzzleDialogTriggerProps = {
+  pauseStopwatch: () => void;
+};
+
+const RestartPuzzleDialogTrigger = ({
+  pauseStopwatch,
+}: RestartPuzzleDialogTriggerProps) => (
+  <ActionTooltip tooltipText="Restart the puzzle">
+    <Dialog.Trigger asChild onClick={pauseStopwatch}>
+      <ActionButton iconSize={MD_ICON_SIZE}>
+        <MdRestartAlt />
+      </ActionButton>
+    </Dialog.Trigger>
+  </ActionTooltip>
+);
 
 type RestartPuzzleDialogFooterProps = {
   rawBoardState: RawBoardState;
@@ -487,11 +565,7 @@ const RestartPuzzleButton = ({
       }
       dialogTitleText="Confirm Restart"
       dialogTrigger={
-        <ActionTooltip tooltipText="Restart the puzzle">
-          <Dialog.Trigger asChild onClick={pauseStopwatch}>
-            <ActionButton icon={<MdRestartAlt />} iconSize={MD_ICON_SIZE} />
-          </Dialog.Trigger>
-        </ActionTooltip>
+        <RestartPuzzleDialogTrigger pauseStopwatch={pauseStopwatch} />
       }
     />
   );

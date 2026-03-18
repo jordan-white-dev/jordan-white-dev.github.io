@@ -23,13 +23,6 @@ import { Stopwatch } from "./stopwatch";
 import { Tooltip } from "./tooltip";
 
 // #region Shortcuts Menu
-type ShortcutItems = Array<{
-  keyboardShortcut: string;
-  shortcutName: string;
-  tooltipText: ReactNode;
-  value: string;
-}>;
-
 const DoubleClickTooltipText = () => (
   <>
     <Kbd>Double Click</Kbd> &nbsp;selects all cells with matching digits,
@@ -57,6 +50,13 @@ const MultiselectTooltipText = () => (
     <Kbd>M</Kbd> &nbsp;switches between single select and multiselect modes.
   </>
 );
+
+type ShortcutItems = Array<{
+  keyboardShortcut: string;
+  shortcutName: string;
+  tooltipText: ReactNode;
+  value: string;
+}>;
 
 const nonClearCellShortcutItems: ShortcutItems = [
   {

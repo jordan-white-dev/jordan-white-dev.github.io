@@ -1,6 +1,6 @@
 import {
   createContext,
-  type ReactNode,
+  type PropsWithChildren,
   useCallback,
   useContext,
   useEffect,
@@ -57,13 +57,15 @@ const SudokuStopwatchContext = createContext<
 // #endregion
 
 // #region Provider
+
+interface SudokuStopwatchProviderProps extends PropsWithChildren {
+  rawBoardState: RawBoardState;
+}
+
 export const SudokuStopwatchProvider = ({
   children,
   rawBoardState,
-}: {
-  children: ReactNode;
-  rawBoardState: RawBoardState;
-}) => {
+}: SudokuStopwatchProviderProps) => {
   const { userSettings, setUserSettings } = useUserSettings();
 
   const [persistedStopwatchTotalSeconds, setPersistedStopwatchTotalSeconds] =

@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react";
 import {
   type Dispatch,
-  type ReactNode,
+  type PropsWithChildren,
   type SetStateAction,
   useEffect,
   useRef,
@@ -111,15 +111,14 @@ const CenterSVG = (props: HTMLChakraProps<"svg">) => (
 // #endregion
 
 // #region Keypad Mode Radio Card Item
-type KeypadModeRadioCardItemProps = {
-  icon: ReactNode;
+interface KeypadModeRadioCardItemProps extends PropsWithChildren {
   keypadModeValue: KeypadMode;
   tooltipText: string;
   setKeypadMode: Dispatch<SetStateAction<KeypadMode>>;
-};
+}
 
 const KeypadModeRadioCardItem = ({
-  icon,
+  children,
   keypadModeValue,
   tooltipText,
   setKeypadMode,
@@ -143,7 +142,7 @@ const KeypadModeRadioCardItem = ({
           }}
           fill="black"
         >
-          {icon}
+          {children}
         </Icon>
       </RadioCard.ItemControl>
     </Tooltip>
@@ -276,29 +275,36 @@ export const KeypadModeRadioCard = ({
         minWidth={{ lg: "12.75rem" }}
       >
         <KeypadModeRadioCardItem
-          icon={<DigitSVG />}
           keypadModeValue="Digit"
           tooltipText="Digit keypad mode"
           setKeypadMode={setKeypadMode}
-        />
+        >
+          <DigitSVG />
+        </KeypadModeRadioCardItem>
+
         <KeypadModeRadioCardItem
-          icon={<ColorSVG />}
           keypadModeValue="Color"
           tooltipText="Color markup mode"
           setKeypadMode={setKeypadMode}
-        />
+        >
+          <ColorSVG />
+        </KeypadModeRadioCardItem>
+
         <KeypadModeRadioCardItem
-          icon={<CenterSVG />}
           keypadModeValue="Center"
           tooltipText="Center markup mode"
           setKeypadMode={setKeypadMode}
-        />
+        >
+          <CenterSVG />
+        </KeypadModeRadioCardItem>
+
         <KeypadModeRadioCardItem
-          icon={<CornerSVG />}
           keypadModeValue="Corner"
           tooltipText="Corner markup mode"
           setKeypadMode={setKeypadMode}
-        />
+        >
+          <CornerSVG />
+        </KeypadModeRadioCardItem>
       </SimpleGrid>
     </RadioCard.Root>
   );

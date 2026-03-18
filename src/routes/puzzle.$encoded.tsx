@@ -4,7 +4,7 @@ import { solvepuzzle } from "sudoku";
 import Home from "@/lib/pages/home";
 import {
   buildBoardState,
-  validRawSudokuStringRegEx,
+  validRawSudokuStringRegex,
 } from "@/lib/shared/constants";
 import type { RawBoardState, RawStartingDigit } from "@/lib/shared/types";
 
@@ -61,7 +61,7 @@ export const Route = createFileRoute("/puzzle/$encoded")({
       }
     })();
 
-    if (!validRawSudokuStringRegEx.test(rawSudokuString)) throw notFound();
+    if (!validRawSudokuStringRegex.test(rawSudokuString)) throw notFound();
 
     const rawBoardState = rawSudokuStringToRawBoardState(rawSudokuString);
 

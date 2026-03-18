@@ -1,17 +1,18 @@
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
 import { Provider } from "@/lib/components/ui/provider";
 import Page404 from "@/lib/pages/404";
-import { queryClient } from "@/lib/shared/constants";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
 // fonts
 import "@fontsource-variable/plus-jakarta-sans";
+
+const queryClient = new QueryClient();
 
 // Create a new router instance
 const router = createRouter({

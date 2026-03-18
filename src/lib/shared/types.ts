@@ -32,11 +32,11 @@ export const flippedKeypadMarkupColors = [
 ] as const;
 export type MarkupColor = (typeof markupColors)[number];
 
-export const keypadModes = ["Digit", "Color", "Center", "Corner"] as const;
+const keypadModes = ["Digit", "Color", "Center", "Corner"] as const;
 export type KeypadMode = (typeof keypadModes)[number];
 
 export type RawStartingDigit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-export type RawCellState = RawStartingDigit | null;
+type RawCellState = RawStartingDigit | null;
 export type RawBoardState = Array<RawCellState>;
 
 export const sudokuDigits = [

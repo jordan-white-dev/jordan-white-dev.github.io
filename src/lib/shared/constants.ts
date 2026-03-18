@@ -1,4 +1,3 @@
-import { QueryClient } from "@tanstack/react-query";
 import SuperExpressive from "super-expressive";
 
 import type {
@@ -13,17 +12,15 @@ import type {
   SudokuDigit,
 } from "./types";
 
-export const queryClient = new QueryClient();
-
 // Equivalent to: /^\d{81}$/
-export const validRawSudokuStringRegEx = SuperExpressive()
+export const validRawSudokuStringRegex = SuperExpressive()
   .startOfInput.exactly(81)
   .digit.endOfInput.toRegex();
 
 export const encodeRawSudokuStringAsBase36String = (
   rawSudokuString: string,
 ): string => {
-  if (!validRawSudokuStringRegEx.test(rawSudokuString)) {
+  if (!validRawSudokuStringRegex.test(rawSudokuString)) {
     throw Error("Invalid raw sudoku string.");
   }
 

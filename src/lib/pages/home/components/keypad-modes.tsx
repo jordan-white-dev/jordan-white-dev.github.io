@@ -118,7 +118,7 @@ type KeypadModeRadioCardItemProps = {
   setKeypadMode: Dispatch<SetStateAction<KeypadMode>>;
 };
 
-export const KeypadModeRadioCardItem = ({
+const KeypadModeRadioCardItem = ({
   icon,
   keypadModeValue,
   tooltipText,

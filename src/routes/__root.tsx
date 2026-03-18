@@ -7,7 +7,7 @@ import { Layout } from "@/lib/layout";
 
 const title = "Sudoku";
 const description = "sudoku app";
-const url = "https://jordan-white-dev.github.io/";
+const url = "https://jordan-white-dev.vercel.app/";
 
 export const Route = createRootRoute({
   head: () => ({

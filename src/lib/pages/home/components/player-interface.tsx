@@ -6,7 +6,7 @@ import type {
   KeypadMode,
   PuzzleHistory,
   RawBoardState,
-} from "@/lib/shared/types";
+} from "@/lib/pages/home/utils/types";
 
 import { Keypad } from "./keypad";
 import { KeypadModeRadioCard } from "./keypad-modes";

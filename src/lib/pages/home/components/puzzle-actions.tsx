@@ -22,20 +22,20 @@ import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 import { makepuzzle } from "sudoku";
 
+import { useSudokuStopwatch } from "@/lib/pages/home/hooks/useSudokuStopwatch";
+import { useUserSettings } from "@/lib/pages/home/hooks/useUserSettings";
 import {
   buildBoardState,
   encodeRawSudokuStringAsBase36String,
   getStartingOrPlayerDigitInCellIfPresent,
   rawBoardStateToRawSudokuString,
-} from "@/lib/shared/constants";
+} from "@/lib/pages/home/utils/constants";
 import type {
   BoardState,
   PuzzleHistory,
   RawBoardState,
-} from "@/lib/shared/types";
-import { useUserSettings } from "@/lib/utils/useUserSettings";
+} from "@/lib/pages/home/utils/types";
 
-import { useSudokuStopwatch } from "../../../utils/useSudokuStopwatch";
 import { Tooltip } from "./tooltip";
 
 // #region CSS Properties

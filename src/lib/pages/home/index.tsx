@@ -1,12 +1,12 @@
 import { Box } from "@chakra-ui/react";
 import { useLoaderData } from "@tanstack/react-router";
 
-import type { BoardState, RawBoardState } from "@/lib/shared/types";
-import { UserSettingsProvider } from "@/lib/utils/useUserSettings";
+import { UserSettingsProvider } from "@/lib/pages/home/hooks/useUserSettings";
+import type { BoardState, RawBoardState } from "@/lib/pages/home/utils/types";
 
-import { SudokuStopwatchProvider } from "../../utils/useSudokuStopwatch";
 import { Header } from "./components/header";
 import { Puzzle } from "./components/puzzle";
+import { SudokuStopwatchProvider } from "./hooks/useSudokuStopwatch";
 
 type LoaderData = {
   rawBoardState: RawBoardState;

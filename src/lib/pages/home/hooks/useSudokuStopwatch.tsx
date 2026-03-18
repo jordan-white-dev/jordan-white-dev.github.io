@@ -10,8 +10,8 @@ import {
 import { useStopwatch } from "react-timer-hook";
 import useSessionStorageState from "use-session-storage-state";
 
-import type { RawBoardState } from "../shared/types";
-import { useUserSettings } from "./useUserSettings";
+import { useUserSettings } from "@/lib/pages/home/hooks/useUserSettings";
+import type { RawBoardState } from "@/lib/pages/home/utils/types";
 
 const getFormattedStopwatchMinutes = (
   hours: number,

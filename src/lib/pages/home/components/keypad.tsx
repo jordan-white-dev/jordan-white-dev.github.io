@@ -16,12 +16,13 @@ import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
 import SuperExpressive from "super-expressive";
 
+import { useUserSettings } from "@/lib/pages/home/hooks/useUserSettings";
 import {
   exhaustiveGuard,
   isMarkupDigitsInCellContent,
   isPlayerDigitInCellContent,
   isStartingDigitInCellContent,
-} from "@/lib/shared/constants";
+} from "@/lib/pages/home/utils/constants";
 import {
   type BoardState,
   type CellState,
@@ -44,8 +45,7 @@ import {
   type PuzzleHistory,
   type SudokuDigit,
   sudokuDigits,
-} from "@/lib/shared/types";
-import { useUserSettings } from "@/lib/utils/useUserSettings";
+} from "@/lib/pages/home/utils/types";
 
 import { Tooltip } from "./tooltip";
 

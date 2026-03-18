@@ -5,8 +5,11 @@ import Home from "@/lib/pages/home";
 import {
   buildBoardState,
   validRawSudokuStringRegex,
-} from "@/lib/shared/constants";
-import type { RawBoardState, RawStartingDigit } from "@/lib/shared/types";
+} from "@/lib/pages/home/utils/constants";
+import type {
+  RawBoardState,
+  RawStartingDigit,
+} from "@/lib/pages/home/utils/types";
 
 const decodeBase36StringAsRawSudokuString = (base36String: string) => {
   const base36StringAsBigInt = [...base36String.toLowerCase()].reduce(

@@ -7,6 +7,7 @@ import {
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { memo } from "react";
 
+import { useUserSettings } from "@/lib/pages/home/hooks/useUserSettings";
 import {
   getStartingOrPlayerDigitInCellIfPresent,
   isArrayOfMarkupColors,
@@ -15,7 +16,7 @@ import {
   isPlayerDigitInCellContent,
   isStartingDigitInCellContent,
   isStartingOrPlayerDigitInCellContent,
-} from "@/lib/shared/constants";
+} from "@/lib/pages/home/utils/constants";
 import {
   type BoardState,
   type CellContent,
@@ -25,8 +26,7 @@ import {
   type MarkupDigitsCellContent,
   markupColors,
   type PuzzleHistory,
-} from "@/lib/shared/types";
-import { useUserSettings } from "@/lib/utils/useUserSettings";
+} from "@/lib/pages/home/utils/types";
 
 // #region CSS Properties
 

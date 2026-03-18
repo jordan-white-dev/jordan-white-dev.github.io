@@ -4,8 +4,8 @@ import { makepuzzle } from "sudoku";
 import {
   encodeRawSudokuStringAsBase36String,
   rawBoardStateToRawSudokuString,
-} from "@/lib/shared/constants";
-import type { RawBoardState } from "@/lib/shared/types";
+} from "@/lib/pages/home/utils/constants";
+import type { RawBoardState } from "@/lib/pages/home/utils/types";
 
 export const Route = createFileRoute("/")({
   loader: () => {

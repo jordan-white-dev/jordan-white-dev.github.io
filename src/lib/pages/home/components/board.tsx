@@ -2,9 +2,9 @@ import { SimpleGrid } from "@chakra-ui/react";
 import type { Dispatch, PointerEvent, RefObject, SetStateAction } from "react";
 import { useCallback, useRef } from "react";
 
-import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/shared/constants";
-import type { BoardState, PuzzleHistory } from "@/lib/shared/types";
-import { useUserSettings } from "@/lib/utils/useUserSettings";
+import { useUserSettings } from "@/lib/pages/home/hooks/useUserSettings";
+import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/pages/home/utils/constants";
+import type { BoardState, PuzzleHistory } from "@/lib/pages/home/utils/types";
 
 import { Cell } from "./cell";
 

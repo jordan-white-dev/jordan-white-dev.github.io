@@ -13,7 +13,7 @@ import {
   useRef,
 } from "react";
 
-import type { KeypadMode } from "@/lib/shared/types";
+import type { KeypadMode } from "@/lib/pages/home/utils/types";
 import {
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_GRAY,
@@ -24,7 +24,7 @@ import {
   MARKUP_COLOR_RED,
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_YELLOW,
-} from "@/lib/shared/types";
+} from "@/lib/pages/home/utils/types";
 
 import { Tooltip } from "./tooltip";
 

@@ -10,8 +10,8 @@ import {
 import { ImStopwatch } from "react-icons/im";
 import { MdOutlinePauseCircle, MdOutlinePlayCircle } from "react-icons/md";
 
-import { useSudokuStopwatch } from "@/lib/pages/home/hooks/useSudokuStopwatch";
-import { useUserSettings } from "@/lib/pages/home/hooks/useUserSettings";
+import { useSudokuStopwatch } from "@/lib/pages/home/hooks/use-sudoku-stopwatch";
+import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 
 const StopwatchDialogTrigger = () => {
   const { formattedStopwatchTime, isStopwatchRunning, pauseStopwatch } =

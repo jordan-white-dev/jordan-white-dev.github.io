@@ -13,11 +13,11 @@ import type { ReactNode } from "react";
 import { ImKeyboard } from "react-icons/im";
 import { MdOutlineSettings } from "react-icons/md";
 
-import { useSudokuStopwatch } from "@/lib/pages/home/hooks/useSudokuStopwatch";
+import { useSudokuStopwatch } from "@/lib/pages/home/hooks/use-sudoku-stopwatch";
 import {
   type UserSettings,
   useUserSettings,
-} from "@/lib/pages/home/hooks/useUserSettings";
+} from "@/lib/pages/home/hooks/use-user-settings";
 
 import { Stopwatch } from "./stopwatch";
 import { Tooltip } from "./tooltip";

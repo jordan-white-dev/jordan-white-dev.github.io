@@ -16,7 +16,7 @@ import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
 import SuperExpressive from "super-expressive";
 
-import { useUserSettings } from "@/lib/pages/home/hooks/useUserSettings";
+import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
   exhaustiveGuard,
   isMarkupDigitsInCellContent,

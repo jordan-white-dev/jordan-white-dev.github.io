@@ -22,8 +22,8 @@ import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 import { makepuzzle } from "sudoku";
 
-import { useSudokuStopwatch } from "@/lib/pages/home/hooks/useSudokuStopwatch";
-import { useUserSettings } from "@/lib/pages/home/hooks/useUserSettings";
+import { useSudokuStopwatch } from "@/lib/pages/home/hooks/use-sudoku-stopwatch";
+import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
   buildBoardState,
   encodeRawSudokuStringAsBase36String,

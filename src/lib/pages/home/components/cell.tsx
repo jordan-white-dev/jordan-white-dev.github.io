@@ -7,7 +7,7 @@ import {
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { memo } from "react";
 
-import { useUserSettings } from "@/lib/pages/home/hooks/useUserSettings";
+import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
   getStartingOrPlayerDigitInCellIfPresent,
   isArrayOfMarkupColors,

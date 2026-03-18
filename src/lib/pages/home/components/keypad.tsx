@@ -17,6 +17,7 @@ import { GrCheckbox, GrMultiple } from "react-icons/gr";
 import SuperExpressive from "super-expressive";
 
 import {
+  exhaustiveGuard,
   isMarkupDigitsInCellContent,
   isPlayerDigitInCellContent,
   isStartingDigitInCellContent,
@@ -871,6 +872,7 @@ export const Keypad = ({
           handleColorPadInput(digit, puzzleHistory, setPuzzleHistory);
           break;
         default:
+          exhaustiveGuard(keypadMode);
           break;
       }
     };

@@ -109,3 +109,9 @@ export const isArrayOfSudokuDigits = (
 export const isArrayOfMarkupColors = (
   values: [""] | Array<MarkupColor>,
 ): values is Array<MarkupColor> => values[0] !== "";
+
+export const exhaustiveGuard = (_value: never): never => {
+  throw Error(
+    `Reached exhaustive guard function with an unexpected value: ${JSON.stringify(_value)}`,
+  );
+};

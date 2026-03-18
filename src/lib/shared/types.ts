@@ -1,3 +1,7 @@
+export type Prettify<TypeIntersectionToPrettify> = {
+  [Property in keyof TypeIntersectionToPrettify]: TypeIntersectionToPrettify[Property];
+} & unknown;
+
 export const MARKUP_COLOR_GRAY = "#c2bcbc";
 export const MARKUP_COLOR_WHITE = "#ffffff";
 export const MARKUP_COLOR_PINK = "#f79cf7";
@@ -36,7 +40,7 @@ const keypadModes = ["Digit", "Color", "Center", "Corner"] as const;
 export type KeypadMode = (typeof keypadModes)[number];
 
 export type RawStartingDigit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-type RawCellState = RawStartingDigit | null;
+type RawCellState = Prettify<RawStartingDigit | null>;
 export type RawBoardState = Array<RawCellState>;
 
 export const sudokuDigits = [
@@ -71,10 +75,9 @@ export type MarkupDigitsCellContent = {
   centerMarkups: MarkupDigits;
   cornerMarkups: MarkupDigits;
 };
-export type CellContent =
-  | StartingDigitCellContent
-  | PlayerDigitCellContent
-  | MarkupDigitsCellContent;
+export type CellContent = Prettify<
+  StartingDigitCellContent | PlayerDigitCellContent | MarkupDigitsCellContent
+>;
 
 export type CellState = {
   boxNumber: number;

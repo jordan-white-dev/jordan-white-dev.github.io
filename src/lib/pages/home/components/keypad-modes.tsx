@@ -152,7 +152,7 @@ const KeypadModeRadioCardItem = ({
 // #endregion
 
 type KeyboardShortcut = "Control" | "Shift" | "Alt";
-const shortcutKeysToKeypadMode: Record<
+const keyboardShortcutsToKeypadMode: Record<
   KeyboardShortcut,
   Exclude<KeypadMode, "Digit">
 > = {
@@ -198,7 +198,7 @@ export const KeypadModeRadioCard = ({
 
       const keyDown = event.key as KeyboardShortcut;
 
-      if (!(keyDown in shortcutKeysToKeypadMode)) return;
+      if (!(keyDown in keyboardShortcutsToKeypadMode)) return;
       if (event.repeat) return;
 
       event.preventDefault();
@@ -211,7 +211,7 @@ export const KeypadModeRadioCard = ({
 
       if (!newestKeyDown) return;
 
-      setKeypadMode(shortcutKeysToKeypadMode[newestKeyDown]);
+      setKeypadMode(keyboardShortcutsToKeypadMode[newestKeyDown]);
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
@@ -219,7 +219,7 @@ export const KeypadModeRadioCard = ({
 
       const keyUp = event.key as KeyboardShortcut;
 
-      if (!(keyUp in shortcutKeysToKeypadMode)) return;
+      if (!(keyUp in keyboardShortcutsToKeypadMode)) return;
 
       keyDownOrder.current = keyDownOrder.current.filter(
         (keyDown) => keyDown !== keyUp,
@@ -228,7 +228,8 @@ export const KeypadModeRadioCard = ({
       const newestKeyDown =
         keyDownOrder.current[keyDownOrder.current.length - 1];
 
-      if (newestKeyDown) setKeypadMode(shortcutKeysToKeypadMode[newestKeyDown]);
+      if (newestKeyDown)
+        setKeypadMode(keyboardShortcutsToKeypadMode[newestKeyDown]);
       else setKeypadMode(originalKeypadMode.current);
     };
 

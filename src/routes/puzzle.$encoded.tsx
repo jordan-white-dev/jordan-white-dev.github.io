@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { solvepuzzle } from "sudoku";
 
 import Home from "@/lib/pages/home";
-import { buildBoardState as getBoardStateFromRawBoardState } from "@/lib/pages/home/utils/constants";
+import { getBoardStateFromRawBoardState } from "@/lib/pages/home/utils/constants";
 import {
   isRawPuzzleString,
   isRawStartingDigit,

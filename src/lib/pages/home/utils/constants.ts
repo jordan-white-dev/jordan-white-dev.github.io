@@ -36,7 +36,15 @@ export const getRawPuzzleStringFromRawBoardState = (
   return candidateRawPuzzleString;
 };
 
-export const buildBoardState = (rawBoardState: RawBoardState): BoardState => {
+const getStartingDigitCellContent = (
+  rawStartingDigit: RawStartingDigit,
+): CellContent => ({
+  startingDigit: (rawStartingDigit + 1).toString() as SudokuDigit,
+});
+
+export const getBoardStateFromRawBoardState = (
+  rawBoardState: RawBoardState,
+): BoardState => {
   const boardState: BoardState = [];
 
   for (let cellNumber = 1; cellNumber <= 81; cellNumber++) {
@@ -52,12 +60,6 @@ export const buildBoardState = (rawBoardState: RawBoardState): BoardState => {
     const blankPlayerDigitCellContent: PlayerDigitCellContent = {
       playerDigit: "",
     };
-
-    const getStartingDigitCellContent = (
-      rawStartingDigit: RawStartingDigit,
-    ): CellContent => ({
-      startingDigit: (rawStartingDigit + 1).toString() as SudokuDigit,
-    });
 
     const cellContent: CellContent =
       rawCellState === null

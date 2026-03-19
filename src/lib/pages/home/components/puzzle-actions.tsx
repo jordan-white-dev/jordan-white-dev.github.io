@@ -25,8 +25,8 @@ import { makepuzzle } from "sudoku";
 import { useSudokuStopwatch } from "@/lib/pages/home/hooks/use-sudoku-stopwatch";
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
-  buildBoardState,
   encodeRawPuzzleStringAsBase36String,
+  getBoardStateFromRawBoardState,
   getRawPuzzleStringFromRawBoardState,
   getStartingOrPlayerDigitInCellIfPresent,
 } from "@/lib/pages/home/utils/constants";
@@ -454,7 +454,7 @@ const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
 
 // #region Restart Puzzle Button
 const getRestartedBoardState = (rawBoardState: RawBoardState): BoardState => {
-  const restartedBoardState = buildBoardState(rawBoardState);
+  const restartedBoardState = getBoardStateFromRawBoardState(rawBoardState);
   return restartedBoardState;
 };
 

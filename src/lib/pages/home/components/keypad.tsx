@@ -74,6 +74,10 @@ const ICON_BUTTON_TEXT_STYLE_NONDIGIT: IconButtonProps["textStyle"] = {
 // #endregion
 
 // #region Shared
+const isMarkupSudokuDigit = (
+  markupDigit: SudokuDigit | "",
+): markupDigit is SudokuDigit => markupDigit !== "";
+
 const handleSetPuzzleHistory = (
   newBoardState: BoardState,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
@@ -226,12 +230,8 @@ const markupDigitsCellStateUpdater = (
   if (isMarkupDigitsInCellContent(previousCellContent)) {
     const previousMarkups =
       markupType === "Center"
-        ? previousCellContent.centerMarkups.filter(
-            (previousCenterMarkup) => previousCenterMarkup !== "",
-          )
-        : previousCellContent.cornerMarkups.filter(
-            (previousCornerMarkup) => previousCornerMarkup !== "",
-          );
+        ? previousCellContent.centerMarkups.filter(isMarkupSudokuDigit)
+        : previousCellContent.cornerMarkups.filter(isMarkupSudokuDigit);
 
     if (shouldMarkupDigitBeRemoved)
       return getUpdatedCellStateWithRemovedMarkupDigit(
@@ -273,10 +273,10 @@ const areAllSelectedCellsStartingPlayerOrContainButtonValueAsMarkup = (
       (isMarkupDigitsInCellContent(cellContent) &&
         (markupType === "Center"
           ? cellContent.centerMarkups
-              .filter((centerMarkup) => centerMarkup !== "")
+              .filter(isMarkupSudokuDigit)
               .includes(buttonValue)
           : cellContent.cornerMarkups
-              .filter((cornerMarkup) => cornerMarkup !== "")
+              .filter(isMarkupSudokuDigit)
               .includes(buttonValue)))
     );
   });
@@ -287,11 +287,6 @@ const areAllSelectedCellsStartingPlayerOrContainButtonValueAsMarkup = (
 // #region Color Button
 
 // #region Color Pad Input
-const isSudokuDigit = (
-  colorValue: MarkupColor | SudokuDigit,
-): colorValue is SudokuDigit =>
-  sudokuDigits.includes(colorValue as SudokuDigit);
-
 const doAllSelectedCellsHaveTheButtonColorAsAMarkup = (
   buttonColor: MarkupColor,
   previousBoardState: BoardState,
@@ -372,6 +367,11 @@ const markupColorCellStateUpdater = (
         previousMarkupColors,
       );
 };
+
+const isSudokuDigit = (
+  colorValue: MarkupColor | SudokuDigit,
+): colorValue is SudokuDigit =>
+  sudokuDigits.includes(colorValue as SudokuDigit);
 
 const handleColorPadInput = (
   colorValue: MarkupColor | SudokuDigit,
@@ -915,11 +915,13 @@ export const Keypad = ({
     >
       {keypadMode === "Color" ? (
         <ColorPad
+          key="color-pad"
           puzzleHistory={puzzleHistory}
           setPuzzleHistory={setPuzzleHistory}
         />
       ) : (
         <NumberPad
+          key="number-pad"
           keypadMode={keypadMode}
           puzzleHistory={puzzleHistory}
           setPuzzleHistory={setPuzzleHistory}
@@ -928,9 +930,11 @@ export const Keypad = ({
 
       <MultiselectSwitch
         isMultiselectMode={isMultiselectMode}
+        key="multiselect-switch"
         setIsMultiselectMode={setIsMultiselectMode}
       />
       <ClearButton
+        key="clear-button"
         puzzleHistory={puzzleHistory}
         setPuzzleHistory={setPuzzleHistory}
       />

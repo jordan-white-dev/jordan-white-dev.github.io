@@ -247,13 +247,12 @@ const markupDigitsCellStateUpdater = (
       previousCellState,
       previousMarkups,
     );
-  } else if (isPlayerDigitInCellContent(previousCellContent)) {
+  } else if (isPlayerDigitInCellContent(previousCellContent))
     return getUpdatedCellStateWithAnEmptyMarkupType(
       markupType,
       buttonValue,
       previousCellState,
     );
-  }
 
   return previousCellState;
 };
@@ -495,6 +494,7 @@ const playerDigitCellStateUpdater = (
         playerDigit: "",
       },
     };
+
     return emptyPlayerDigitCellState;
   }
 
@@ -504,6 +504,7 @@ const playerDigitCellStateUpdater = (
       playerDigit: buttonValue,
     },
   };
+
   return addedPlayerDigitCellState;
 };
 
@@ -679,7 +680,7 @@ const NumberPad = ({
   return (
     <>
       {sudokuDigitsInOrder.map((buttonValue, index) => {
-        if (keypadMode === "Digit") {
+        if (keypadMode === "Digit")
           return (
             <NumberButton
               buttonValue={buttonValue}
@@ -689,7 +690,7 @@ const NumberPad = ({
               }
             />
           );
-        } else if (keypadMode === "Center")
+        else if (keypadMode === "Center")
           return (
             <NumberButton
               buttonValue={buttonValue}
@@ -703,7 +704,7 @@ const NumberPad = ({
               }
             />
           );
-        else {
+        else
           return (
             <NumberButton
               alignItems={getAlignItems(index + 1)}
@@ -720,7 +721,6 @@ const NumberPad = ({
               }
             />
           );
-        }
       })}
     </>
   );
@@ -894,13 +894,12 @@ export const Keypad = ({
           .replace("Digit", "")
           .replace("Numpad", "") as SudokuDigit;
         handleNumberKeyDown(digit);
-      } else if (key === "Escape" || key === "Backspace" || key === "Delete") {
+      } else if (key === "Escape" || key === "Backspace" || key === "Delete")
         handleClearButton(puzzleHistory, setPuzzleHistory);
-      } else if (key.toLowerCase() === "m") {
+      else if (key.toLowerCase() === "m")
         setIsMultiselectMode(
           (previousMultiselectMode) => !previousMultiselectMode,
         );
-      }
     };
 
     window.addEventListener("keydown", handleKeyDown);

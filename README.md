@@ -29,7 +29,7 @@ A single selected cell is highlighted with a blue border.
 
 When multiple cells are selected, connected groups of cells share a single border.
 
-![One selected cell bordered in blue next to five cells with a shared blue border](images/Single_Select_and_Multiselect.png)
+![One selected cell bordered in blue on the left. Five cells with a shared blue border along their outer edge on the right.](images/single-select-vs-multiselect.png)
 
 ### Entering Content
 
@@ -48,7 +48,7 @@ Center and corner markups are smaller notations for tracking number candidates.
 
 Color markup applies background colors as an alternate tracking method.
 
-![Two cells with "358" center markups, a "3" corner markup, and blue and orange background colors. A digit cell with the number "2". Two cells with "47" center markups. A cell with "58" center markups and a green background color.](images/Digit_and_Markup_Examples.png)
+![Cells with: "358" center markups, a "3" corner markup, and blue and orange background colors. Then a digit cell with the number "2". Then two cells with "47" center markups. Finally, a cell with "58" center markups and a green background color.](images/digit-and-markups-example.png)
 
 ### Puzzle Actions
 
@@ -83,19 +83,19 @@ The app includes controls for generating a new puzzle, undoing and redoing moves
 
 All settings are off by default.
 
-![The open settings menu with Conflict Checker, Show Seen Cells, Strict Highlights, Flip Keypad, Dashed Grid, Disable Stopwatch, Hide Stopwatch, and Show Row + Column Labels settings.](images/Settings_Menu.png)
+![The open settings menu with Conflict Checker, Show Seen Cells, Strict Highlights, Flip Keypad, Dashed Grid, Disable Stopwatch, Hide Stopwatch, and Show Row + Column Labels settings. The Show Seen Cells and Disable Stopwatch settings are checked.](images/settings-menu.png)
 
 ### Conflict Checker
 
 Highlights invalid cells in red when a digit conflicts with another matching digit in the same row, column, or box.
 
-![Multiple cells in the same row, column, and/or box highlighted in red.](images/Conflict_Cells_Example.png)
+![Multiple cells in the same row, column, and/or box highlighted in red.](images/conflict-cells-example.png)
 
 ### Show Seen Cells
 
 When a single cell is selected, all cells it sees in its row, column, and box are highlighted in yellow.
 
-![A single selected cell with all other cells in its row, column, and box highlighted in yellow.](images/Show_Seen_Cells_Example.png)
+![A single selected cell with all other cells in its row, column, and box highlighted in yellow.](images/show-seen-cells-example.png)
 
 ### Strict Highlights
 
@@ -159,7 +159,7 @@ The app is designed to work across mobile and desktop layouts, with interface ch
 - `md`: `48rem`
 - `lg`: `62rem`
 
-![The mobile view of the app on the left and the desktop view on the right.](images/Mobile_vs_Desktop_Comparison.png)
+![The mobile view of the app on the left and the desktop view on the right.](images/mobile-vs-desktop-comparison.png)
 
 ## Attribution
 

@@ -264,9 +264,8 @@ const handleUndoButton = (
   if (
     puzzleHistory.boardStateHistory.length > 1 &&
     puzzleHistory.currentBoardStateIndex > 0
-  ) {
+  )
     handleSetPuzzleHistory(setPuzzleHistory, -1);
-  }
 };
 
 type UndoButtonProps = {
@@ -294,9 +293,8 @@ const handleRedoButton = (
   if (
     puzzleHistory.currentBoardStateIndex <
     puzzleHistory.boardStateHistory.length - 1
-  ) {
+  )
     handleSetPuzzleHistory(setPuzzleHistory, 1);
-  }
 };
 
 type RedoButtonProps = {
@@ -366,9 +364,7 @@ const startStopwatchAfterSolutionCheckIfAppropriate = (
   isStopwatchDisabled: boolean,
   startStopwatch: () => void,
 ) => {
-  if (!(isPuzzleSolved || isStopwatchDisabled)) {
-    startStopwatch();
-  }
+  if (!(isPuzzleSolved || isStopwatchDisabled)) startStopwatch();
 };
 
 type CheckSolutionDialogTriggerProps = {

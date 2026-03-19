@@ -650,9 +650,8 @@ const getCellBackground = ({
 
 // #region Other Cell Styles
 const getFontSize = (cellContent: CellContent): ButtonProps["fontSize"] => {
-  if (isStartingOrPlayerDigitInCellContent(cellContent)) {
-    return DIGIT_FONT_SIZE;
-  } else if (isMarkupDigitsInCellContent(cellContent)) {
+  if (isStartingOrPlayerDigitInCellContent(cellContent)) return DIGIT_FONT_SIZE;
+  else if (isMarkupDigitsInCellContent(cellContent)) {
     const centerMarkupsCount = cellContent.centerMarkups.length;
 
     switch (centerMarkupsCount) {

@@ -141,7 +141,7 @@ const ShortcutsMenu = () => (
 // #region Settings Menu
 
 // #region Settings Checkbox
-type SettingCheckboxProps = {
+type SettingsCheckboxProps = {
   settingKey: keyof UserSettings;
   settingLabel: string;
   userSettings: UserSettings;
@@ -153,7 +153,7 @@ const SettingsCheckbox = ({
   settingLabel,
   userSettings,
   onCheckedChange,
-}: SettingCheckboxProps) => (
+}: SettingsCheckboxProps) => (
   <Menu.CheckboxItem
     checked={userSettings[settingKey]}
     closeOnSelect={false}

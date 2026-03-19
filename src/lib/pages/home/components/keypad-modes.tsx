@@ -198,7 +198,6 @@ export const KeypadModeRadioCard = ({
       const keyDown = event.key as KeyboardShortcut;
 
       if (!(keyDown in shortcutKeysToKeypadMode)) return;
-
       if (event.repeat) return;
 
       event.preventDefault();
@@ -228,9 +227,7 @@ export const KeypadModeRadioCard = ({
       const newestKeyDown =
         keyDownOrder.current[keyDownOrder.current.length - 1];
 
-      if (newestKeyDown) {
-        setKeypadMode(shortcutKeysToKeypadMode[newestKeyDown]);
-      }
+      if (newestKeyDown) setKeypadMode(shortcutKeysToKeypadMode[newestKeyDown]);
 
       setKeypadMode(originalKeypadMode.current);
     };

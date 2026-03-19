@@ -24,11 +24,10 @@ const decodeBase36StringAsRawSudokuString = (base36String: string) => {
       );
       const characterIsValidBase36Digit = digitIndexInAlphabet !== -1;
 
-      if (!characterIsValidBase36Digit) {
+      if (!characterIsValidBase36Digit)
         throw new Error(
           `Invalid base36 character "${currentBase36Character}" at position ${currentCharacterPosition}`,
         );
-      }
 
       const decimalDigitValue = BigInt(digitIndexInAlphabet);
 

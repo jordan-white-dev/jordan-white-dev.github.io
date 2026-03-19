@@ -20,9 +20,8 @@ export const validRawSudokuStringRegex = SuperExpressive()
 export const encodeRawSudokuStringAsBase36String = (
   rawSudokuString: string,
 ): string => {
-  if (!validRawSudokuStringRegex.test(rawSudokuString)) {
+  if (!validRawSudokuStringRegex.test(rawSudokuString))
     throw Error("Invalid raw sudoku string.");
-  }
 
   const rawSudokuStringAsBigIntString = BigInt(rawSudokuString).toString(36);
   return rawSudokuStringAsBigIntString;

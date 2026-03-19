@@ -65,9 +65,8 @@ export const UserSettingsProvider = ({ children }: PropsWithChildren) => {
 export const useUserSettings = () => {
   const context = useContext(UserSettingsContext);
 
-  if (!context) {
+  if (!context)
     throw Error("useUserSettings must be used inside UserSettingsProvider");
-  }
 
   return context;
 };

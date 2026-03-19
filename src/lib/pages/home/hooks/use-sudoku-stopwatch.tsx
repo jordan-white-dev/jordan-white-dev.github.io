@@ -136,9 +136,7 @@ export const SudokuStopwatchProvider = ({
         wasStopwatchRunningBeforePageWasHiddenRef.current =
           isStopwatchRunningRef.current;
 
-        if (isStopwatchRunningRef.current) {
-          pauseStopwatch();
-        }
+        if (isStopwatchRunningRef.current) pauseStopwatch();
 
         return;
       }
@@ -147,9 +145,7 @@ export const SudokuStopwatchProvider = ({
         wasStopwatchRunningBeforePageWasHiddenRef.current &&
         !disableStopwatchRef.current;
 
-      if (shouldResumeStopwatch) {
-        start();
-      }
+      if (shouldResumeStopwatch) start();
 
       wasStopwatchRunningBeforePageWasHiddenRef.current = false;
     };

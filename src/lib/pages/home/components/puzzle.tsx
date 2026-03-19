@@ -77,9 +77,8 @@ export const Puzzle = memo(
         if (
           puzzleRef.current &&
           !puzzleRef.current.contains(event.target as Node)
-        ) {
+        )
           handleClearAllSelections(setPuzzleHistory);
-        }
       };
 
       document.addEventListener("pointerdown", handlePointerDownOutside);

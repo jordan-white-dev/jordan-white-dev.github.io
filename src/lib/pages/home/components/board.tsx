@@ -270,9 +270,8 @@ const handleBoardPointerMove = (
   if (
     previousBoardPosition !== undefined &&
     currentBoardPosition.cellNumber === previousBoardPosition.cellNumber
-  ) {
+  )
     return;
-  }
 
   if (previousBoardPosition === undefined) {
     previousBoardPositionDuringDragRef.current = currentBoardPosition;
@@ -353,9 +352,8 @@ const addConflictedCellNumbersFromRegion = (
   for (const matchingCellNumbers of digitOccurrencesByDigit.values()) {
     if (matchingCellNumbers.length <= 1) continue;
 
-    for (const cellNumber of matchingCellNumbers) {
+    for (const cellNumber of matchingCellNumbers)
       conflictedCellNumbers.add(cellNumber);
-    }
   }
 };
 
@@ -363,12 +361,11 @@ const addConflictedCellNumbersFromRegions = (
   digitOccurrencesByRegion: Array<Map<string, Array<number>>>,
   conflictedCellNumbers: Set<number>,
 ): void => {
-  for (const digitOccurrencesByDigit of digitOccurrencesByRegion) {
+  for (const digitOccurrencesByDigit of digitOccurrencesByRegion)
     addConflictedCellNumbersFromRegion(
       digitOccurrencesByDigit,
       conflictedCellNumbers,
     );
-  }
 };
 
 const getEmptyDigitOccurrencesByRegion = (): Array<

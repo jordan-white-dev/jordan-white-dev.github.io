@@ -2,10 +2,11 @@ import SuperExpressive from "super-expressive";
 
 import { branded } from "./branding";
 
-export type Prettify<TypeIntersectionToPrettify> = {
+type Prettify<TypeIntersectionToPrettify> = {
   [Property in keyof TypeIntersectionToPrettify]: TypeIntersectionToPrettify[Property];
 } & unknown;
 
+// #region Markup Colors
 export const MARKUP_COLOR_GRAY = "#c2bcbc";
 export const MARKUP_COLOR_WHITE = "#ffffff";
 export const MARKUP_COLOR_PINK = "#f79cf7";
@@ -28,7 +29,7 @@ export const markupColors = [
   MARKUP_COLOR_PURPLE,
 ] as const;
 
-export const flippedKeypadMarkupColors = [
+export const flippedColors = [
   MARKUP_COLOR_GREEN,
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_PURPLE,
@@ -42,8 +43,11 @@ export const flippedKeypadMarkupColors = [
 
 export type MarkupColor = (typeof markupColors)[number];
 
-const keypadModes = ["Digit", "Color", "Center", "Corner"] as const;
-export type KeypadMode = (typeof keypadModes)[number];
+const markupColorStringSet = new Set<string>(markupColors);
+
+export const isMarkupColor = (value: string): value is MarkupColor =>
+  markupColorStringSet.has(value);
+// #endregion
 
 // #region Raw Types
 
@@ -77,31 +81,36 @@ type RawCellState = RawStartingDigit | RawEmptyCell;
 export type RawBoardState = Array<RawCellState>;
 // #endregion
 
-export const sudokuDigits = [
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-] as const;
+// #region Sudoku Digits
+const sudokuDigits = ["1", "2", "3", "4", "5", "6", "7", "8", "9"] as const;
+const flippedDigits = ["7", "8", "9", "4", "5", "6", "1", "2", "3"] as const;
+const sudokuDigitStringSet = new Set<string>(sudokuDigits);
 
-export const flippedKeypadSudokuDigits = [
-  "7",
-  "8",
-  "9",
-  "4",
-  "5",
-  "6",
-  "1",
-  "2",
-  "3",
-] as const;
+const [isSudokuDigitValidator, BrandedSudokuDigit] = branded(
+  (input: string) => sudokuDigitStringSet.has(input),
+  "SudokuDigit",
+);
 
-export type SudokuDigit = (typeof sudokuDigits)[number];
+export const isSudokuDigit = isSudokuDigitValidator;
+export type SudokuDigit = typeof BrandedSudokuDigit;
+
+const getSudokuDigitFromString = (
+  candidateSudokuDigit: string,
+): SudokuDigit => {
+  if (!isSudokuDigit(candidateSudokuDigit))
+    throw Error(
+      `Failed to build a SudokuDigit from the candidate string "${candidateSudokuDigit}".`,
+    );
+
+  return candidateSudokuDigit;
+};
+
+export const brandedSudokuDigitsForFlippedKeypad: ReadonlyArray<SudokuDigit> =
+  flippedDigits.map(getSudokuDigitFromString);
+export const brandedSudokuDigits: ReadonlyArray<SudokuDigit> = sudokuDigits.map(
+  getSudokuDigitFromString,
+);
+// #endregion
 
 export type StartingDigitCellContent = { startingDigit: SudokuDigit };
 export type PlayerDigitCellContent = { playerDigit: SudokuDigit | "" };
@@ -132,3 +141,6 @@ export type PuzzleHistory = {
   currentBoardStateIndex: number;
   boardStateHistory: Array<BoardState>;
 };
+
+const keypadModes = ["Digit", "Color", "Center", "Corner"] as const;
+export type KeypadMode = (typeof keypadModes)[number];

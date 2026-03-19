@@ -10,7 +10,7 @@ import type {
   RawStartingDigit,
   SudokuDigit,
 } from "./types";
-import { isRawPuzzleString } from "./types";
+import { isRawPuzzleString, isSudokuDigit } from "./types";
 
 export const encodeRawPuzzleStringAsBase36String = (
   rawPuzzleString: RawPuzzleString,
@@ -38,9 +38,21 @@ export const getRawPuzzleStringFromRawBoardState = (
 
 const getStartingDigitCellContent = (
   rawStartingDigit: RawStartingDigit,
-): CellContent => ({
-  startingDigit: (rawStartingDigit + 1).toString() as SudokuDigit,
-});
+): CellContent => {
+  const candidateSudokuDigit = (rawStartingDigit + 1).toString();
+
+  if (isSudokuDigit(candidateSudokuDigit)) {
+    const startingDigitCellContent = {
+      startingDigit: candidateSudokuDigit,
+    };
+
+    return startingDigitCellContent;
+  }
+
+  throw Error(
+    `Failed to get a sudoku digit from the raw starting digit ${rawStartingDigit}.`,
+  );
+};
 
 export const getBoardStateFromRawBoardState = (
   rawBoardState: RawBoardState,
@@ -107,7 +119,8 @@ export const getStartingOrPlayerDigitInCellIfPresent = (
 
 export const isArrayOfSudokuDigits = (
   values: MarkupDigits,
-): values is Array<SudokuDigit> => values[0] !== "";
+): values is Array<SudokuDigit> =>
+  values.length > 0 && values.every((value) => isSudokuDigit(value));
 
 export const isArrayOfMarkupColors = (
   values: [""] | Array<MarkupColor>,

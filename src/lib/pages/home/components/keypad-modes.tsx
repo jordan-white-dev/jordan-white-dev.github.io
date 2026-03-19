@@ -8,6 +8,7 @@ import {
 import {
   type Dispatch,
   type PropsWithChildren,
+  type KeyboardEvent as ReactKeyboardEvent,
   type SetStateAction,
   useEffect,
   useRef,
@@ -228,8 +229,7 @@ export const KeypadModeRadioCard = ({
         keyDownOrder.current[keyDownOrder.current.length - 1];
 
       if (newestKeyDown) setKeypadMode(shortcutKeysToKeypadMode[newestKeyDown]);
-
-      setKeypadMode(originalKeypadMode.current);
+      else setKeypadMode(originalKeypadMode.current);
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -249,7 +249,7 @@ export const KeypadModeRadioCard = ({
       value={keypadMode}
       variant="solid"
       onKeyDownCapture={(event) => {
-        const isNumpadArrow = (event: React.KeyboardEvent) =>
+        const isNumpadArrow = (event: ReactKeyboardEvent<HTMLDivElement>) =>
           event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD &&
           ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(
             event.key,

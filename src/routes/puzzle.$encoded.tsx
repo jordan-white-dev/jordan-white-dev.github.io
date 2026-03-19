@@ -2,78 +2,99 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { solvepuzzle } from "sudoku";
 
 import Home from "@/lib/pages/home";
+import { buildBoardState as getBoardStateFromRawBoardState } from "@/lib/pages/home/utils/constants";
 import {
-  buildBoardState,
-  validRawSudokuStringRegex,
-} from "@/lib/pages/home/utils/constants";
-import type {
-  RawBoardState,
-  RawStartingDigit,
+  isRawPuzzleString,
+  isRawStartingDigit,
+  type RawBoardState,
+  type RawPuzzleString,
 } from "@/lib/pages/home/utils/types";
 
-const decodeBase36StringAsRawSudokuString = (base36String: string) => {
+const decodeBase36StringAsRawPuzzleString = (
+  base36String: string,
+): RawPuzzleString => {
   const base36StringAsBigInt = [...base36String.toLowerCase()].reduce(
     (accumulatedDecimalValue, currentCharacter, characterIndex) => {
       const base36Alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-      const currentBase36Character = currentCharacter;
-      const currentCharacterPosition = characterIndex;
+      const digitIndexInAlphabet = base36Alphabet.indexOf(currentCharacter);
+      const isCharacterAValidBase36Digit = digitIndexInAlphabet !== -1;
 
-      const digitIndexInAlphabet = base36Alphabet.indexOf(
-        currentBase36Character,
-      );
-      const characterIsValidBase36Digit = digitIndexInAlphabet !== -1;
-
-      if (!characterIsValidBase36Digit)
-        throw new Error(
-          `Invalid base36 character "${currentBase36Character}" at position ${currentCharacterPosition}`,
+      if (!isCharacterAValidBase36Digit)
+        throw Error(
+          `Encountered an invalid base36 character - "${currentCharacter}" - at position ${characterIndex}`,
         );
 
-      const decimalDigitValue = BigInt(digitIndexInAlphabet);
-
-      const accumulatedValueAfterBaseShift = accumulatedDecimalValue * 36n;
-      const nextAccumulatedDecimalValue =
-        accumulatedValueAfterBaseShift + decimalDigitValue;
-
-      return nextAccumulatedDecimalValue;
+      return accumulatedDecimalValue * 36n + BigInt(digitIndexInAlphabet);
     },
     0n,
   );
 
-  return base36StringAsBigInt.toString();
+  const candidateRawPuzzleString = base36StringAsBigInt
+    .toString()
+    .padStart(81, "0");
+
+  if (!isRawPuzzleString(candidateRawPuzzleString))
+    throw Error("Decoded value is an invalid raw puzzle string.");
+
+  return candidateRawPuzzleString;
 };
 
-const rawSudokuStringToRawBoardState = (
-  rawSudokuString: string,
-): RawBoardState =>
-  [...rawSudokuString].map((character) =>
-    character === "0" ? null : ((Number(character) - 1) as RawStartingDigit),
-  );
+const getRawBoardStateFromRawPuzzleString = (
+  rawPuzzleString: RawPuzzleString,
+): RawBoardState => {
+  const rawBoardState = [...rawPuzzleString].map((character) => {
+    if (character === "0") return null;
+
+    const candidateRawStartingDigit = Number(character) - 1;
+
+    if (!isRawStartingDigit(candidateRawStartingDigit))
+      throw Error(
+        `Encountered an invalid raw starting digit - "${candidateRawStartingDigit}" - while decoding the raw puzzle string.`,
+      );
+
+    return candidateRawStartingDigit;
+  });
+
+  return rawBoardState;
+};
 
 export const Route = createFileRoute("/puzzle/$encoded")({
   loader: ({ params }) => {
-    const rawSudokuString = (() => {
+    const rawPuzzleString = (() => {
       try {
-        return decodeBase36StringAsRawSudokuString(params.encoded).padStart(
-          81,
-          "0",
+        const decodedRawPuzzleString = decodeBase36StringAsRawPuzzleString(
+          params.encoded,
         );
+
+        return decodedRawPuzzleString;
       } catch {
         throw notFound();
       }
     })();
 
-    if (!validRawSudokuStringRegex.test(rawSudokuString)) throw notFound();
+    const rawBoardState = (() => {
+      try {
+        const rawBoardState =
+          getRawBoardStateFromRawPuzzleString(rawPuzzleString);
 
-    const rawBoardState = rawSudokuStringToRawBoardState(rawSudokuString);
+        return rawBoardState;
+      } catch {
+        throw notFound();
+      }
+    })();
 
-    const solved = solvepuzzle(rawBoardState);
-    if (!solved) throw notFound();
+    const isPuzzleSolvable = solvepuzzle(rawBoardState);
+    if (!isPuzzleSolvable) throw notFound();
 
-    return {
+    const boardState = getBoardStateFromRawBoardState(rawBoardState);
+
+    const loaderData = {
+      boardState,
       rawBoardState,
-      boardState: buildBoardState(rawBoardState),
     };
+
+    return loaderData;
   },
 
   component: Home,

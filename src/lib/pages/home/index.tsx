@@ -1,22 +1,14 @@
 import { Box } from "@chakra-ui/react";
-import { useLoaderData } from "@tanstack/react-router";
 
 import { UserSettingsProvider } from "@/lib/pages/home/hooks/use-user-settings";
-import type { BoardState, RawBoardState } from "@/lib/pages/home/utils/types";
+import { Route } from "@/routes/puzzle.$encoded";
 
 import { Header } from "./components/header";
 import { Puzzle } from "./components/puzzle";
 import { SudokuStopwatchProvider } from "./hooks/use-sudoku-stopwatch";
 
-type LoaderData = {
-  rawBoardState: RawBoardState;
-  boardState: BoardState;
-};
-
 const Home = () => {
-  const { rawBoardState, boardState } = useLoaderData({
-    from: "/puzzle/$encoded",
-  }) as LoaderData;
+  const { boardState, rawBoardState } = Route.useLoaderData();
 
   return (
     <UserSettingsProvider>

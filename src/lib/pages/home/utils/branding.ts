@@ -6,7 +6,6 @@ declare const __brand: unique symbol;
  */
 type Brand<BrandName extends string> = { [__brand]: BrandName };
 
-// #region Branded Type
 /**
  * Combines a `bigint`, `boolean`, `number`, or `string` type with a readonly
  * brand to create a branded type.
@@ -26,35 +25,40 @@ type Branded<
 /**
  * Consumes a validation function and brand name and returns a tuple for
  * validating and branding `bigint`, `boolean`, `number`, or `string` types.
- * @param validationFunction - A function to check if inputs pass validation.
+ * @param validationFunction - A function to check if an input is a valid instance of the type.
  * @param _brandName - The brand name to apply to validated inputs.
  * @returns A tuple containing both a validator and a branded type object.
  * @example
- * // Define the validation function, brand name, and validated type
- * const [isEmailAddressValidator, BrandedEmailAddress] = branded((input: string) => {
- *   return input.includes("@");
- * }, "EmailAddress");
- * const isEmailAddress = isEmailAddressValidator;
- * type EmailAddress = typeof BrandedEmailAddress;
+ * // Define the validation function, brand name, and validated type.
+ * const [isEmailAddressValidator, BrandedEmailAddress] = branded(
+ *   (input: string) => input.includes("@"),
+ *   "EmailAddress",
+ * );
+ * export const isEmailAddress = isEmailAddressValidator;
+ * export type EmailAddress = typeof BrandedEmailAddress;
  *
- * // Example function requiring a valid email address
- * const sendEmail = (input: EmailAddress) => {
+ * // Example function requiring a valid email address.
+ * const sendEmail = (emailAddress: EmailAddress) => {
  *   //
  * }
  *
- * // Use the validation function against the unvalidated `emailAddress`
- * // If `emailAddress` passes validation, it's branded with `EmailAddress`,
- * // allowing it to be used in `sendEmail`
+ * // Use the validation function against an unvalidated email address.
+ * // If the input passes validation, it's branded with `EmailAddress`,
+ * // allowing it to be used as an argument for `sendEmail`.
  * const unvalidatedEmailAddress = "mail@email.com";
  * if (isEmailAddress(unvalidatedEmailAddress)) {
- *   const validatedEmailAddress: EmailAddress = emailAddress;
+ *   const validatedEmailAddress: EmailAddress = unvalidatedEmailAddress;
  *   sendEmail(validatedEmailAddress);
  * }
  *
- * // Attempting to directly assign the EmailAddress type to an
- * // unvalidated email address causes a Typescript error, ensuring type
- * // safety
- * const invalidEmailAddress: EmailAddress = email;
+ * // Directly assigning the EmailAddress type to something that hasn't been
+ * // validated causes a Typescript error:
+ * // `Type 'string' is not assignable to type 'Branded<string, "EmailAddress">'.`
+ * const unvalidatedEmailAddress: EmailAddress = "123.com";
+ *
+ * // Warning: A brand's type safety can still be circumvented with
+ * // the `as` keyword's type assertion, so its use should be avoided.
+ * const unvalidatedEmailAddress = "123.com" as EmailAddress;
  */
 export const branded = <
   TypeToBrand extends bigint | boolean | number | string,
@@ -72,6 +76,4 @@ export const branded = <
 
   return [isBrandValidator, {} as Branded<TypeToBrand, BrandName>];
 };
-// #endregion
-
 // #endregion

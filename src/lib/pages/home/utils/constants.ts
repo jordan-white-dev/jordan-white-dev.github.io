@@ -1,5 +1,3 @@
-import SuperExpressive from "super-expressive";
-
 import type {
   BoardState,
   CellContent,
@@ -8,31 +6,35 @@ import type {
   MarkupDigits,
   PlayerDigitCellContent,
   RawBoardState,
+  RawPuzzleString,
   RawStartingDigit,
   SudokuDigit,
 } from "./types";
+import { isRawPuzzleString } from "./types";
 
-// Equivalent to: /^\d{81}$/
-export const validRawSudokuStringRegex = SuperExpressive()
-  .startOfInput.exactly(81)
-  .digit.endOfInput.toRegex();
-
-export const encodeRawSudokuStringAsBase36String = (
-  rawSudokuString: string,
+export const encodeRawPuzzleStringAsBase36String = (
+  rawPuzzleString: RawPuzzleString,
 ): string => {
-  if (!validRawSudokuStringRegex.test(rawSudokuString))
-    throw Error("Invalid raw sudoku string.");
-
-  const rawSudokuStringAsBigIntString = BigInt(rawSudokuString).toString(36);
-  return rawSudokuStringAsBigIntString;
+  const base36String = BigInt(rawPuzzleString).toString(36);
+  return base36String;
 };
 
-export const rawBoardStateToRawSudokuString = (
+export const getRawPuzzleStringFromRawBoardState = (
   rawBoardState: RawBoardState,
-): string =>
-  rawBoardState
-    .map((cell) => (cell === null ? "0" : (cell + 1).toString()))
+): RawPuzzleString => {
+  const candidateRawPuzzleString = rawBoardState
+    .map((rawCellState) =>
+      rawCellState === null ? "0" : (rawCellState + 1).toString(),
+    )
     .join("");
+
+  if (!isRawPuzzleString(candidateRawPuzzleString))
+    throw Error(
+      "Failed to build a valid raw puzzle string from the raw board state.",
+    );
+
+  return candidateRawPuzzleString;
+};
 
 export const buildBoardState = (rawBoardState: RawBoardState): BoardState => {
   const boardState: BoardState = [];

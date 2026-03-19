@@ -1,3 +1,7 @@
+import SuperExpressive from "super-expressive";
+
+import { branded } from "./branding";
+
 export type Prettify<TypeIntersectionToPrettify> = {
   [Property in keyof TypeIntersectionToPrettify]: TypeIntersectionToPrettify[Property];
 } & unknown;
@@ -23,6 +27,7 @@ export const markupColors = [
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_PURPLE,
 ] as const;
+
 export const flippedKeypadMarkupColors = [
   MARKUP_COLOR_GREEN,
   MARKUP_COLOR_BLUE,
@@ -34,14 +39,43 @@ export const flippedKeypadMarkupColors = [
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_PINK,
 ] as const;
+
 export type MarkupColor = (typeof markupColors)[number];
 
 const keypadModes = ["Digit", "Color", "Center", "Corner"] as const;
 export type KeypadMode = (typeof keypadModes)[number];
 
-export type RawStartingDigit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-type RawCellState = Prettify<RawStartingDigit | null>;
+// #region Raw Types
+
+// #region Raw Puzzle String
+// Equivalent to: /^\d{81}$/
+export const validRawPuzzleStringRegex = SuperExpressive()
+  .startOfInput.exactly(81)
+  .digit.endOfInput.toRegex();
+
+const [isRawPuzzleStringValidator, BrandedRawPuzzleString] = branded(
+  (input: string) => validRawPuzzleStringRegex.test(input),
+  "RawPuzzleString",
+);
+
+export const isRawPuzzleString = isRawPuzzleStringValidator;
+export type RawPuzzleString = typeof BrandedRawPuzzleString;
+// #endregion
+
+// #region Raw Starting Digit
+const [isRawStartingDigitValidator, BrandedRawStartingDigit] = branded(
+  (input: number) => Number.isInteger(input) && input >= 0 && input <= 8,
+  "RawStartingDigit",
+);
+
+export const isRawStartingDigit = isRawStartingDigitValidator;
+export type RawStartingDigit = typeof BrandedRawStartingDigit;
+// #endregion
+
+export type RawEmptyCell = null;
+type RawCellState = RawStartingDigit | RawEmptyCell;
 export type RawBoardState = Array<RawCellState>;
+// #endregion
 
 export const sudokuDigits = [
   "1",
@@ -54,6 +88,7 @@ export const sudokuDigits = [
   "8",
   "9",
 ] as const;
+
 export const flippedKeypadSudokuDigits = [
   "7",
   "8",
@@ -65,6 +100,7 @@ export const flippedKeypadSudokuDigits = [
   "2",
   "3",
 ] as const;
+
 export type SudokuDigit = (typeof sudokuDigits)[number];
 
 export type StartingDigitCellContent = { startingDigit: SudokuDigit };
@@ -75,6 +111,7 @@ export type MarkupDigitsCellContent = {
   centerMarkups: MarkupDigits;
   cornerMarkups: MarkupDigits;
 };
+
 export type CellContent = Prettify<
   StartingDigitCellContent | PlayerDigitCellContent | MarkupDigitsCellContent
 >;

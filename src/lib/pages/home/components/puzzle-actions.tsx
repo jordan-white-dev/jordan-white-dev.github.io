@@ -26,9 +26,9 @@ import { useSudokuStopwatch } from "@/lib/pages/home/hooks/use-sudoku-stopwatch"
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
   buildBoardState,
-  encodeRawSudokuStringAsBase36String,
+  encodeRawPuzzleStringAsBase36String,
+  getRawPuzzleStringFromRawBoardState,
   getStartingOrPlayerDigitInCellIfPresent,
-  rawBoardStateToRawSudokuString,
 } from "@/lib/pages/home/utils/constants";
 import type {
   BoardState,
@@ -225,9 +225,9 @@ const handleNewPuzzleConfirmation = (
   navigateToNewPuzzle: ReturnType<typeof useNavigate>,
 ) => {
   const newRawBoardState: RawBoardState = makepuzzle();
-  const rawSudokuString = rawBoardStateToRawSudokuString(newRawBoardState);
+  const rawPuzzleString = getRawPuzzleStringFromRawBoardState(newRawBoardState);
   const encodedBase36String =
-    encodeRawSudokuStringAsBase36String(rawSudokuString);
+    encodeRawPuzzleStringAsBase36String(rawPuzzleString);
   navigateToNewPuzzle({ to: `/puzzle/${encodedBase36String}` });
 };
 

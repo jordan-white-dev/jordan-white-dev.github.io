@@ -1,0 +1,181 @@
+# Sudoku App
+
+A web-based Sudoku app built with React and Chakra UI, featuring shareable puzzle URLs, multiple markup modes, undo/redo history, puzzle-specific session persistence, and a responsive interface for desktop and mobile.
+
+**Live app:** https://jordan-white-dev.vercel.app/
+
+## Table of Contents
+
+- [How to Use the App](#how-to-use-the-app)
+- [Shortcuts](#shortcuts)
+- [Settings](#settings)
+- [Persistence](#persistence)
+- [Responsive Design](#responsive-design)
+- [Attribution](#attribution)
+
+## How to Use the App
+
+### Starting a Puzzle
+
+When the app loads, it automatically generates a playable Sudoku puzzle and serves it at its own dedicated URL, allowing every puzzle to be revisited or shared. From there, you can begin solving immediately or generate a new puzzle.
+
+### Selecting Cells
+
+- Click or tap a cell to select or deselect it.
+- Click/touch and drag to select multiple cells.
+- Turn on **multiselect mode** to freely add or remove cells from the current selection.
+
+A single selected cell is highlighted with a blue border.
+
+When multiple cells are selected, connected groups of cells share a single border.
+
+![One selected cell bordered in blue next to five cells with a shared blue border](images/Single_Select_and_Multiselect.png)
+
+### Entering Content
+
+When one or more cells are selected, inputs can be entered using the on-screen keypad or the number keys on the keyboard.
+
+The keypad has four input modes:
+
+- **Digit**
+- **Center Markup**
+- **Corner Markup**
+- **Color Markup**
+
+Digit enters a number into the cell.
+
+Center and corner markups are smaller notations for tracking number candidates.
+
+Color markup applies background colors as an alternate tracking method.
+
+![Two cells with "358" center markups, a "3" corner markup, and blue and orange background colors. A digit cell with the number "2". Two cells with "47" center markups. A cell with "58" center markups and a green background color.](images/Digit_and_Markup_Examples.png)
+
+### Puzzle Actions
+
+- **New Puzzle**
+- **Undo/Redo**
+- **Check Solution**
+- **Restart Puzzle**
+
+The app includes controls for generating a new puzzle, undoing and redoing moves, checking the current solution, and restarting the puzzle. Restarting can be done with or without resetting elapsed time.
+
+## Shortcuts
+
+### Cell Selection
+
+- **`Mouse Click / Tap`:** select or deselect a cell
+- **`Mouse Click / Touch + Drag`:** select multiple cells
+- **`Double Click / Double Tap`:** select all matching, non-empty cells
+- **`M`:** toggle multiselect mode
+- **`Escape, Backspace, Delete`:** clear selected cells
+
+### Number Entry
+
+- **`1 – 9` (Number Row, Numpad, or Keypad):** enter digits or markups depending on the keypad mode
+
+### Markup Entry
+
+- **`Ctrl + Number`:** enter a center markup
+- **`Shift + Number`:** enter a corner markup
+- **`Alt + Number`:** enter a color markup
+
+## Settings
+
+All settings are off by default.
+
+![The open settings menu with Conflict Checker, Show Seen Cells, Strict Highlights, Flip Keypad, Dashed Grid, Disable Stopwatch, Hide Stopwatch, and Show Row + Column Labels settings.](images/Settings_Menu.png)
+
+### Conflict Checker
+
+Highlights invalid cells in red when a digit conflicts with another matching digit in the same row, column, or box.
+
+![Multiple cells in the same row, column, and/or box highlighted in red.](images/Conflict_Cells_Example.png)
+
+### Show Seen Cells
+
+When a single cell is selected, all cells it sees in its row, column, and box are highlighted in yellow.
+
+![A single selected cell with all other cells in its row, column, and box highlighted in yellow.](images/Show_Seen_Cells_Example.png)
+
+### Strict Highlights
+
+Controls how double-click cell selection works.
+
+- **Off:** cells are highlighted if they share a matching digit or one or more matching markups
+- **On:** cells are highlighted only if their contents match exactly
+
+### Flip Keypad
+
+Changes the arrangement of keypad buttons from:
+
+```
+1 2 3
+4 5 6
+7 8 9
+```
+
+to:
+
+```
+7 8 9
+4 5 6
+1 2 3
+```
+
+### Dashed Grid
+
+Changes interior puzzle borders from solid lines to dashed lines.
+
+### Disable Stopwatch
+
+Disables the stopwatch. No solve time is shown on the completion dialog.
+
+### Hide Stopwatch
+
+Hides the stopwatch from view. If the stopwatch is enabled, the solve time still appears on the completion dialog.
+
+### Show Row + Column Labels
+
+Adds row labels along the left of the puzzle and column labels along the top.
+
+## Persistence
+
+The app uses **session storage** to preserve state while the browser tab remains open. That includes:
+
+- the current board state
+- undo/redo history
+- elapsed time for each puzzle
+- multiselect mode
+- keypad mode
+
+Because progress is stored per puzzle, users can move between puzzles using browser navigation and keep their puzzle-specific progress intact within the same tab session.
+
+## Responsive Design
+
+The app is designed to work across mobile and desktop layouts, with interface changes tuned to Chakra breakpoints:
+
+- `base`: `0rem`
+- `sm`: `30rem`
+- `md`: `48rem`
+- `lg`: `62rem`
+
+![The mobile view of the app on the left and the desktop view on the right.](images/Mobile_vs_Desktop_Comparison.png)
+
+## Attribution
+
+This project builds on and draws inspiration from several excellent tools and resources:
+
+- **Vite React Chakra Starter**  
+  [agustinusnathaniel/vite-react-chakra-starter](https://github.com/agustinusnathaniel/vite-react-chakra-starter/)
+
+- **`sudoku` package**  
+  [dachev/sudoku](https://github.com/dachev/sudoku)
+
+- **Sven's Sudoku App**  
+  [sudokupad.app](https://sudokupad.app/)
+
+- **Chakra UI**  
+  [chakra-ui.com](https://chakra-ui.com/)
+
+- **React Icons**  
+  [react-icons.github.io/react-icons](https://react-icons.github.io/react-icons/)

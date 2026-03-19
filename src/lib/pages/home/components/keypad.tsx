@@ -624,7 +624,7 @@ const NumberButton = ({
   textStyle,
   onClick,
 }: NumberButtonProps) => (
-  <GridItem colSpan={2} key={buttonValue}>
+  <GridItem colSpan={2}>
     <Tooltip content={buttonValue}>
       <Square aspectRatio="square">
         <IconButton
@@ -684,6 +684,7 @@ const NumberPad = ({
           return (
             <NumberButton
               buttonValue={buttonValue}
+              key={buttonValue}
               textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
               onClick={() =>
                 handleDigitInput(buttonValue, puzzleHistory, setPuzzleHistory)
@@ -694,6 +695,7 @@ const NumberPad = ({
           return (
             <NumberButton
               buttonValue={buttonValue}
+              key={buttonValue}
               textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
               onClick={() =>
                 handleCenterMarkupInput(
@@ -710,6 +712,7 @@ const NumberPad = ({
               alignItems={getAlignItems(index + 1)}
               buttonValue={buttonValue}
               justifyContent={getJustifyContent(index + 1)}
+              key={buttonValue}
               padding={{ base: "1", md: "1.5" }}
               textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
               onClick={() =>

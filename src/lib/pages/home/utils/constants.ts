@@ -1,22 +1,31 @@
-import type {
-  BoardState,
-  CellContent,
-  CellState,
-  MarkupColor,
-  MarkupDigits,
-  PlayerDigitCellContent,
-  RawBoardState,
-  RawPuzzleString,
-  RawStartingDigit,
-  SudokuDigit,
+import {
+  type BoardState,
+  type CellContent,
+  type CellState,
+  type EncodedPuzzleString,
+  isEncodedPuzzleString,
+  isRawPuzzleString,
+  isSudokuDigit,
+  type MarkupColor,
+  type MarkupDigits,
+  type PlayerDigitCellContent,
+  type RawBoardState,
+  type RawPuzzleString,
+  type RawStartingDigit,
+  type SudokuDigit,
 } from "./types";
-import { isRawPuzzleString, isSudokuDigit } from "./types";
 
-export const encodeRawPuzzleStringAsBase36String = (
+export const getEncodedPuzzleStringFromRawPuzzleString = (
   rawPuzzleString: RawPuzzleString,
-): string => {
-  const base36String = BigInt(rawPuzzleString).toString(36);
-  return base36String;
+): EncodedPuzzleString => {
+  const candidateEncodedPuzzleString = BigInt(rawPuzzleString).toString(36);
+
+  if (!isEncodedPuzzleString(candidateEncodedPuzzleString))
+    throw Error(
+      `Failed to get an EncodedPuzzleString from the RawPuzzleString "${rawPuzzleString}". The attempted final output "${candidateEncodedPuzzleString}" was invalid.`,
+    );
+
+  return candidateEncodedPuzzleString;
 };
 
 export const getRawPuzzleStringFromRawBoardState = (
@@ -30,7 +39,7 @@ export const getRawPuzzleStringFromRawBoardState = (
 
   if (!isRawPuzzleString(candidateRawPuzzleString))
     throw Error(
-      "Failed to build a valid raw puzzle string from the raw board state.",
+      `Failed to get a RawPuzzleString from the RawBoardState. The attempted final output "${candidateRawPuzzleString}" was invalid.`,
     );
 
   return candidateRawPuzzleString;
@@ -50,7 +59,7 @@ const getStartingDigitCellContent = (
   }
 
   throw Error(
-    `Failed to get a sudoku digit from the raw starting digit ${rawStartingDigit}.`,
+    `Failed to get a starting SudokuDigit from the RawStartingDigit "${rawStartingDigit}".`,
   );
 };
 
@@ -128,6 +137,6 @@ export const isArrayOfMarkupColors = (
 
 export const exhaustiveGuard = (_value: never): never => {
   throw Error(
-    `Reached exhaustive guard function with an unexpected value: ${JSON.stringify(_value)}`,
+    `Reached the exhaustive guard function with an unexpected value: ${JSON.stringify(_value)}`,
   );
 };

@@ -25,8 +25,8 @@ import { makepuzzle } from "sudoku";
 import { useSudokuStopwatch } from "@/lib/pages/home/hooks/use-sudoku-stopwatch";
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
-  encodeRawPuzzleStringAsBase36String,
   getBoardStateFromRawBoardState,
+  getEncodedPuzzleStringFromRawPuzzleString,
   getRawPuzzleStringFromRawBoardState,
   getStartingOrPlayerDigitInCellIfPresent,
 } from "@/lib/pages/home/utils/constants";
@@ -226,9 +226,9 @@ const handleNewPuzzleConfirmation = (
 ) => {
   const newRawBoardState: RawBoardState = makepuzzle();
   const rawPuzzleString = getRawPuzzleStringFromRawBoardState(newRawBoardState);
-  const encodedBase36String =
-    encodeRawPuzzleStringAsBase36String(rawPuzzleString);
-  navigateToNewPuzzle({ to: `/puzzle/${encodedBase36String}` });
+  const encodedPuzzleString =
+    getEncodedPuzzleStringFromRawPuzzleString(rawPuzzleString);
+  navigateToNewPuzzle({ to: `/puzzle/${encodedPuzzleString}` });
 };
 
 const NewPuzzleButton = () => {

@@ -81,6 +81,22 @@ type RawCellState = RawStartingDigit | RawEmptyCell;
 export type RawBoardState = Array<RawCellState>;
 // #endregion
 
+// #region Encoded Puzzle String
+// Equivalent to: /^[\da-z]+$/
+export const validEncodedPuzzleStringRegex = SuperExpressive()
+  .startOfInput.oneOrMore.anyOf.digit.range("a", "z")
+  .end()
+  .endOfInput.toRegex();
+
+const [isEncodedPuzzleStringValidator, BrandedEncodedPuzzleString] = branded(
+  (input: string) => validEncodedPuzzleStringRegex.test(input),
+  "EncodedPuzzleString",
+);
+
+export const isEncodedPuzzleString = isEncodedPuzzleStringValidator;
+export type EncodedPuzzleString = typeof BrandedEncodedPuzzleString;
+// #endregion
+
 // #region Sudoku Digits
 const sudokuDigits = ["1", "2", "3", "4", "5", "6", "7", "8", "9"] as const;
 const flippedDigits = ["7", "8", "9", "4", "5", "6", "1", "2", "3"] as const;
@@ -99,7 +115,7 @@ const getSudokuDigitFromString = (
 ): SudokuDigit => {
   if (!isSudokuDigit(candidateSudokuDigit))
     throw Error(
-      `Failed to build a SudokuDigit from the candidate string "${candidateSudokuDigit}".`,
+      `Failed to get a SudokuDigit from the candidate string "${candidateSudokuDigit}".`,
     );
 
   return candidateSudokuDigit;

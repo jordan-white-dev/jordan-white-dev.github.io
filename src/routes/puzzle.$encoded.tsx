@@ -4,16 +4,18 @@ import { solvepuzzle } from "sudoku";
 import Home from "@/lib/pages/home";
 import { getBoardStateFromRawBoardState } from "@/lib/pages/home/utils/constants";
 import {
+  type EncodedPuzzleString,
+  isEncodedPuzzleString,
   isRawPuzzleString,
   isRawStartingDigit,
   type RawBoardState,
   type RawPuzzleString,
 } from "@/lib/pages/home/utils/types";
 
-const decodeBase36StringAsRawPuzzleString = (
-  base36String: string,
+const getRawPuzzleStringFromEncodedPuzzleString = (
+  encodedPuzzleString: EncodedPuzzleString,
 ): RawPuzzleString => {
-  const base36StringAsBigInt = [...base36String.toLowerCase()].reduce(
+  const encodedPuzzleStringAsBigInt = [...encodedPuzzleString].reduce(
     (accumulatedDecimalValue, currentCharacter, characterIndex) => {
       const base36Alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
 
@@ -22,7 +24,7 @@ const decodeBase36StringAsRawPuzzleString = (
 
       if (!isCharacterAValidBase36Digit)
         throw Error(
-          `Encountered an invalid base36 character - "${currentCharacter}" - at position ${characterIndex}`,
+          `Failed to get a RawPuzzleString from the EncodedPuzzleString "${encodedPuzzleString}". An invalid base36 character - "${currentCharacter}" - was encountered at position ${characterIndex}.`,
         );
 
       return accumulatedDecimalValue * 36n + BigInt(digitIndexInAlphabet);
@@ -30,12 +32,14 @@ const decodeBase36StringAsRawPuzzleString = (
     0n,
   );
 
-  const candidateRawPuzzleString = base36StringAsBigInt
+  const candidateRawPuzzleString = encodedPuzzleStringAsBigInt
     .toString()
     .padStart(81, "0");
 
   if (!isRawPuzzleString(candidateRawPuzzleString))
-    throw Error("Decoded value is an invalid raw puzzle string.");
+    throw Error(
+      `Failed to get a RawPuzzleString from the EncodedPuzzleString "${encodedPuzzleString}". The attempted final output "${candidateRawPuzzleString}" was invalid.`,
+    );
 
   return candidateRawPuzzleString;
 };
@@ -50,7 +54,7 @@ const getRawBoardStateFromRawPuzzleString = (
 
     if (!isRawStartingDigit(candidateRawStartingDigit))
       throw Error(
-        `Encountered an invalid raw starting digit - "${candidateRawStartingDigit}" - while decoding the raw puzzle string.`,
+        `Failed to get a RawBoardState from the RawPuzzleString "${rawPuzzleString}". An invalid RawStartingDigit was encountered: "${candidateRawStartingDigit}".`,
       );
 
     return candidateRawStartingDigit;
@@ -61,13 +65,21 @@ const getRawBoardStateFromRawPuzzleString = (
 
 export const Route = createFileRoute("/puzzle/$encoded")({
   loader: ({ params }) => {
+    const encodedPuzzleString = (() => {
+      const candidateEncodedPuzzleString = params.encoded.toLowerCase();
+
+      if (!isEncodedPuzzleString(candidateEncodedPuzzleString))
+        throw notFound();
+
+      return candidateEncodedPuzzleString;
+    })();
+
     const rawPuzzleString = (() => {
       try {
-        const decodedRawPuzzleString = decodeBase36StringAsRawPuzzleString(
-          params.encoded,
-        );
+        const rawPuzzleString =
+          getRawPuzzleStringFromEncodedPuzzleString(encodedPuzzleString);
 
-        return decodedRawPuzzleString;
+        return rawPuzzleString;
       } catch {
         throw notFound();
       }

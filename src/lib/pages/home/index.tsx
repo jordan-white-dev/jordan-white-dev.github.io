@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 
 import { UserSettingsProvider } from "@/lib/pages/home/hooks/use-user-settings";
-import { Route } from "@/routes/puzzle.$encoded";
+import { Route } from "@/routes/puzzle.$encodedPuzzleString";
 
 import { Header } from "./components/header";
 import { Puzzle } from "./components/puzzle";

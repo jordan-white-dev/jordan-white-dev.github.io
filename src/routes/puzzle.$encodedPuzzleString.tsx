@@ -63,10 +63,11 @@ const getRawBoardStateFromRawPuzzleString = (
   return rawBoardState;
 };
 
-export const Route = createFileRoute("/puzzle/$encoded")({
+export const Route = createFileRoute("/puzzle/$encodedPuzzleString")({
   loader: ({ params }) => {
     const encodedPuzzleString = (() => {
-      const candidateEncodedPuzzleString = params.encoded.toLowerCase();
+      const candidateEncodedPuzzleString =
+        params.encodedPuzzleString.toLowerCase();
 
       if (!isEncodedPuzzleString(candidateEncodedPuzzleString))
         throw notFound();

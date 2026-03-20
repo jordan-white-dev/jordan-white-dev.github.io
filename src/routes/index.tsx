@@ -11,11 +11,12 @@ export const Route = createFileRoute("/")({
   loader: () => {
     const rawBoardState: RawBoardState = makepuzzle();
     const rawPuzzleString = getRawPuzzleStringFromRawBoardState(rawBoardState);
-    const encoded = getEncodedPuzzleStringFromRawPuzzleString(rawPuzzleString);
+    const encodedPuzzleString =
+      getEncodedPuzzleStringFromRawPuzzleString(rawPuzzleString);
 
     throw redirect({
-      to: "/puzzle/$encoded",
-      params: { encoded },
+      to: "/puzzle/$encodedPuzzleString",
+      params: { encodedPuzzleString },
       replace: true,
     });
   },

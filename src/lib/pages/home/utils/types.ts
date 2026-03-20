@@ -123,6 +123,7 @@ export const brandedSudokuDigits: ReadonlyArray<SudokuDigit> = sudokuDigits.map(
 );
 // #endregion
 
+// #region Cell Content
 export type StartingDigitCellContent = { startingDigit: SudokuDigit };
 export type PlayerDigitCellContent = { playerDigit: SudokuDigit | "" };
 
@@ -135,16 +136,54 @@ export type MarkupDigitsCellContent = {
 export type CellContent = Prettify<
   StartingDigitCellContent | PlayerDigitCellContent | MarkupDigitsCellContent
 >;
+// #endregion
+
+// #region Cell State
+const isNumberOneThroughNineValidator = (input: number) =>
+  Number.isInteger(input) && input >= 1 && input <= 9;
+
+// Box Number
+const [isBoxNumberValidator, BrandedBoxNumber] = branded(
+  isNumberOneThroughNineValidator,
+  "BoxNumber",
+);
+export const isBoxNumber = isBoxNumberValidator;
+export type BoxNumber = typeof BrandedBoxNumber;
+
+// Column Number
+const [isColumnNumberValidator, BrandedColumnNumber] = branded(
+  isNumberOneThroughNineValidator,
+  "ColumnNumber",
+);
+export const isColumnNumber = isColumnNumberValidator;
+export type ColumnNumber = typeof BrandedColumnNumber;
+
+// Row Number
+const [isRowNumberValidator, BrandedRowNumber] = branded(
+  isNumberOneThroughNineValidator,
+  "RowNumber",
+);
+export const isRowNumber = isRowNumberValidator;
+export type RowNumber = typeof BrandedRowNumber;
+
+// Cell Number
+const [isCellNumberValidator, BrandedCellNumber] = branded(
+  (input: number) => Number.isInteger(input) && input >= 1 && input <= 81,
+  "CellNumber",
+);
+export const isCellNumber = isCellNumberValidator;
+export type CellNumber = typeof BrandedCellNumber;
 
 export type CellState = {
-  boxNumber: number;
+  boxNumber: BoxNumber;
   cellContent: CellContent;
-  cellNumber: number;
-  columnNumber: number;
+  cellNumber: CellNumber;
+  columnNumber: ColumnNumber;
   isSelected: boolean;
   markupColors: [""] | Array<MarkupColor>;
-  rowNumber: number;
+  rowNumber: RowNumber;
 };
+// #endregion
 
 export type BoardState = Array<CellState>;
 

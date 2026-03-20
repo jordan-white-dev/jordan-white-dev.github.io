@@ -1,10 +1,17 @@
 import {
   type BoardState,
+  type BoxNumber,
   type CellContent,
+  type CellNumber,
   type CellState,
+  type ColumnNumber,
   type EncodedPuzzleString,
+  isBoxNumber,
+  isCellNumber,
+  isColumnNumber,
   isEncodedPuzzleString,
   isRawPuzzleString,
+  isRowNumber,
   isSudokuDigit,
   type MarkupColor,
   type MarkupDigits,
@@ -12,6 +19,7 @@ import {
   type RawBoardState,
   type RawPuzzleString,
   type RawStartingDigit,
+  type RowNumber,
   type SudokuDigit,
 } from "./types";
 
@@ -63,20 +71,67 @@ const getStartingDigitCellContentFromRawStartingDigit = (
   );
 };
 
+const getBrandedBoxNumber = (candidateBoxNumber: number): BoxNumber => {
+  if (!isBoxNumber(candidateBoxNumber))
+    throw Error(
+      `Encountered an invalid BoxNumber "${candidateBoxNumber}" while getting a BoardState from RawBoardState.`,
+    );
+
+  return candidateBoxNumber;
+};
+
+const getBrandedColumnNumber = (
+  candidateColumnNumber: number,
+): ColumnNumber => {
+  if (!isColumnNumber(candidateColumnNumber))
+    throw Error(
+      `Encountered an invalid ColumnNumber "${candidateColumnNumber}" while getting a BoardState from RawBoardState.`,
+    );
+
+  return candidateColumnNumber;
+};
+
+const getBrandedRowNumber = (candidateRowNumber: number): RowNumber => {
+  if (!isRowNumber(candidateRowNumber))
+    throw Error(
+      `Encountered an invalid RowNumber "${candidateRowNumber}" while getting a BoardState from RawBoardState.`,
+    );
+
+  return candidateRowNumber;
+};
+
+const getBrandedCellNumber = (candidateCellNumber: number): CellNumber => {
+  if (!isCellNumber(candidateCellNumber))
+    throw Error(
+      `Encountered an invalid CellNumber "${candidateCellNumber}" while getting a BoardState from RawBoardState.`,
+    );
+
+  return candidateCellNumber;
+};
+
 export const getBoardStateFromRawBoardState = (
   rawBoardState: RawBoardState,
 ): BoardState => {
   const boardState: BoardState = [];
 
-  for (let cellNumber = 1; cellNumber <= 81; cellNumber++) {
-    const rowNumber = Math.floor((cellNumber - 1) / 9) + 1;
-    const columnNumber = ((cellNumber - 1) % 9) + 1;
-    const boxNumber =
-      Math.floor((rowNumber - 1) / 3) * 3 +
-      Math.floor((columnNumber - 1) / 3) +
+  for (
+    let candidateCellNumber = 1;
+    candidateCellNumber <= 81;
+    candidateCellNumber++
+  ) {
+    const candidateRowNumber = Math.floor((candidateCellNumber - 1) / 9) + 1;
+    const candidateColumnNumber = ((candidateCellNumber - 1) % 9) + 1;
+    const candidateBoxNumber =
+      Math.floor((candidateRowNumber - 1) / 3) * 3 +
+      Math.floor((candidateColumnNumber - 1) / 3) +
       1;
 
-    const rawCellState = rawBoardState[cellNumber - 1];
+    const boxNumber = getBrandedBoxNumber(candidateBoxNumber);
+    const columnNumber = getBrandedColumnNumber(candidateColumnNumber);
+    const rowNumber = getBrandedRowNumber(candidateRowNumber);
+    const cellNumber = getBrandedCellNumber(candidateCellNumber);
+
+    const rawCellState = rawBoardState[candidateCellNumber - 1];
 
     const emptyPlayerDigitCellContent: PlayerDigitCellContent = {
       playerDigit: "",

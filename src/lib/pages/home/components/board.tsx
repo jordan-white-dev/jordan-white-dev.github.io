@@ -4,22 +4,28 @@ import { useCallback, useRef } from "react";
 
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/pages/home/utils/constants";
-import type {
-  BoardState,
-  CellState,
-  PuzzleHistory,
-  SudokuDigit,
+import {
+  type BoardState,
+  type CellNumber,
+  type CellState,
+  type ColumnNumber,
+  isCellNumber,
+  isColumnNumber,
+  isRowNumber,
+  type PuzzleHistory,
+  type RowNumber,
+  type SudokuDigit,
 } from "@/lib/pages/home/utils/types";
 
 import { Cell } from "./cell";
 
 // #region Cell Selection
 const getCellStateWithUpdatedSelections = (
-  targetCellNumber: number,
+  targetCellNumber: CellNumber,
   isMultiselectMode: boolean,
   previousCellState: CellState,
   selectedCellsCount: number,
-  selectedCellNumberWhenExactlyOneIsSelected: number | undefined,
+  selectedCellNumberWhenExactlyOneIsSelected: CellNumber | undefined,
 ): CellState => {
   if (isMultiselectMode) {
     const isTargetCell = previousCellState.cellNumber === targetCellNumber;
@@ -56,7 +62,7 @@ const getCellStateWithUpdatedSelections = (
 
 const handleCellSelection = (
   isMultiselectMode: boolean,
-  targetCellNumber: number,
+  targetCellNumber: CellNumber,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) =>
   setPuzzleHistory((previousPuzzleHistory) => {
@@ -111,7 +117,7 @@ const handleCellSelection = (
   });
 
 const handleMultiCellSelectionDuringPointerDrag = (
-  cellNumbersCrossedDuringDrag: Array<number>,
+  cellNumbersCrossedDuringDrag: Array<CellNumber>,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) =>
   setPuzzleHistory((previousPuzzleHistory) => {
@@ -162,9 +168,9 @@ const handleMultiCellSelectionDuringPointerDrag = (
 
 // #region Pointer Position To Board Position
 type BoardPosition = {
-  cellNumber: number;
-  columnNumber: number;
-  rowNumber: number;
+  cellNumber: CellNumber;
+  columnNumber: ColumnNumber;
+  rowNumber: RowNumber;
 };
 
 const getBoardPositionFromPointerCoordinates = (
@@ -198,19 +204,29 @@ const getBoardPositionFromPointerCoordinates = (
   const rowNumber = zeroBasedRowNumber + 1;
   const cellNumber = zeroBasedRowNumber * 9 + zeroBasedColumnNumber + 1;
 
-  const boardPosition = {
-    columnNumber,
-    rowNumber,
-    cellNumber,
-  };
+  if (
+    isCellNumber(cellNumber) &&
+    isColumnNumber(columnNumber) &&
+    isRowNumber(rowNumber)
+  ) {
+    const boardPosition = {
+      columnNumber,
+      rowNumber,
+      cellNumber,
+    };
 
-  return boardPosition;
+    return boardPosition;
+  }
+
+  throw Error(
+    `Failed to get BoardPosition from pointer coordinates x: "${pointerClientX}" and y: "${pointerClientY}".`,
+  );
 };
 
 const getCellNumbersBetweenBoardPositions = (
   startingBoardPosition: BoardPosition,
   endingBoardPosition: BoardPosition,
-): Array<number> => {
+): Array<CellNumber> => {
   const rowDistance =
     endingBoardPosition.rowNumber - startingBoardPosition.rowNumber;
   const columnDistance =
@@ -223,7 +239,7 @@ const getCellNumbersBetweenBoardPositions = (
 
   if (interpolationStepCount === 0) return [startingBoardPosition.cellNumber];
 
-  const crossedCellNumbers = new Set<number>();
+  const crossedCellNumbers = new Set<CellNumber>();
 
   for (
     let interpolationStepIndex = 0;
@@ -243,7 +259,8 @@ const getCellNumbersBetweenBoardPositions = (
     const interpolatedCellNumber =
       (interpolatedRowNumber - 1) * 9 + interpolatedColumnNumber;
 
-    crossedCellNumbers.add(interpolatedCellNumber);
+    if (isCellNumber(interpolatedCellNumber))
+      crossedCellNumbers.add(interpolatedCellNumber);
   }
 
   return [...crossedCellNumbers];
@@ -316,7 +333,7 @@ const handleCellPointerDown = (
   isPointerDraggingAcrossBoardRef: RefObject<boolean>,
   isMultiselectMode: boolean,
   previousBoardPositionDuringDragRef: RefObject<BoardPosition | undefined>,
-  targetCellNumber: number,
+  targetCellNumber: CellNumber,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
   isPointerDraggingAcrossBoardRef.current = true;
@@ -328,11 +345,16 @@ const handleCellPointerDown = (
     const rowNumber = Math.floor(zeroBasedCellNumber / 9) + 1;
     const columnNumber = (zeroBasedCellNumber % 9) + 1;
 
-    previousBoardPositionDuringDragRef.current = {
-      cellNumber: targetCellNumber,
-      columnNumber,
-      rowNumber,
-    };
+    if (isColumnNumber(columnNumber) && isRowNumber(rowNumber))
+      previousBoardPositionDuringDragRef.current = {
+        cellNumber: targetCellNumber,
+        columnNumber,
+        rowNumber,
+      };
+    else
+      throw Error(
+        `An invalid columnNumber "${columnNumber}" or rowNumber "${rowNumber}" was encountered during a pointer down event.`,
+      );
   } else previousBoardPositionDuringDragRef.current = undefined;
 
   handleCellSelection(isMultiselectMode, targetCellNumber, setPuzzleHistory);
@@ -341,9 +363,9 @@ const handleCellPointerDown = (
 
 // #region Conflict Checking
 const addSudokuDigitOccurrenceToRegion = (
-  digitOccurrencesByDigit: Map<string, Array<number>>,
+  digitOccurrencesByDigit: Map<SudokuDigit, Array<CellNumber>>,
   sudokuDigit: SudokuDigit,
-  cellNumber: number,
+  cellNumber: CellNumber,
 ): void => {
   const matchingCellNumbers = digitOccurrencesByDigit.get(sudokuDigit) ?? [];
   matchingCellNumbers.push(cellNumber);
@@ -351,8 +373,8 @@ const addSudokuDigitOccurrenceToRegion = (
 };
 
 const addConflictedCellNumbersFromRegion = (
-  digitOccurrencesByDigit: Map<string, Array<number>>,
-  conflictedCellNumbers: Set<number>,
+  digitOccurrencesByDigit: Map<SudokuDigit, Array<CellNumber>>,
+  conflictedCellNumbers: Set<CellNumber>,
 ): void => {
   for (const matchingCellNumbers of digitOccurrencesByDigit.values()) {
     if (matchingCellNumbers.length <= 1) continue;
@@ -363,8 +385,8 @@ const addConflictedCellNumbersFromRegion = (
 };
 
 const addConflictedCellNumbersFromRegions = (
-  digitOccurrencesByRegion: Array<Map<string, Array<number>>>,
-  conflictedCellNumbers: Set<number>,
+  digitOccurrencesByRegion: Array<Map<SudokuDigit, Array<CellNumber>>>,
+  conflictedCellNumbers: Set<CellNumber>,
 ): void => {
   for (const digitOccurrencesByDigit of digitOccurrencesByRegion)
     addConflictedCellNumbersFromRegion(
@@ -374,11 +396,11 @@ const addConflictedCellNumbersFromRegions = (
 };
 
 const getEmptyDigitOccurrencesByRegion = (): Array<
-  Map<string, Array<number>>
+  Map<SudokuDigit, Array<CellNumber>>
 > => Array.from({ length: 9 }, () => new Map());
 
-const getConflictedCellNumbers = (boardState: BoardState): Set<number> => {
-  const conflictedCellNumbers = new Set<number>();
+const getConflictedCellNumbers = (boardState: BoardState): Set<CellNumber> => {
+  const conflictedCellNumbers = new Set<CellNumber>();
 
   const sudokuDigitOccurrencesByRow = getEmptyDigitOccurrencesByRegion();
   const sudokuDigitOccurrencesByColumn = getEmptyDigitOccurrencesByRegion();
@@ -442,7 +464,7 @@ export const Board = ({
 
   const conflictedCellNumbers = userSettings.conflictChecker
     ? getConflictedCellNumbers(boardState)
-    : new Set<number>();
+    : new Set<CellNumber>();
 
   const selectedCells = boardState.filter((cellState) => cellState.isSelected);
 
@@ -462,7 +484,7 @@ export const Board = ({
   );
 
   const handleBoardCellPointerDown = useCallback(
-    (targetCellNumber: number) => {
+    (targetCellNumber: CellNumber) => {
       handleCellPointerDown(
         boardRef,
         isPointerDraggingAcrossBoardRef,

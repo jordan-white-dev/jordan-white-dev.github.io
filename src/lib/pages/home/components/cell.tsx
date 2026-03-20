@@ -20,12 +20,15 @@ import {
 import {
   type BoardState,
   type CellContent,
+  type CellNumber,
   type CellState,
+  type ColumnNumber,
   type MarkupColor,
   type MarkupDigits,
   type MarkupDigitsCellContent,
   markupColors,
   type PuzzleHistory,
+  type RowNumber,
 } from "@/lib/pages/home/utils/types";
 
 // #region CSS Properties
@@ -168,8 +171,8 @@ type BoxAndPuzzleEdges = {
 };
 
 const getBoxAndPuzzleEdges = (
-  columnNumber: number,
-  rowNumber: number,
+  columnNumber: ColumnNumber,
+  rowNumber: RowNumber,
 ): BoxAndPuzzleEdges => ({
   isOnBottomBoxEdge: rowNumber % 3 === 0,
   isOnBottomPuzzleEdge: rowNumber === 9,
@@ -181,19 +184,12 @@ const getBoxAndPuzzleEdges = (
   isOnTopPuzzleEdge: rowNumber === 1,
 });
 
-type IsCellInsideSelectedBoxArgs = {
-  columnNumber: number;
-  rowNumber: number;
-  selectedColumnNumber: number | undefined;
-  selectedRowNumber: number | undefined;
-};
-
-const isCellInsideSelectedBox = ({
-  columnNumber,
-  rowNumber,
-  selectedColumnNumber,
-  selectedRowNumber,
-}: IsCellInsideSelectedBoxArgs): boolean => {
+const isCellInsideSelectedBox = (
+  columnNumber: ColumnNumber,
+  rowNumber: RowNumber,
+  selectedColumnNumber: ColumnNumber | undefined,
+  selectedRowNumber: RowNumber | undefined,
+): boolean => {
   if (selectedColumnNumber === undefined || selectedRowNumber === undefined)
     return false;
 
@@ -262,16 +258,6 @@ const getSeenInRowBackgroundRectangle = (): Rectangle => ({
 const isRectangleVisible = (rectangle: Rectangle): boolean =>
   rectangle.height > 0 && rectangle.width > 0;
 
-type GetSeenCellBackgroundRectanglesArgs = {
-  columnNumber: number;
-  isSeenInBox: boolean;
-  isSeenInColumn: boolean;
-  isSeenInRow: boolean;
-  rowNumber: number;
-  selectedColumnNumber: number | undefined;
-  selectedRowNumber: number | undefined;
-};
-
 const getSeenCellBackgroundRectangles = ({
   columnNumber,
   isSeenInBox,
@@ -280,7 +266,15 @@ const getSeenCellBackgroundRectangles = ({
   rowNumber,
   selectedColumnNumber,
   selectedRowNumber,
-}: GetSeenCellBackgroundRectanglesArgs): Array<Rectangle> => {
+}: {
+  columnNumber: ColumnNumber;
+  isSeenInBox: boolean;
+  isSeenInColumn: boolean;
+  isSeenInRow: boolean;
+  rowNumber: RowNumber;
+  selectedColumnNumber: ColumnNumber | undefined;
+  selectedRowNumber: RowNumber | undefined;
+}): Array<Rectangle> => {
   if (!(isSeenInBox || isSeenInColumn || isSeenInRow)) return [];
 
   if (isSeenInBox && isSeenInColumn && isSeenInRow)
@@ -288,12 +282,12 @@ const getSeenCellBackgroundRectangles = ({
 
   const boxAndPuzzleEdges = getBoxAndPuzzleEdges(columnNumber, rowNumber);
 
-  const isCellInSelectedBox = isCellInsideSelectedBox({
+  const isCellInSelectedBox = isCellInsideSelectedBox(
     columnNumber,
     rowNumber,
     selectedColumnNumber,
     selectedRowNumber,
-  });
+  );
 
   const shouldSuppressColumnBandAtPuzzleEdge =
     isCellInSelectedBox &&
@@ -324,17 +318,6 @@ const getSeenCellBackgroundRectangles = ({
   return seenCellBackgroundRectangles;
 };
 
-type GetSeenCellBackgroundArgs = {
-  columnNumber: number;
-  isSeenInBox: boolean;
-  isSeenInColumn: boolean;
-  isSeenInRow: boolean;
-  rowNumber: number;
-  selectedColumnNumber: number | undefined;
-  selectedRowNumber: number | undefined;
-  showSeenCells: boolean;
-};
-
 const getSeenCellBackground = ({
   columnNumber,
   isSeenInBox,
@@ -344,7 +327,16 @@ const getSeenCellBackground = ({
   selectedColumnNumber,
   selectedRowNumber,
   showSeenCells,
-}: GetSeenCellBackgroundArgs): string | null => {
+}: {
+  columnNumber: ColumnNumber;
+  isSeenInBox: boolean;
+  isSeenInColumn: boolean;
+  isSeenInRow: boolean;
+  rowNumber: RowNumber;
+  selectedColumnNumber: ColumnNumber | undefined;
+  selectedRowNumber: RowNumber | undefined;
+  showSeenCells: boolean;
+}): string | null => {
   if (!showSeenCells) return null;
 
   const seenCellBackgroundRectangles = getSeenCellBackgroundRectangles({
@@ -464,18 +456,6 @@ const getSelectedAdjacentCells = (
   return selectedAdjacentCells;
 };
 
-type GetSelectedCellBackgroundArgs = {
-  isSelected: boolean;
-  isSelectedCellAbove: boolean;
-  isSelectedCellAboveLeft: boolean;
-  isSelectedCellAboveRight: boolean;
-  isSelectedCellBelow: boolean;
-  isSelectedCellBelowLeft: boolean;
-  isSelectedCellBelowRight: boolean;
-  isSelectedCellToLeft: boolean;
-  isSelectedCellToRight: boolean;
-};
-
 const getSelectedCellBackground = ({
   isSelected,
   isSelectedCellAbove,
@@ -486,7 +466,17 @@ const getSelectedCellBackground = ({
   isSelectedCellBelowRight,
   isSelectedCellToLeft,
   isSelectedCellToRight,
-}: GetSelectedCellBackgroundArgs): string | null => {
+}: {
+  isSelected: boolean;
+  isSelectedCellAbove: boolean;
+  isSelectedCellAboveLeft: boolean;
+  isSelectedCellAboveRight: boolean;
+  isSelectedCellBelow: boolean;
+  isSelectedCellBelowLeft: boolean;
+  isSelectedCellBelowRight: boolean;
+  isSelectedCellToLeft: boolean;
+  isSelectedCellToRight: boolean;
+}): string | null => {
   if (!isSelected) return null;
 
   const selectedCellRectangles: Array<Rectangle> = [];
@@ -576,28 +566,6 @@ const getSelectedCellBackground = ({
 };
 // #endregion
 
-type GetCellBackgroundArgs = {
-  cellMarkupColors: Array<MarkupColor> | [""];
-  columnNumber: number;
-  hasDigitConflict: boolean;
-  isSeenInBox: boolean;
-  isSeenInColumn: boolean;
-  isSeenInRow: boolean;
-  isSelected: boolean;
-  isSelectedCellAbove: boolean;
-  isSelectedCellAboveLeft: boolean;
-  isSelectedCellAboveRight: boolean;
-  isSelectedCellBelow: boolean;
-  isSelectedCellBelowLeft: boolean;
-  isSelectedCellBelowRight: boolean;
-  isSelectedCellToLeft: boolean;
-  isSelectedCellToRight: boolean;
-  rowNumber: number;
-  selectedColumnNumber: number | undefined;
-  selectedRowNumber: number | undefined;
-  showSeenCells: boolean;
-};
-
 const getCellBackground = ({
   cellMarkupColors,
   columnNumber,
@@ -618,7 +586,27 @@ const getCellBackground = ({
   selectedColumnNumber,
   selectedRowNumber,
   showSeenCells,
-}: GetCellBackgroundArgs): ButtonProps["background"] => {
+}: {
+  cellMarkupColors: Array<MarkupColor> | [""];
+  columnNumber: ColumnNumber;
+  hasDigitConflict: boolean;
+  isSeenInBox: boolean;
+  isSeenInColumn: boolean;
+  isSeenInRow: boolean;
+  isSelected: boolean;
+  isSelectedCellAbove: boolean;
+  isSelectedCellAboveLeft: boolean;
+  isSelectedCellAboveRight: boolean;
+  isSelectedCellBelow: boolean;
+  isSelectedCellBelowLeft: boolean;
+  isSelectedCellBelowRight: boolean;
+  isSelectedCellToLeft: boolean;
+  isSelectedCellToRight: boolean;
+  rowNumber: RowNumber;
+  selectedColumnNumber: ColumnNumber | undefined;
+  selectedRowNumber: RowNumber | undefined;
+  showSeenCells: boolean;
+}): ButtonProps["background"] => {
   const backgroundLayers = [
     getSelectedCellBackground({
       isSelected,
@@ -679,9 +667,9 @@ const getTextShadow = (cellContent: CellContent): ButtonProps["textShadow"] =>
     : DIGIT_TEXT_SHADOW;
 
 const getCellBorderStyles = (
-  columnNumber: number,
+  columnNumber: ColumnNumber,
   dashedGridEnabled: boolean,
-  rowNumber: number,
+  rowNumber: RowNumber,
 ) => {
   const isOnBottomBoxEdge = rowNumber % 3 === 0;
   const isOnLeftBoxEdge = columnNumber % 3 === 1;
@@ -700,7 +688,10 @@ const getCellBorderStyles = (
   return cellBorderStyles;
 };
 
-const getCellBorderWidths = (columnNumber: number, rowNumber: number) => {
+const getCellBorderWidths = (
+  columnNumber: ColumnNumber,
+  rowNumber: RowNumber,
+) => {
   const isOnLeftBoxEdge = columnNumber % 3 === 1;
   const isOnTopBoxEdge = rowNumber % 3 === 1;
 
@@ -803,7 +794,7 @@ const getCornerMarkupFloats = (
 // #endregion
 
 // #region Row and Column Label Floats
-const getRowLabelFloat = (rowNumber: number): ReactNode => {
+const getRowLabelFloat = (rowNumber: RowNumber): ReactNode => {
   return (
     <Float
       color="black"
@@ -817,7 +808,7 @@ const getRowLabelFloat = (rowNumber: number): ReactNode => {
   );
 };
 
-const getColumnLabelFloat = (columnNumber: number): ReactNode => {
+const getColumnLabelFloat = (columnNumber: ColumnNumber): ReactNode => {
   return (
     <Float
       color="black"
@@ -1218,9 +1209,9 @@ type CellProps = {
   isSeenInBox: boolean;
   isSeenInColumn: boolean;
   isSeenInRow: boolean;
-  selectedColumnNumber: number | undefined;
-  selectedRowNumber: number | undefined;
-  handleCellPointerDown: (cellNumber: number) => void;
+  selectedColumnNumber: ColumnNumber | undefined;
+  selectedRowNumber: RowNumber | undefined;
+  handleCellPointerDown: (cellNumber: CellNumber) => void;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 

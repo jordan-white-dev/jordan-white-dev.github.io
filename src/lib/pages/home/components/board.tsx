@@ -4,7 +4,12 @@ import { useCallback, useRef } from "react";
 
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/pages/home/utils/constants";
-import type { BoardState, PuzzleHistory } from "@/lib/pages/home/utils/types";
+import type {
+  BoardState,
+  CellState,
+  PuzzleHistory,
+  SudokuDigit,
+} from "@/lib/pages/home/utils/types";
 
 import { Cell } from "./cell";
 
@@ -12,10 +17,10 @@ import { Cell } from "./cell";
 const getCellStateWithUpdatedSelections = (
   targetCellNumber: number,
   isMultiselectMode: boolean,
-  previousCellState: BoardState[number],
+  previousCellState: CellState,
   selectedCellsCount: number,
   selectedCellNumberWhenExactlyOneIsSelected: number | undefined,
-): BoardState[number] => {
+): CellState => {
   if (isMultiselectMode) {
     const isTargetCell = previousCellState.cellNumber === targetCellNumber;
 
@@ -335,14 +340,14 @@ const handleCellPointerDown = (
 // #endregion
 
 // #region Conflict Checking
-const addDigitOccurrenceToRegion = (
+const addSudokuDigitOccurrenceToRegion = (
   digitOccurrencesByDigit: Map<string, Array<number>>,
-  digit: string,
+  sudokuDigit: SudokuDigit,
   cellNumber: number,
 ): void => {
-  const matchingCellNumbers = digitOccurrencesByDigit.get(digit) ?? [];
+  const matchingCellNumbers = digitOccurrencesByDigit.get(sudokuDigit) ?? [];
   matchingCellNumbers.push(cellNumber);
-  digitOccurrencesByDigit.set(digit, matchingCellNumbers);
+  digitOccurrencesByDigit.set(sudokuDigit, matchingCellNumbers);
 };
 
 const addConflictedCellNumbersFromRegion = (
@@ -375,43 +380,43 @@ const getEmptyDigitOccurrencesByRegion = (): Array<
 const getConflictedCellNumbers = (boardState: BoardState): Set<number> => {
   const conflictedCellNumbers = new Set<number>();
 
-  const digitOccurrencesByRow = getEmptyDigitOccurrencesByRegion();
-  const digitOccurrencesByColumn = getEmptyDigitOccurrencesByRegion();
-  const digitOccurrencesByBox = getEmptyDigitOccurrencesByRegion();
+  const sudokuDigitOccurrencesByRow = getEmptyDigitOccurrencesByRegion();
+  const sudokuDigitOccurrencesByColumn = getEmptyDigitOccurrencesByRegion();
+  const sudokuDigitOccurrencesByBox = getEmptyDigitOccurrencesByRegion();
 
   for (const cellState of boardState) {
-    const digit = getStartingOrPlayerDigitInCellIfPresent(
+    const sudokuDigit = getStartingOrPlayerDigitInCellIfPresent(
       cellState.cellContent,
     );
-    if (digit === "") continue;
+    if (sudokuDigit === "") continue;
 
-    addDigitOccurrenceToRegion(
-      digitOccurrencesByRow[cellState.rowNumber - 1],
-      digit,
+    addSudokuDigitOccurrenceToRegion(
+      sudokuDigitOccurrencesByRow[cellState.rowNumber - 1],
+      sudokuDigit,
       cellState.cellNumber,
     );
-    addDigitOccurrenceToRegion(
-      digitOccurrencesByColumn[cellState.columnNumber - 1],
-      digit,
+    addSudokuDigitOccurrenceToRegion(
+      sudokuDigitOccurrencesByColumn[cellState.columnNumber - 1],
+      sudokuDigit,
       cellState.cellNumber,
     );
-    addDigitOccurrenceToRegion(
-      digitOccurrencesByBox[cellState.boxNumber - 1],
-      digit,
+    addSudokuDigitOccurrenceToRegion(
+      sudokuDigitOccurrencesByBox[cellState.boxNumber - 1],
+      sudokuDigit,
       cellState.cellNumber,
     );
   }
 
   addConflictedCellNumbersFromRegions(
-    digitOccurrencesByRow,
+    sudokuDigitOccurrencesByRow,
     conflictedCellNumbers,
   );
   addConflictedCellNumbersFromRegions(
-    digitOccurrencesByColumn,
+    sudokuDigitOccurrencesByColumn,
     conflictedCellNumbers,
   );
   addConflictedCellNumbersFromRegions(
-    digitOccurrencesByBox,
+    sudokuDigitOccurrencesByBox,
     conflictedCellNumbers,
   );
 
@@ -445,10 +450,10 @@ export const Board = ({
     userSettings.showSeenCells && selectedCells.length === 1;
 
   const selectedColumnNumber =
-    selectedCells.length === 1 ? selectedCells[0].columnNumber : -1;
+    selectedCells.length === 1 ? selectedCells[0].columnNumber : undefined;
 
   const selectedRowNumber =
-    selectedCells.length === 1 ? selectedCells[0].rowNumber : -1;
+    selectedCells.length === 1 ? selectedCells[0].rowNumber : undefined;
 
   const boardRef = useRef<HTMLDivElement | null>(null);
   const isPointerDraggingAcrossBoardRef = useRef(false);

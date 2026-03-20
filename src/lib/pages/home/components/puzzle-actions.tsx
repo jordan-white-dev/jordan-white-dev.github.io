@@ -329,17 +329,17 @@ const getIsPuzzleSolved = (boardState: BoardState): boolean => {
     );
     if (startingOrPlayerDigit === "") return false;
 
-    const rowIndex = cellState.rowNumber - 1;
-    const columnIndex = cellState.columnNumber - 1;
     const boxIndex = cellState.boxNumber - 1;
+    const columnIndex = cellState.columnNumber - 1;
+    const rowIndex = cellState.rowNumber - 1;
 
-    if (rows[rowIndex].has(startingOrPlayerDigit)) return false;
-    if (columns[columnIndex].has(startingOrPlayerDigit)) return false;
     if (boxes[boxIndex].has(startingOrPlayerDigit)) return false;
+    if (columns[columnIndex].has(startingOrPlayerDigit)) return false;
+    if (rows[rowIndex].has(startingOrPlayerDigit)) return false;
 
-    rows[rowIndex].add(startingOrPlayerDigit);
-    columns[columnIndex].add(startingOrPlayerDigit);
     boxes[boxIndex].add(startingOrPlayerDigit);
+    columns[columnIndex].add(startingOrPlayerDigit);
+    rows[rowIndex].add(startingOrPlayerDigit);
   }
 
   return true;

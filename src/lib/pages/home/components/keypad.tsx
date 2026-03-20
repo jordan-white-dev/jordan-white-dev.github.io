@@ -214,13 +214,13 @@ const markupDigitsCellStateUpdater = (
   const isNotAStartingDigit =
     !isStartingDigitInCellContent(previousCellContent);
 
-  const isABlankPlayerDigit =
+  const isAnEmptyPlayerDigit =
     isPlayerDigitInCellContent(previousCellContent) &&
     previousCellContent.playerDigit === "";
 
   const isValidInputCell =
     isNotAStartingDigit &&
-    (isABlankPlayerDigit || isMarkupDigitsInCellContent(previousCellContent));
+    (isAnEmptyPlayerDigit || isMarkupDigitsInCellContent(previousCellContent));
 
   if (!isValidInputCell) return previousCellState;
 
@@ -642,17 +642,21 @@ const NumberButton = ({
 );
 // #endregion
 
-const getAlignItems = (
-  buttonValueAsNumber: number,
+const getAlignItemsForCornerNumberButton = (
+  sudokuDigit: SudokuDigit,
 ): IconButtonProps["alignItems"] => {
-  if (buttonValueAsNumber <= 3) return "start";
-  else if (buttonValueAsNumber <= 6) return "center";
+  const sudokuDigitAsNumber = Number(sudokuDigit);
+
+  if (sudokuDigitAsNumber <= 3) return "start";
+  else if (sudokuDigitAsNumber <= 6) return "center";
   else return "end";
 };
 
-const getJustifyContent = (buttonValueAsNumber: number) => {
-  if (buttonValueAsNumber % 3 === 1) return "start";
-  else if (buttonValueAsNumber % 3 === 2) return "center";
+const getJustifyContentForCornerNumberButton = (sudokuDigit: SudokuDigit) => {
+  const sudokuDigitAsNumber = Number(sudokuDigit);
+
+  if (sudokuDigitAsNumber % 3 === 1) return "start";
+  else if (sudokuDigitAsNumber % 3 === 2) return "center";
   else return "end";
 };
 
@@ -674,27 +678,27 @@ const NumberPad = ({
 
   return (
     <>
-      {sudokuDigitsInOrder.map((buttonValue, index) => {
+      {sudokuDigitsInOrder.map((sudokuDigit) => {
         if (keypadMode === "Digit")
           return (
             <NumberButton
-              buttonValue={buttonValue}
-              key={buttonValue}
+              buttonValue={sudokuDigit}
+              key={sudokuDigit}
               textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
               onClick={() =>
-                handleDigitInput(buttonValue, puzzleHistory, setPuzzleHistory)
+                handleDigitInput(sudokuDigit, puzzleHistory, setPuzzleHistory)
               }
             />
           );
         else if (keypadMode === "Center")
           return (
             <NumberButton
-              buttonValue={buttonValue}
-              key={buttonValue}
+              buttonValue={sudokuDigit}
+              key={sudokuDigit}
               textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
               onClick={() =>
                 handleCenterMarkupInput(
-                  buttonValue,
+                  sudokuDigit,
                   puzzleHistory,
                   setPuzzleHistory,
                 )
@@ -704,15 +708,17 @@ const NumberPad = ({
         else
           return (
             <NumberButton
-              alignItems={getAlignItems(index + 1)}
-              buttonValue={buttonValue}
-              justifyContent={getJustifyContent(index + 1)}
-              key={buttonValue}
+              alignItems={getAlignItemsForCornerNumberButton(sudokuDigit)}
+              buttonValue={sudokuDigit}
+              justifyContent={getJustifyContentForCornerNumberButton(
+                sudokuDigit,
+              )}
+              key={sudokuDigit}
               padding={{ base: "1", md: "1.5" }}
               textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
               onClick={() =>
                 handleCornerMarkupInput(
-                  buttonValue,
+                  sudokuDigit,
                   puzzleHistory,
                   setPuzzleHistory,
                 )
@@ -855,19 +861,19 @@ export const Keypad = ({
   setPuzzleHistory,
 }: KeypadProps) => {
   useEffect(() => {
-    const handleNumberKeyDown = (digit: SudokuDigit) => {
+    const handleNumberKeyDown = (sudokuDigit: SudokuDigit) => {
       switch (keypadMode) {
         case "Digit":
-          handleDigitInput(digit, puzzleHistory, setPuzzleHistory);
+          handleDigitInput(sudokuDigit, puzzleHistory, setPuzzleHistory);
           break;
         case "Center":
-          handleCenterMarkupInput(digit, puzzleHistory, setPuzzleHistory);
+          handleCenterMarkupInput(sudokuDigit, puzzleHistory, setPuzzleHistory);
           break;
         case "Corner":
-          handleCornerMarkupInput(digit, puzzleHistory, setPuzzleHistory);
+          handleCornerMarkupInput(sudokuDigit, puzzleHistory, setPuzzleHistory);
           break;
         case "Color":
-          handleColorPadInput(digit, puzzleHistory, setPuzzleHistory);
+          handleColorPadInput(sudokuDigit, puzzleHistory, setPuzzleHistory);
           break;
         default:
           exhaustiveGuard(keypadMode);

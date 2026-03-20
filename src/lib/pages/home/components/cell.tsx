@@ -184,8 +184,8 @@ const getBoxAndPuzzleEdges = (
 type IsCellInsideSelectedBoxArgs = {
   columnNumber: number;
   rowNumber: number;
-  selectedColumnNumber: number;
-  selectedRowNumber: number;
+  selectedColumnNumber: number | undefined;
+  selectedRowNumber: number | undefined;
 };
 
 const isCellInsideSelectedBox = ({
@@ -194,6 +194,9 @@ const isCellInsideSelectedBox = ({
   selectedColumnNumber,
   selectedRowNumber,
 }: IsCellInsideSelectedBoxArgs): boolean => {
+  if (selectedColumnNumber === undefined || selectedRowNumber === undefined)
+    return false;
+
   const selectedBoxColumnStart =
     Math.floor((selectedColumnNumber - 1) / 3) * 3 + 1;
   const selectedBoxRowStart = Math.floor((selectedRowNumber - 1) / 3) * 3 + 1;
@@ -265,8 +268,8 @@ type GetSeenCellBackgroundRectanglesArgs = {
   isSeenInColumn: boolean;
   isSeenInRow: boolean;
   rowNumber: number;
-  selectedColumnNumber: number;
-  selectedRowNumber: number;
+  selectedColumnNumber: number | undefined;
+  selectedRowNumber: number | undefined;
 };
 
 const getSeenCellBackgroundRectangles = ({
@@ -327,8 +330,8 @@ type GetSeenCellBackgroundArgs = {
   isSeenInColumn: boolean;
   isSeenInRow: boolean;
   rowNumber: number;
-  selectedColumnNumber: number;
-  selectedRowNumber: number;
+  selectedColumnNumber: number | undefined;
+  selectedRowNumber: number | undefined;
   showSeenCells: boolean;
 };
 
@@ -590,8 +593,8 @@ type GetCellBackgroundArgs = {
   isSelectedCellToLeft: boolean;
   isSelectedCellToRight: boolean;
   rowNumber: number;
-  selectedColumnNumber: number;
-  selectedRowNumber: number;
+  selectedColumnNumber: number | undefined;
+  selectedRowNumber: number | undefined;
   showSeenCells: boolean;
 };
 
@@ -1215,8 +1218,8 @@ type CellProps = {
   isSeenInBox: boolean;
   isSeenInColumn: boolean;
   isSeenInRow: boolean;
-  selectedColumnNumber: number;
-  selectedRowNumber: number;
+  selectedColumnNumber: number | undefined;
+  selectedRowNumber: number | undefined;
   handleCellPointerDown: (cellNumber: number) => void;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };

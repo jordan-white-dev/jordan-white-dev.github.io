@@ -42,18 +42,13 @@ export const flippedColors = [
 ] as const;
 
 export type MarkupColor = (typeof markupColors)[number];
-
-const markupColorStringSet = new Set<string>(markupColors);
-
-export const isMarkupColor = (value: string): value is MarkupColor =>
-  markupColorStringSet.has(value);
 // #endregion
 
 // #region Raw Types
 
 // #region Raw Puzzle String
 // Equivalent to: /^\d{81}$/
-export const validRawPuzzleStringRegex = SuperExpressive()
+const validRawPuzzleStringRegex = SuperExpressive()
   .startOfInput.exactly(81)
   .digit.endOfInput.toRegex();
 
@@ -76,14 +71,14 @@ export const isRawStartingDigit = isRawStartingDigitValidator;
 export type RawStartingDigit = typeof BrandedRawStartingDigit;
 // #endregion
 
-export type RawEmptyCell = null;
+type RawEmptyCell = null;
 type RawCellState = RawStartingDigit | RawEmptyCell;
 export type RawBoardState = Array<RawCellState>;
 // #endregion
 
 // #region Encoded Puzzle String
 // Equivalent to: /^[\da-z]+$/
-export const validEncodedPuzzleStringRegex = SuperExpressive()
+const validEncodedPuzzleStringRegex = SuperExpressive()
   .startOfInput.oneOrMore.anyOf.digit.range("a", "z")
   .end()
   .endOfInput.toRegex();

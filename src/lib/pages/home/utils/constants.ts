@@ -45,7 +45,7 @@ export const getRawPuzzleStringFromRawBoardState = (
   return candidateRawPuzzleString;
 };
 
-const getStartingDigitCellContent = (
+const getStartingDigitCellContentFromRawStartingDigit = (
   rawStartingDigit: RawStartingDigit,
 ): CellContent => {
   const candidateSudokuDigit = (rawStartingDigit + 1).toString();
@@ -78,14 +78,14 @@ export const getBoardStateFromRawBoardState = (
 
     const rawCellState = rawBoardState[cellNumber - 1];
 
-    const blankPlayerDigitCellContent: PlayerDigitCellContent = {
+    const emptyPlayerDigitCellContent: PlayerDigitCellContent = {
       playerDigit: "",
     };
 
     const cellContent: CellContent =
       rawCellState === null
-        ? blankPlayerDigitCellContent
-        : getStartingDigitCellContent(rawCellState);
+        ? emptyPlayerDigitCellContent
+        : getStartingDigitCellContentFromRawStartingDigit(rawCellState);
 
     const cellState: CellState = {
       boxNumber,
@@ -118,7 +118,7 @@ export const isStartingOrPlayerDigitInCellContent = (
 
 export const getStartingOrPlayerDigitInCellIfPresent = (
   cellContent: CellContent,
-): string => {
+): SudokuDigit | "" => {
   if (isStartingDigitInCellContent(cellContent))
     return cellContent.startingDigit;
   else if (isPlayerDigitInCellContent(cellContent))

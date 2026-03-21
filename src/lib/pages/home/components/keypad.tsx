@@ -148,7 +148,7 @@ const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => {
 // #region Number Button
 type NumberButtonProps = {
   alignItems?: IconButtonProps["alignItems"];
-  buttonValue: SudokuDigit;
+  sudokuDigit: SudokuDigit;
   justifyContent?: IconButtonProps["justifyContent"];
   padding?: IconButtonProps["padding"];
   textStyle: IconButtonProps["textStyle"];
@@ -157,14 +157,14 @@ type NumberButtonProps = {
 
 const NumberButton = ({
   alignItems,
-  buttonValue,
+  sudokuDigit,
   justifyContent,
   padding,
   textStyle,
   onClick,
 }: NumberButtonProps) => (
   <GridItem colSpan={2}>
-    <Tooltip content={buttonValue}>
+    <Tooltip content={sudokuDigit}>
       <Square aspectRatio="square">
         <IconButton
           aspectRatio="square"
@@ -178,7 +178,7 @@ const NumberButton = ({
           {...(justifyContent && { justifyContent })}
           {...(padding && { padding })}
         >
-          {buttonValue}
+          {sudokuDigit}
         </IconButton>
       </Square>
     </Tooltip>
@@ -226,7 +226,7 @@ const NumberPad = ({
         if (keypadMode === "Digit")
           return (
             <NumberButton
-              buttonValue={sudokuDigit}
+              sudokuDigit={sudokuDigit}
               key={sudokuDigit}
               textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
               onClick={() =>
@@ -237,7 +237,7 @@ const NumberPad = ({
         else if (keypadMode === "Center")
           return (
             <NumberButton
-              buttonValue={sudokuDigit}
+              sudokuDigit={sudokuDigit}
               key={sudokuDigit}
               textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
               onClick={() =>
@@ -253,7 +253,7 @@ const NumberPad = ({
           return (
             <NumberButton
               alignItems={getAlignItemsForCornerNumberButton(sudokuDigit)}
-              buttonValue={sudokuDigit}
+              sudokuDigit={sudokuDigit}
               justifyContent={getJustifyContentForCornerNumberButton(
                 sudokuDigit,
               )}

@@ -105,7 +105,7 @@ const [isSudokuDigitValidator, BrandedSudokuDigit] = branded(
 export const isSudokuDigit = isSudokuDigitValidator;
 export type SudokuDigit = typeof BrandedSudokuDigit;
 
-const getSudokuDigitFromString = (
+export const getSudokuDigitFromString = (
   candidateSudokuDigit: string,
 ): SudokuDigit => {
   if (!isSudokuDigit(candidateSudokuDigit))

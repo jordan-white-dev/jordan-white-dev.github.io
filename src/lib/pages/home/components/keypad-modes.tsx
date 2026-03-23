@@ -5,13 +5,11 @@ import {
   RadioCard,
   SimpleGrid,
 } from "@chakra-ui/react";
-import {
-  type Dispatch,
-  type PropsWithChildren,
-  type KeyboardEvent as ReactKeyboardEvent,
-  type SetStateAction,
-  useEffect,
-  useRef,
+import type {
+  Dispatch,
+  PropsWithChildren,
+  KeyboardEvent as ReactKeyboardEvent,
+  SetStateAction,
 } from "react";
 
 import type { KeypadMode } from "@/lib/pages/home/utils/types";
@@ -115,14 +113,12 @@ const CenterSVG = (props: HTMLChakraProps<"svg">) => (
 interface KeypadModeRadioCardItemProps extends PropsWithChildren {
   keypadModeValue: KeypadMode;
   tooltipText: string;
-  setKeypadMode: Dispatch<SetStateAction<KeypadMode>>;
 }
 
 const KeypadModeRadioCardItem = ({
   children,
   keypadModeValue,
   tooltipText,
-  setKeypadMode,
   ...props
 }: KeypadModeRadioCardItemProps) => (
   <RadioCard.Item
@@ -151,97 +147,23 @@ const KeypadModeRadioCardItem = ({
 );
 // #endregion
 
-type KeyboardShortcut = "Control" | "Shift" | "Alt";
-const keyboardShortcutsToKeypadMode: Record<
-  KeyboardShortcut,
-  Exclude<KeypadMode, "Digit">
-> = {
-  Control: "Center",
-  Shift: "Corner",
-  Alt: "Color",
-};
+const isKeypadMode = (
+  candidateKeypadMode: string,
+): candidateKeypadMode is KeypadMode =>
+  candidateKeypadMode === "Digit" ||
+  candidateKeypadMode === "Color" ||
+  candidateKeypadMode === "Center" ||
+  candidateKeypadMode === "Corner";
 
 type KeypadModeRadioCardProps = {
   keypadMode: KeypadMode;
-  setKeypadMode: Dispatch<SetStateAction<KeypadMode>>;
+  setBaseKeypadMode: Dispatch<SetStateAction<KeypadMode>>;
 };
 
 export const KeypadModeRadioCard = ({
   keypadMode,
-  setKeypadMode,
+  setBaseKeypadMode,
 }: KeypadModeRadioCardProps) => {
-  const keyDownOrder = useRef<Array<KeyboardShortcut>>([]);
-  const originalKeypadMode = useRef<KeypadMode>(keypadMode);
-
-  useEffect(() => {
-    const handleWindowBlur = () => {
-      keyDownOrder.current = [];
-      setKeypadMode(originalKeypadMode.current);
-    };
-
-    window.addEventListener("blur", handleWindowBlur);
-    return () => window.removeEventListener("blur", handleWindowBlur);
-  }, [setKeypadMode]);
-
-  useEffect(() => {
-    const reconcileKeyDownOrderWithEvent = (event: KeyboardEvent) => {
-      keyDownOrder.current = keyDownOrder.current.filter((keyboardShortcut) => {
-        if (keyboardShortcut === "Control") return event.ctrlKey;
-        if (keyboardShortcut === "Shift") return event.shiftKey;
-        if (keyboardShortcut === "Alt") return event.altKey;
-        return false;
-      });
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      reconcileKeyDownOrderWithEvent(event);
-
-      const keyDown = event.key as KeyboardShortcut;
-
-      if (!(keyDown in keyboardShortcutsToKeypadMode)) return;
-      if (event.repeat) return;
-
-      event.preventDefault();
-
-      if (!keyDownOrder.current.includes(keyDown))
-        keyDownOrder.current.push(keyDown);
-
-      const newestKeyDown =
-        keyDownOrder.current[keyDownOrder.current.length - 1];
-
-      if (!newestKeyDown) return;
-
-      setKeypadMode(keyboardShortcutsToKeypadMode[newestKeyDown]);
-    };
-
-    const handleKeyUp = (event: KeyboardEvent) => {
-      reconcileKeyDownOrderWithEvent(event);
-
-      const keyUp = event.key as KeyboardShortcut;
-
-      if (!(keyUp in keyboardShortcutsToKeypadMode)) return;
-
-      keyDownOrder.current = keyDownOrder.current.filter(
-        (keyDown) => keyDown !== keyUp,
-      );
-
-      const newestKeyDown =
-        keyDownOrder.current[keyDownOrder.current.length - 1];
-
-      if (newestKeyDown)
-        setKeypadMode(keyboardShortcutsToKeypadMode[newestKeyDown]);
-      else setKeypadMode(originalKeypadMode.current);
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, [setKeypadMode]);
-
   return (
     <RadioCard.Root
       align="center"
@@ -250,10 +172,12 @@ export const KeypadModeRadioCard = ({
       value={keypadMode}
       variant="solid"
       onKeyDownCapture={(event) => {
-        const isNumpadArrow = (event: ReactKeyboardEvent<HTMLDivElement>) =>
-          event.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD &&
+        const isNumpadArrow = (
+          candidateEvent: ReactKeyboardEvent<HTMLDivElement>,
+        ) =>
+          candidateEvent.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD &&
           ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(
-            event.key,
+            candidateEvent.key,
           );
 
         if (isNumpadArrow(event)) {
@@ -262,9 +186,10 @@ export const KeypadModeRadioCard = ({
         }
       }}
       onValueChange={(event) => {
-        const newKeypadMode = event.value as KeypadMode;
-        setKeypadMode(newKeypadMode);
-        originalKeypadMode.current = newKeypadMode;
+        const candidateKeypadMode = event.value;
+
+        if (candidateKeypadMode !== null && isKeypadMode(candidateKeypadMode))
+          setBaseKeypadMode(candidateKeypadMode);
       }}
     >
       <SimpleGrid
@@ -275,7 +200,6 @@ export const KeypadModeRadioCard = ({
         <KeypadModeRadioCardItem
           keypadModeValue="Digit"
           tooltipText="Digit keypad mode"
-          setKeypadMode={setKeypadMode}
         >
           <DigitSVG />
         </KeypadModeRadioCardItem>
@@ -283,7 +207,6 @@ export const KeypadModeRadioCard = ({
         <KeypadModeRadioCardItem
           keypadModeValue="Color"
           tooltipText="Color markup mode"
-          setKeypadMode={setKeypadMode}
         >
           <ColorSVG />
         </KeypadModeRadioCardItem>
@@ -291,7 +214,6 @@ export const KeypadModeRadioCard = ({
         <KeypadModeRadioCardItem
           keypadModeValue="Center"
           tooltipText="Center markup mode"
-          setKeypadMode={setKeypadMode}
         >
           <CenterSVG />
         </KeypadModeRadioCardItem>
@@ -299,7 +221,6 @@ export const KeypadModeRadioCard = ({
         <KeypadModeRadioCardItem
           keypadModeValue="Corner"
           tooltipText="Corner markup mode"
-          setKeypadMode={setKeypadMode}
         >
           <CornerSVG />
         </KeypadModeRadioCardItem>

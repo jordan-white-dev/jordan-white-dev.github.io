@@ -11,10 +11,9 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
-import { type Dispatch, type SetStateAction, useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
-import SuperExpressive from "super-expressive";
 
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
@@ -29,7 +28,6 @@ import {
   brandedSudokuDigits,
   brandedSudokuDigitsForFlippedKeypad,
   flippedColors,
-  isSudokuDigit,
   type KeypadMode,
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_GRAY,
@@ -148,9 +146,9 @@ const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => {
 // #region Number Button
 type NumberButtonProps = {
   alignItems?: IconButtonProps["alignItems"];
-  sudokuDigit: SudokuDigit;
   justifyContent?: IconButtonProps["justifyContent"];
   padding?: IconButtonProps["padding"];
+  sudokuDigit: SudokuDigit;
   textStyle: IconButtonProps["textStyle"];
   onClick: () => void;
 };
@@ -249,7 +247,7 @@ const NumberPad = ({
               }
             />
           );
-        else
+        else if (keypadMode === "Corner")
           return (
             <NumberButton
               alignItems={getAlignItemsForCornerNumberButton(sudokuDigit)}
@@ -269,6 +267,8 @@ const NumberPad = ({
               }
             />
           );
+        else if (keypadMode === "Color") return null;
+        else return exhaustiveGuard(keypadMode);
       })}
     </>
   );
@@ -369,60 +369,6 @@ export const Keypad = ({
   setIsMultiselectMode,
   setPuzzleHistory,
 }: KeypadProps) => {
-  useEffect(() => {
-    const handleNumberKeyDown = (sudokuDigit: SudokuDigit) => {
-      switch (keypadMode) {
-        case "Digit":
-          handleDigitInput(sudokuDigit, puzzleHistory, setPuzzleHistory);
-          break;
-        case "Center":
-          handleCenterMarkupInput(sudokuDigit, puzzleHistory, setPuzzleHistory);
-          break;
-        case "Corner":
-          handleCornerMarkupInput(sudokuDigit, puzzleHistory, setPuzzleHistory);
-          break;
-        case "Color":
-          handleColorPadInput(sudokuDigit, puzzleHistory, setPuzzleHistory);
-          break;
-        default:
-          exhaustiveGuard(keypadMode);
-          break;
-      }
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const key = event.key;
-      const code = event.code;
-
-      // Equivalent to: /^(?:Digit|Numpad)[1-9]$/
-      const validNumberCodeRegex = SuperExpressive()
-        .startOfInput.anyOf.string("Digit")
-        .string("Numpad")
-        .end()
-        .range("1", "9")
-        .endOfInput.toRegex();
-
-      if (validNumberCodeRegex.test(code)) {
-        const candidateSudokuDigit = code
-          .replace("Digit", "")
-          .replace("Numpad", "");
-
-        if (isSudokuDigit(candidateSudokuDigit)) {
-          handleNumberKeyDown(candidateSudokuDigit);
-        }
-      } else if (key === "Escape" || key === "Backspace" || key === "Delete")
-        handleClearButton(puzzleHistory, setPuzzleHistory);
-      else if (key.toLowerCase() === "m")
-        setIsMultiselectMode(
-          (previousMultiselectMode) => !previousMultiselectMode,
-        );
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [keypadMode, puzzleHistory, setPuzzleHistory, setIsMultiselectMode]);
-
   return (
     <SimpleGrid
       columns={6}

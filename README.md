@@ -63,38 +63,38 @@ The app includes controls for generating a new puzzle, undoing and redoing moves
 
 ### Selection
 
-- **`Arrow Keys`:** if only one cell is selected, move the current selection
-- **`Ctrl + Arrow Keys, Shift + Arrow Keys`:** add to the current selection
-- **`Ctrl + A`:** select all cells
-- **`Ctral + Shift + A`:** deselect all cells
-- **`Ctrl + I`:** invert the current selection
-- **`Mouse Click, Tap`:** select or deselect a cell
-- **`Mouse Click + Drag, Touch + Drag`:** select multiple cells
-- **`Double Click, Double Tap`:** select all matching, non-empty cells
-- **`M`:** toggle multiselect mode
-- **`Escape, Backspace, Delete`:** clear the selected cells
+- **`Arrows`:** Move the current selection in the indicated direction if only one cell is selected.
+- **`Ctrl + Arrow`, `Shift + Arrow`:** Add a cell to the current selection.
+- **`Ctrl + A`:** Select all cells.
+- **`Ctrl + Shift + A`:** Deselect all cells.
+- **`Ctrl + I`:** Invert the current selection.
+- **`Mouse Click`, `Tap`:** Select or deselect a cell.
+- **`Mouse Click + Drag`, `Touch + Drag`:** Select multiple cells.
+- **`Double Click`, `Double Tap`:** Select all matching, non-empty cells. Strict highlighting selects only cells with identical contents.
+- **`M`:** Toggle multiselect mode.
+- **`Escape`, `Backspace`, `Delete`:** Clear the selected cells.
 
 ### Keypad Modes
 
-- **`Z`:** switch to Digit mode
-- **`X`:** switch to Center Markup mode
-- **`C`:** switch to Corner Markup mode
-- **`V`:** switch to Color Markup mode
+- **`Z`:** Switch to Digit mode.
+- **`X`:** Switch to Center Markup mode.
+- **`C`:** Switch to Corner Markup mode.
+- **`V`:** Switch to Color Markup mode.
 
 ### Number Entry
 
-- **`1 – 9` (Number Row, Numpad, or Keypad):** enter digits or markups depending on the keypad mode
+- **`1 – 9` (Number Row, Numpad, or Keypad):** Enter digits or markups depending on the keypad mode.
 
 ### Markup Entry
 
-- **`Ctrl + Number`:** enter a center markup
-- **`Shift + Number`:** enter a corner markup
-- **`Alt + Number`:** enter a color markup
+- **`Ctrl + Number`:** Enter a center markup.
+- **`Shift + Number`:** Enter a corner markup.
+- **`Alt + Number`:** Enter a color markup.
 
 ### History
 
-- **`Ctrl + Z`:** undo the last move
-- **`Ctrl + Shift + Z, Ctrl + Y`:** redo the last undone move
+- **`Ctrl + Z`:** Undo the last move.
+- **`Ctrl + Shift + Z`, `Ctrl + Y`:** Redo the last undone move.
 
 ## Settings
 

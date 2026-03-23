@@ -23,73 +23,329 @@ import { Stopwatch } from "./stopwatch";
 import { Tooltip } from "./tooltip";
 
 // #region Shortcuts Menu
-const DoubleClickTooltipText = () => (
+const MoveSelectionTooltipText = () => (
   <>
-    <Kbd>Double Click</Kbd> &nbsp;selects all cells with matching digits,
-    colors, and/or markups. Strict highlighting selects only cells with
-    identical contents.
+    <Kbd>Arrows</Kbd>: &nbsp;Move the current selection in the indicated
+    direction if only one cell is selected.
   </>
 );
-const CtrlTooltipText = () => (
+const ExpandSelectionTooltipText = () => (
   <>
-    <Kbd>Ctrl</Kbd> &nbsp;temporarily switches to center markup mode.
+    <Kbd>Ctrl&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Arrow</Kbd>,&nbsp;
+    <Kbd>Shift&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Arrow</Kbd>: &nbsp;Add a cell to
+    the current selection.
   </>
 );
-const ShiftTooltipText = () => (
+const SelectAllCellsTooltipText = () => (
   <>
-    <Kbd>Shift</Kbd> &nbsp;temporarily switches to corner markup mode.
+    <Kbd>Ctrl&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;A</Kbd>: &nbsp;Select all cells.
   </>
 );
-const AltTooltipText = () => (
+const DeselectAllCellsTooltipText = () => (
   <>
-    <Kbd>Ctrl</Kbd> &nbsp;temporarily switches to color markup mode.
+    <Kbd>
+      Ctrl&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Shift&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;A
+    </Kbd>
+    : &nbsp;Deselect all cells.
+  </>
+);
+const InvertSelectionTooltipText = () => (
+  <>
+    <Kbd>Ctrl&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;I</Kbd>: &nbsp;Invert the current
+    selection.
+  </>
+);
+const SelectDeselectCellTooltipText = () => (
+  <>
+    <Kbd>Mouse&nbsp;&nbsp;&nbsp;&nbsp;Click</Kbd>,&nbsp;<Kbd>Tap</Kbd>:
+    &nbsp;Select or deselect a cell.
+  </>
+);
+const SelectMultipleCellsTooltipText = () => (
+  <>
+    <Kbd>
+      Mouse&nbsp;&nbsp;&nbsp;&nbsp;Click&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Drag
+    </Kbd>
+    ,&nbsp;
+    <Kbd>Touch&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Drag</Kbd>: &nbsp;Select multiple
+    cells.
+  </>
+);
+const HighlightMatchesTooltipText = () => (
+  <>
+    <Kbd>Double&nbsp;&nbsp;&nbsp;&nbsp;Click</Kbd>,&nbsp;
+    <Kbd>Double&nbsp;&nbsp;&nbsp;&nbsp;Tap</Kbd>: &nbsp;Select all matching,
+    non-empty cells. Strict highlighting selects only cells with identical
+    contents.
   </>
 );
 const MultiselectTooltipText = () => (
   <>
-    <Kbd>M</Kbd> &nbsp;switches between single select and multiselect modes.
+    <Kbd>M</Kbd>: &nbsp;Toggle multiselect mode.
+  </>
+);
+const ClearSelectedCellsTooltipText = () => (
+  <>
+    <Kbd>Backspace</Kbd>,&nbsp;<Kbd>Delete</Kbd>,&nbsp;<Kbd>Escape</Kbd>:
+    &nbsp;Clear the selected cells.
+  </>
+);
+const DigitModeTooltipText = () => (
+  <>
+    <Kbd>Z</Kbd>: &nbsp;Switch to Digit mode.
+  </>
+);
+const CenterMarkupModeTooltipText = () => (
+  <>
+    <Kbd>X</Kbd>: &nbsp;Switch to Center Markup mode.
+  </>
+);
+const CornerMarkupModeTooltipText = () => (
+  <>
+    <Kbd>C</Kbd>: &nbsp;Switch to Corner Markup mode.
+  </>
+);
+const ColorMarkupModeTooltipText = () => (
+  <>
+    <Kbd>V</Kbd>: &nbsp;Switch to Color Markup mode.
+  </>
+);
+const EnterDigitsMarkupsTooltipText = () => (
+  <>
+    <Kbd>1-9</Kbd>&nbsp;&nbsp;(Number Row, Numpad, or Keypad): &nbsp;Enter
+    digits or markups depending on the keypad mode.
+  </>
+);
+const CenterMarkupTooltipText = () => (
+  <>
+    <Kbd>Ctrl&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Number</Kbd>: &nbsp;Enter a center
+    markup.
+  </>
+);
+const CornerMarkupTooltipText = () => (
+  <>
+    <Kbd>Shift&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Number</Kbd>: &nbsp;Enter a corner
+    markup.
+  </>
+);
+const ColorMarkupTooltipText = () => (
+  <>
+    <Kbd>Alt&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Number</Kbd>: &nbsp;Enter a color
+    markup.
+  </>
+);
+const UndoTooltipText = () => (
+  <>
+    <Kbd>Ctrl&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Z</Kbd>: &nbsp;Undo the last move.
+  </>
+);
+const RedoTooltipText = () => (
+  <>
+    <Kbd>
+      Ctrl&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Shift&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Z
+    </Kbd>
+    ,&nbsp;
+    <Kbd>Ctrl&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Y</Kbd>: &nbsp;Redo the last undone
+    move.
   </>
 );
 
-type ShortcutItems = Array<{
-  keyboardShortcut: string;
+type ShortcutItem = {
+  keyboardShortcut: string | Array<string>;
   shortcutName: string;
-  tooltipText: ReactNode;
+  tooltipText?: ReactNode;
   value: string;
-}>;
+};
 
-const nonClearCellShortcutItems: ShortcutItems = [
+type ShortcutGroup = {
+  label: string;
+  items: Array<ShortcutItem>;
+};
+
+const shortcutGroups: Array<ShortcutGroup> = [
   {
-    keyboardShortcut: "Double Click",
-    shortcutName: "Highlight Matches",
-    tooltipText: <DoubleClickTooltipText />,
-    value: "highlight-matches",
+    label: "Selection",
+    items: [
+      {
+        keyboardShortcut: "Arrows",
+        shortcutName: "Move Selection",
+        tooltipText: <MoveSelectionTooltipText />,
+        value: "move-selection",
+      },
+      {
+        keyboardShortcut: ["Ctrl + Arrow", "Shift + Arrow"],
+        shortcutName: "Expand Selection",
+        tooltipText: <ExpandSelectionTooltipText />,
+        value: "expand-selection",
+      },
+      {
+        keyboardShortcut: "Ctrl + A",
+        shortcutName: "Select All Cells",
+        tooltipText: <SelectAllCellsTooltipText />,
+        value: "select-all-cells",
+      },
+      {
+        keyboardShortcut: "Ctrl + Shift + A",
+        shortcutName: "Deselect All Cells",
+        tooltipText: <DeselectAllCellsTooltipText />,
+        value: "deselect-all-cells",
+      },
+      {
+        keyboardShortcut: "Ctrl + I",
+        shortcutName: "Invert Selection",
+        tooltipText: <InvertSelectionTooltipText />,
+        value: "invert-selection",
+      },
+      {
+        keyboardShortcut: ["Mouse Click", "Tap"],
+        shortcutName: "Select / Deselect Cell",
+        tooltipText: <SelectDeselectCellTooltipText />,
+        value: "select-deselect-cell",
+      },
+      {
+        keyboardShortcut: ["Mouse Click + Drag", "Touch + Drag"],
+        shortcutName: "Select Multiple Cells",
+        tooltipText: <SelectMultipleCellsTooltipText />,
+        value: "select-multiple-cells",
+      },
+      {
+        keyboardShortcut: ["Double Click", "Double Tap"],
+        shortcutName: "Highlight Matches",
+        tooltipText: <HighlightMatchesTooltipText />,
+        value: "highlight-matches",
+      },
+      {
+        keyboardShortcut: "M",
+        shortcutName: "Multiselect Toggle",
+        tooltipText: <MultiselectTooltipText />,
+        value: "multiselect-toggle",
+      },
+      {
+        keyboardShortcut: ["Backspace", "Delete", "Escape"],
+        shortcutName: "Clear Selected Cells",
+        tooltipText: <ClearSelectedCellsTooltipText />,
+        value: "clear-selected-cells",
+      },
+    ],
   },
   {
-    keyboardShortcut: "Ctrl",
-    shortcutName: "Center Markup",
-    tooltipText: <CtrlTooltipText />,
-    value: "center-markup",
+    label: "Keypad Modes",
+    items: [
+      {
+        keyboardShortcut: "Z",
+        shortcutName: "Digit Mode",
+        tooltipText: <DigitModeTooltipText />,
+        value: "digit-mode",
+      },
+      {
+        keyboardShortcut: "X",
+        shortcutName: "Center Markup Mode",
+        tooltipText: <CenterMarkupModeTooltipText />,
+        value: "center-markup-mode",
+      },
+      {
+        keyboardShortcut: "C",
+        shortcutName: "Corner Markup Mode",
+        tooltipText: <CornerMarkupModeTooltipText />,
+        value: "corner-markup-mode",
+      },
+      {
+        keyboardShortcut: "V",
+        shortcutName: "Color Markup Mode",
+        tooltipText: <ColorMarkupModeTooltipText />,
+        value: "color-markup-mode",
+      },
+    ],
   },
   {
-    keyboardShortcut: "Shift",
-    shortcutName: "Corner Markup",
-    tooltipText: <ShiftTooltipText />,
-    value: "corner-markup",
+    label: "Number Entry",
+    items: [
+      {
+        keyboardShortcut: "1 - 9",
+        shortcutName: "Enter Digits / Markups",
+        tooltipText: <EnterDigitsMarkupsTooltipText />,
+        value: "enter-digits-markups",
+      },
+    ],
   },
   {
-    keyboardShortcut: "Alt",
-    shortcutName: "Color Markup",
-    tooltipText: <AltTooltipText />,
-    value: "color-markup",
+    label: "Markup Entry",
+    items: [
+      {
+        keyboardShortcut: "Ctrl + Number",
+        shortcutName: "Center Markup",
+        tooltipText: <CenterMarkupTooltipText />,
+        value: "center-markup",
+      },
+      {
+        keyboardShortcut: "Shift + Number",
+        shortcutName: "Corner Markup",
+        tooltipText: <CornerMarkupTooltipText />,
+        value: "corner-markup",
+      },
+      {
+        keyboardShortcut: "Alt + Number",
+        shortcutName: "Color Markup",
+        tooltipText: <ColorMarkupTooltipText />,
+        value: "color-markup",
+      },
+    ],
   },
   {
-    keyboardShortcut: "M",
-    shortcutName: "Multiselect Toggle",
-    tooltipText: <MultiselectTooltipText />,
-    value: "multiselect-toggle",
+    label: "History",
+    items: [
+      {
+        keyboardShortcut: "Ctrl + Z",
+        shortcutName: "Undo",
+        tooltipText: <UndoTooltipText />,
+        value: "undo",
+      },
+      {
+        keyboardShortcut: ["Ctrl + Shift + Z", "Ctrl + Y"],
+        shortcutName: "Redo",
+        tooltipText: <RedoTooltipText />,
+        value: "redo",
+      },
+    ],
   },
 ];
+
+const ShortcutCommand = ({
+  keyboardShortcut,
+}: {
+  keyboardShortcut: string | Array<string>;
+}) => (
+  <Menu.ItemCommand>
+    {Array.isArray(keyboardShortcut) ? (
+      <VStack gap="1" alignItems="end">
+        {keyboardShortcut.map((shortcut) => (
+          <Kbd key={shortcut}>{shortcut}</Kbd>
+        ))}
+      </VStack>
+    ) : (
+      <Kbd>{keyboardShortcut}</Kbd>
+    )}
+  </Menu.ItemCommand>
+);
+
+const ShortcutMenuItem = ({
+  keyboardShortcut,
+  shortcutName,
+  tooltipText,
+  value,
+}: ShortcutItem) => (
+  <Tooltip content={tooltipText} key={value}>
+    <Menu.Item backgroundColor="transparent" value={value}>
+      <Box
+        flex="1"
+        alignSelf={Array.isArray(keyboardShortcut) ? "flex-start" : "center"}
+      >
+        {shortcutName}
+      </Box>
+      <ShortcutCommand keyboardShortcut={keyboardShortcut} />
+    </Menu.Item>
+  </Tooltip>
+);
 
 const ShortcutsMenu = () => (
   <Menu.Root>
@@ -106,31 +362,18 @@ const ShortcutsMenu = () => (
     </Menu.Trigger>
     <Portal>
       <Menu.Positioner>
-        <Menu.Content>
-          {nonClearCellShortcutItems.map(
-            ({ keyboardShortcut, shortcutName, tooltipText, value }) => (
-              <Tooltip content={tooltipText} key={value}>
-                <Menu.Item value={value}>
-                  <Box flex="1">{shortcutName}</Box>
-                  <Menu.ItemCommand>
-                    <Kbd>{keyboardShortcut}</Kbd>
-                  </Menu.ItemCommand>
-                </Menu.Item>
-              </Tooltip>
-            ),
-          )}
-          <Menu.Item backgroundColor="transparent" value="clear-cell">
-            <Box flex="1" alignSelf="flex-start">
-              Clear Cell
+        <Menu.Content maxHeight="20vh">
+          {shortcutGroups.map((shortcutGroup, groupIndex) => (
+            <Box key={shortcutGroup.label}>
+              {groupIndex > 0 && <Menu.Separator />}
+              <Menu.ItemGroup>
+                <Menu.ItemGroupLabel>{shortcutGroup.label}</Menu.ItemGroupLabel>
+                {shortcutGroup.items.map((item) => (
+                  <ShortcutMenuItem key={item.value} {...item} />
+                ))}
+              </Menu.ItemGroup>
             </Box>
-            <Menu.ItemCommand>
-              <VStack>
-                <Kbd>Backspace</Kbd>
-                <Kbd>Delete</Kbd>
-                <Kbd>Escape</Kbd>
-              </VStack>
-            </Menu.ItemCommand>
-          </Menu.Item>
+          ))}
         </Menu.Content>
       </Menu.Positioner>
     </Portal>

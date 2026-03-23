@@ -61,13 +61,25 @@ The app includes controls for generating a new puzzle, undoing and redoing moves
 
 ## Shortcuts
 
-### Cell Selection
+### Selection
 
-- **`Mouse Click / Tap`:** select or deselect a cell
-- **`Mouse Click / Touch + Drag`:** select multiple cells
-- **`Double Click / Double Tap`:** select all matching, non-empty cells
+- **`Arrow Keys`:** if only one cell is selected, move the current selection
+- **`Ctrl + Arrow Keys, Shift + Arrow Keys`:** add to the current selection
+- **`Ctrl + A`:** select all cells
+- **`Ctral + Shift + A`:** deselect all cells
+- **`Ctrl + I`:** invert the current selection
+- **`Mouse Click, Tap`:** select or deselect a cell
+- **`Mouse Click + Drag, Touch + Drag`:** select multiple cells
+- **`Double Click, Double Tap`:** select all matching, non-empty cells
 - **`M`:** toggle multiselect mode
-- **`Escape, Backspace, Delete`:** clear selected cells
+- **`Escape, Backspace, Delete`:** clear the selected cells
+
+### Keypad Modes
+
+- **`Z`:** switch to Digit mode
+- **`X`:** switch to Center Markup mode
+- **`C`:** switch to Corner Markup mode
+- **`V`:** switch to Color Markup mode
 
 ### Number Entry
 
@@ -78,6 +90,11 @@ The app includes controls for generating a new puzzle, undoing and redoing moves
 - **`Ctrl + Number`:** enter a center markup
 - **`Shift + Number`:** enter a corner markup
 - **`Alt + Number`:** enter a color markup
+
+### History
+
+- **`Ctrl + Z`:** undo the last move
+- **`Ctrl + Shift + Z, Ctrl + Y`:** redo the last undone move
 
 ## Settings
 

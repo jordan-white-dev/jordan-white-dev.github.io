@@ -205,13 +205,6 @@ export const KeypadModeRadioCard = ({
         </KeypadModeRadioCardItem>
 
         <KeypadModeRadioCardItem
-          keypadModeValue="Color"
-          tooltipText="Color markup mode"
-        >
-          <ColorSVG />
-        </KeypadModeRadioCardItem>
-
-        <KeypadModeRadioCardItem
           keypadModeValue="Center"
           tooltipText="Center markup mode"
         >
@@ -223,6 +216,13 @@ export const KeypadModeRadioCard = ({
           tooltipText="Corner markup mode"
         >
           <CornerSVG />
+        </KeypadModeRadioCardItem>
+
+        <KeypadModeRadioCardItem
+          keypadModeValue="Color"
+          tooltipText="Color markup mode"
+        >
+          <ColorSVG />
         </KeypadModeRadioCardItem>
       </SimpleGrid>
     </RadioCard.Root>

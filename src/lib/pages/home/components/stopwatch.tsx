@@ -73,7 +73,11 @@ export const Stopwatch = () => {
   const { startStopwatchIfEnabled } = useSudokuStopwatch();
 
   return (
-    <Flex gap="1.5" hidden={userSettings.hideStopwatch} textAlign="center">
+    <Flex
+      gap="1.5"
+      hidden={userSettings.isHideStopwatchEnabled}
+      textAlign="center"
+    >
       <Dialog.Root
         placement="center"
         size="xs"

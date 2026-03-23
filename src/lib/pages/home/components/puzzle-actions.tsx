@@ -347,10 +347,10 @@ const getIsPuzzleSolved = (boardState: BoardState): boolean => {
 
 const getDialogBodyText = (
   isPuzzleSolved: boolean,
-  disableStopwatchSetting: boolean,
+  isStopwatchDisabled: boolean,
   stopwatchTime: string,
 ): string => {
-  const solvedText = disableStopwatchSetting
+  const solvedText = isStopwatchDisabled
     ? "You solved the puzzle!"
     : `You solved the puzzle in ${stopwatchTime}!`;
   const notSolvedText =
@@ -421,7 +421,7 @@ const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
   const { formattedStopwatchTime, pauseStopwatch, startStopwatch } =
     useSudokuStopwatch();
   const { userSettings } = useUserSettings();
-  const { disableStopwatch: isStopwatchDisabled } = userSettings;
+  const { isStopwatchDisabled } = userSettings;
 
   const isPuzzleSolved = getIsPuzzleSolved(
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex],

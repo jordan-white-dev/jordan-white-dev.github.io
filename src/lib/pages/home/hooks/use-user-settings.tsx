@@ -9,14 +9,14 @@ import {
 import useSessionStorageState from "use-session-storage-state";
 
 export type UserSettings = {
-  conflictChecker: boolean;
-  dashedGrid: boolean;
-  disableStopwatch: boolean;
-  flipKeypad: boolean;
-  hideStopwatch: boolean;
-  showRowAndColumnLabels: boolean;
-  showSeenCells: boolean;
-  strictHighlights: boolean;
+  isConflictCheckerEnabled: boolean;
+  isDashedGridEnabled: boolean;
+  isStopwatchDisabled: boolean;
+  isFlipKeypadEnabled: boolean;
+  isHideStopwatchEnabled: boolean;
+  isShowRowAndColumnLabelsEnabled: boolean;
+  isShowSeenCellsEnabled: boolean;
+  isStrictHighlightsEnabled: boolean;
 };
 
 type UserSettingsContextValue = {
@@ -25,14 +25,14 @@ type UserSettingsContextValue = {
 };
 
 const defaultSettings: UserSettings = {
-  conflictChecker: false,
-  dashedGrid: false,
-  disableStopwatch: false,
-  flipKeypad: false,
-  hideStopwatch: false,
-  showRowAndColumnLabels: false,
-  showSeenCells: false,
-  strictHighlights: false,
+  isConflictCheckerEnabled: false,
+  isDashedGridEnabled: false,
+  isStopwatchDisabled: false,
+  isFlipKeypadEnabled: false,
+  isHideStopwatchEnabled: false,
+  isShowRowAndColumnLabelsEnabled: false,
+  isShowSeenCellsEnabled: false,
+  isStrictHighlightsEnabled: false,
 };
 
 const UserSettingsContext = createContext<UserSettingsContextValue | undefined>(

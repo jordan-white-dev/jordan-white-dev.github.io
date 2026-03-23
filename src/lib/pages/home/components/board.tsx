@@ -752,14 +752,14 @@ export const Board = ({
   const boardState =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
 
-  const conflictedCellNumbers = userSettings.conflictChecker
+  const conflictedCellNumbers = userSettings.isConflictCheckerEnabled
     ? getConflictedCellNumbers(boardState)
     : new Set<CellNumber>();
 
   const selectedCells = boardState.filter((cellState) => cellState.isSelected);
 
   const shouldShowSeenCells =
-    userSettings.showSeenCells && selectedCells.length === 1;
+    userSettings.isShowSeenCellsEnabled && selectedCells.length === 1;
 
   const selectedColumnNumber =
     selectedCells.length === 1 ? selectedCells[0].columnNumber : undefined;

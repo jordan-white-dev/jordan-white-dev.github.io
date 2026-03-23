@@ -326,7 +326,7 @@ const getSeenCellBackground = ({
   rowNumber,
   selectedColumnNumber,
   selectedRowNumber,
-  showSeenCells,
+  isShowSeenCellsEnabled,
 }: {
   columnNumber: ColumnNumber;
   isSeenInBox: boolean;
@@ -335,9 +335,9 @@ const getSeenCellBackground = ({
   rowNumber: RowNumber;
   selectedColumnNumber: ColumnNumber | undefined;
   selectedRowNumber: RowNumber | undefined;
-  showSeenCells: boolean;
+  isShowSeenCellsEnabled: boolean;
 }): string | null => {
-  if (!showSeenCells) return null;
+  if (!isShowSeenCellsEnabled) return null;
 
   const seenCellBackgroundRectangles = getSeenCellBackgroundRectangles({
     columnNumber,
@@ -585,7 +585,7 @@ const getCellBackground = ({
   rowNumber,
   selectedColumnNumber,
   selectedRowNumber,
-  showSeenCells,
+  isShowSeenCellsEnabled,
 }: {
   cellMarkupColors: Array<MarkupColor> | [""];
   columnNumber: ColumnNumber;
@@ -605,7 +605,7 @@ const getCellBackground = ({
   rowNumber: RowNumber;
   selectedColumnNumber: ColumnNumber | undefined;
   selectedRowNumber: RowNumber | undefined;
-  showSeenCells: boolean;
+  isShowSeenCellsEnabled: boolean;
 }): ButtonProps["background"] => {
   const backgroundLayers = [
     getSelectedCellBackground({
@@ -628,7 +628,7 @@ const getCellBackground = ({
       rowNumber,
       selectedColumnNumber,
       selectedRowNumber,
-      showSeenCells,
+      isShowSeenCellsEnabled,
     }),
     getMarkupColorsBackground(cellMarkupColors),
   ].filter(Boolean);
@@ -1153,7 +1153,7 @@ const getSelectedCellStateWithPartialMatching = (
 
 const handleCellDoubleClick = (
   sourceCellState: CellState,
-  strictHighlights: boolean,
+  isStrictHighlightsEnabled: boolean,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
   setPuzzleHistory((previousPuzzleHistory) => {
@@ -1169,13 +1169,14 @@ const handleCellDoubleClick = (
       }),
     );
 
-    const boardStateWithMatchingCellsSelected: BoardState = strictHighlights
-      ? boardStateWithNoCellsSelected.map((cellState) =>
-          getSelectedCellStateWithStrictMatching(sourceCellState, cellState),
-        )
-      : boardStateWithNoCellsSelected.map((cellState) =>
-          getSelectedCellStateWithPartialMatching(sourceCellState, cellState),
-        );
+    const boardStateWithMatchingCellsSelected: BoardState =
+      isStrictHighlightsEnabled
+        ? boardStateWithNoCellsSelected.map((cellState) =>
+            getSelectedCellStateWithStrictMatching(sourceCellState, cellState),
+          )
+        : boardStateWithNoCellsSelected.map((cellState) =>
+            getSelectedCellStateWithPartialMatching(sourceCellState, cellState),
+          );
 
     const nextBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
     nextBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
@@ -1230,10 +1231,10 @@ export const Cell = memo(
   }: CellProps) => {
     const { userSettings } = useUserSettings();
     const {
-      dashedGrid,
-      showRowAndColumnLabels,
-      showSeenCells,
-      strictHighlights,
+      isDashedGridEnabled,
+      isShowRowAndColumnLabelsEnabled,
+      isShowSeenCellsEnabled,
+      isStrictHighlightsEnabled,
     } = userSettings;
 
     const selectedAdjacentCells = getSelectedAdjacentCells(
@@ -1265,7 +1266,7 @@ export const Cell = memo(
           rowNumber,
           selectedColumnNumber,
           selectedRowNumber,
-          showSeenCells,
+          isShowSeenCellsEnabled,
           ...selectedAdjacentCells,
         })}
         borderColor="black"
@@ -1279,20 +1280,24 @@ export const Cell = memo(
         textShadow={getTextShadow(cellContent)}
         transition="none"
         width={CELL_SIZE}
-        {...getCellBorderStyles(columnNumber, dashedGrid, rowNumber)}
+        {...getCellBorderStyles(columnNumber, isDashedGridEnabled, rowNumber)}
         {...getCellBorderWidths(columnNumber, rowNumber)}
         onDoubleClick={() =>
-          handleCellDoubleClick(cellState, strictHighlights, setPuzzleHistory)
+          handleCellDoubleClick(
+            cellState,
+            isStrictHighlightsEnabled,
+            setPuzzleHistory,
+          )
         }
         onPointerDown={(event) => {
           event.currentTarget.setPointerCapture(event.pointerId);
           handleCellPointerDown(cellNumber);
         }}
       >
-        {showRowAndColumnLabels &&
+        {isShowRowAndColumnLabelsEnabled &&
           columnNumber === 1 &&
           getRowLabelFloat(rowNumber)}
-        {showRowAndColumnLabels &&
+        {isShowRowAndColumnLabelsEnabled &&
           rowNumber === 1 &&
           getColumnLabelFloat(columnNumber)}
         {cornerMarkupFloats}

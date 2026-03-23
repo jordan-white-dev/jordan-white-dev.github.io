@@ -427,37 +427,40 @@ const SettingsMenu = () => {
             <Menu.ItemGroup>
               <Menu.ItemGroupLabel>Gameplay</Menu.ItemGroupLabel>
               <SettingsCheckbox
-                settingKey="conflictChecker"
+                settingKey="isConflictCheckerEnabled"
                 settingLabel="Conflict Checker"
                 userSettings={userSettings}
                 onCheckedChange={() =>
                   setUserSettings((previousUserSettings) => ({
                     ...previousUserSettings,
-                    conflictChecker: !previousUserSettings.conflictChecker,
+                    isConflictCheckerEnabled:
+                      !previousUserSettings.isConflictCheckerEnabled,
                   }))
                 }
               />
 
               <SettingsCheckbox
-                settingKey="showSeenCells"
+                settingKey="isShowSeenCellsEnabled"
                 settingLabel="Show Seen Cells"
                 userSettings={userSettings}
                 onCheckedChange={() =>
                   setUserSettings((previousUserSettings) => ({
                     ...previousUserSettings,
-                    showSeenCells: !previousUserSettings.showSeenCells,
+                    isShowSeenCellsEnabled:
+                      !previousUserSettings.isShowSeenCellsEnabled,
                   }))
                 }
               />
 
               <SettingsCheckbox
-                settingKey="strictHighlights"
+                settingKey="isStrictHighlightsEnabled"
                 settingLabel="Strict Highlights"
                 userSettings={userSettings}
                 onCheckedChange={() =>
                   setUserSettings((previousUserSettings) => ({
                     ...previousUserSettings,
-                    strictHighlights: !previousUserSettings.strictHighlights,
+                    isStrictHighlightsEnabled:
+                      !previousUserSettings.isStrictHighlightsEnabled,
                   }))
                 }
               />
@@ -466,56 +469,60 @@ const SettingsMenu = () => {
             <Menu.ItemGroup>
               <Menu.ItemGroupLabel>Visual</Menu.ItemGroupLabel>
               <SettingsCheckbox
-                settingKey="flipKeypad"
+                settingKey="isFlipKeypadEnabled"
                 settingLabel="Flip Keypad"
                 userSettings={userSettings}
                 onCheckedChange={() =>
                   setUserSettings((previousUserSettings) => ({
                     ...previousUserSettings,
-                    flipKeypad: !previousUserSettings.flipKeypad,
+                    isFlipKeypadEnabled:
+                      !previousUserSettings.isFlipKeypadEnabled,
                   }))
                 }
               />
 
               <SettingsCheckbox
-                settingKey="dashedGrid"
+                settingKey="isDashedGridEnabled"
                 settingLabel="Dashed Grid"
                 userSettings={userSettings}
                 onCheckedChange={() =>
                   setUserSettings((previousUserSettings) => ({
                     ...previousUserSettings,
-                    dashedGrid: !previousUserSettings.dashedGrid,
+                    isDashedGridEnabled:
+                      !previousUserSettings.isDashedGridEnabled,
                   }))
                 }
               />
 
               <SettingsCheckbox
-                settingKey="disableStopwatch"
+                settingKey="isStopwatchDisabled"
                 settingLabel="Disable Stopwatch"
                 userSettings={userSettings}
                 onCheckedChange={() => {
-                  if (!userSettings.disableStopwatch) pauseStopwatch();
+                  if (!userSettings.isStopwatchDisabled) pauseStopwatch();
                   else startStopwatch();
 
                   setUserSettings((previousUserSettings) => ({
                     ...previousUserSettings,
-                    disableStopwatch: !previousUserSettings.disableStopwatch,
+                    isStopwatchDisabled:
+                      !previousUserSettings.isStopwatchDisabled,
                   }));
                 }}
               />
 
               <Tooltip
-                content="Unless disabled, the stopwatch continues to run and appears on the end screen as your final time."
-                key="hideStopwatch"
+                content="Unless disabled, the stopwatch continues to run and appears on the completion dialog as your final time."
+                key="isHideStopwatchEnabled"
               >
                 <Menu.CheckboxItem
-                  checked={userSettings.hideStopwatch}
+                  checked={userSettings.isHideStopwatchEnabled}
                   closeOnSelect={false}
-                  value={"hideStopwatch"}
+                  value={"isHideStopwatchEnabled"}
                   onCheckedChange={() => {
                     setUserSettings((previousUserSettings) => ({
                       ...previousUserSettings,
-                      hideStopwatch: !previousUserSettings.hideStopwatch,
+                      isHideStopwatchEnabled:
+                        !previousUserSettings.isHideStopwatchEnabled,
                     }));
                   }}
                 >
@@ -525,14 +532,14 @@ const SettingsMenu = () => {
               </Tooltip>
 
               <SettingsCheckbox
-                settingKey="showRowAndColumnLabels"
+                settingKey="isShowRowAndColumnLabelsEnabled"
                 settingLabel="Show Row + Column Labels"
                 userSettings={userSettings}
                 onCheckedChange={() =>
                   setUserSettings((previousUserSettings) => ({
                     ...previousUserSettings,
-                    showRowAndColumnLabels:
-                      !previousUserSettings.showRowAndColumnLabels,
+                    isShowRowAndColumnLabelsEnabled:
+                      !previousUserSettings.isShowRowAndColumnLabelsEnabled,
                   }))
                 }
               />
@@ -553,7 +560,9 @@ export const Header = () => {
       as="header"
       backgroundColor="gray.fg"
       height="12"
-      justifyContent={userSettings.hideStopwatch ? "end" : "space-between"}
+      justifyContent={
+        userSettings.isHideStopwatchEnabled ? "end" : "space-between"
+      }
       padding="0.625rem 1rem"
       width="full"
     >

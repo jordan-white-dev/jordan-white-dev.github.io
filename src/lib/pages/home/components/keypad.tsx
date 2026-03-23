@@ -121,7 +121,7 @@ type ColorPadProps = {
 
 const ColorPad = ({ puzzleHistory, setPuzzleHistory }: ColorPadProps) => {
   const { userSettings } = useUserSettings();
-  const markupColorsInOrder = userSettings.flipKeypad
+  const markupColorsInOrder = userSettings.isFlipKeypadEnabled
     ? flippedColors
     : markupColors;
 
@@ -214,7 +214,7 @@ const NumberPad = ({
   setPuzzleHistory,
 }: NumberPadProps) => {
   const { userSettings } = useUserSettings();
-  const sudokuDigitsInOrder = userSettings.flipKeypad
+  const sudokuDigitsInOrder = userSettings.isFlipKeypadEnabled
     ? brandedSudokuDigitsForFlippedKeypad
     : brandedSudokuDigits;
 

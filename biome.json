@@ -9,12 +9,13 @@
     "ignoreUnknown": false,
     "includes": [
       "src/**/*",
-      "*.config.ts",
+      "vite.config.ts",
+      "knip.ts",
       "!src/*.gen.ts",
+      "!src/**/*.gen.ts",
       "!src/lib/components/ui/**/*",
-      "!*.css",
-      "!.tanstack",
-      "!*.d.ts"
+      "!*.d.ts",
+      "!src/**/*.d.ts"
     ]
   },
   "formatter": {

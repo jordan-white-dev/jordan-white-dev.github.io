@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
-      devtools(),
+      mode === "development" ? [devtools()] : [],
       babel({
         presets: [reactCompilerPreset()],
       }),
@@ -47,7 +47,7 @@ export default defineConfig(({ mode }) => {
             groups: [
               {
                 name(moduleId) {
-                  return getChunkGroupName(moduleId) ?? null;
+                  return getChunkGroupName(moduleId);
                 },
               },
             ],

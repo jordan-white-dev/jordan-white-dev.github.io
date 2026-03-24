@@ -37,11 +37,7 @@ export const Route = createRootRoute({
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: description },
     ],
-    links: [
-      { rel: "icon", href: "/favicon.ico" },
-      { rel: "apple-touch-icon", href: "/apple-touch-icon-180x180.png" },
-      { rel: "manifest", href: "/manifest.webmanifest" },
-    ],
+    links: [{ rel: "icon", href: "/favicon.ico" }],
   }),
   component: () => (
     <>

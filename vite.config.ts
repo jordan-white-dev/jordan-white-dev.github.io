@@ -8,6 +8,18 @@ import { defineConfig } from "vite";
 import checker from "vite-plugin-checker";
 import tsconfigPaths from "vite-tsconfig-paths";
 
+const getChunkGroupName = (moduleId: string): string | null => {
+  if (!moduleId.includes("node_modules")) return null;
+  if (moduleId.includes("@chakra-ui") || moduleId.includes("@emotion/"))
+    return "chakra";
+  if (moduleId.includes("@tanstack/")) return "tanstack";
+  if (moduleId.includes("react-icons")) return "icons";
+  if (moduleId.includes("/sudoku/")) return "sudoku";
+  if (moduleId.includes("/react/") || moduleId.includes("/scheduler/"))
+    return "react-vendor";
+  return "vendor";
+};
+
 export default defineConfig(({ mode }) => {
   const isCheckDisabled = mode === "production" || !!process.env.VITEST;
 
@@ -28,6 +40,21 @@ export default defineConfig(({ mode }) => {
         : []),
       tsconfigPaths(),
     ],
+    build: {
+      rolldownOptions: {
+        output: {
+          advancedChunks: {
+            groups: [
+              {
+                name(moduleId) {
+                  return getChunkGroupName(moduleId) ?? null;
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
     server: {
       port: 3000,
       open: true,

@@ -1,8 +1,5 @@
 {
-  "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-    "biome check --write --no-errors-on-unmatched --error-on-warnings"
-  ],
-  "*.{ts,js,json,md}": [
+  "*.{js,jsx,ts,tsx,json,css,scss}": [
     "biome check --write --no-errors-on-unmatched --error-on-warnings"
   ]
 }

@@ -13,8 +13,6 @@ yarn-error.log*
 
 .vscode/settings.json
 
-stats.*
-
 # Test
 coverage/
 

@@ -76,7 +76,7 @@
   },
   "overrides": [
     {
-      "includes": ["src/lib/pages/**/index.tsx", "src/*.ts", "*.ts"],
+      "includes": ["src/lib/pages/**/index.tsx", "vite.config.ts", "knip.ts"],
       "linter": {
         "rules": {
           "style": {

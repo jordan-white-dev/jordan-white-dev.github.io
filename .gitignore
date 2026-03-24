@@ -11,9 +11,6 @@ yarn-error.log*
 # TS
 *.tsbuildinfo
 
-# Turbo
-.turbo
-
 .vscode/settings.json
 
 stats.*

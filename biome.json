@@ -11,7 +11,6 @@
       "src/**/*",
       "*.config.ts",
       "!src/*.gen.ts",
-      "!turbo",
       "!src/lib/components/ui/**/*",
       "!*.css",
       "!.tanstack",

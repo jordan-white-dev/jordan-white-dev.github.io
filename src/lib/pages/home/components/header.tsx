@@ -362,7 +362,7 @@ const ShortcutsMenu = () => (
     </Menu.Trigger>
     <Portal>
       <Menu.Positioner>
-        <Menu.Content maxHeight="20vh">
+        <Menu.Content maxHeight="33vh">
           {shortcutGroups.map((shortcutGroup, groupIndex) => (
             <Box key={shortcutGroup.label}>
               {groupIndex > 0 && <Menu.Separator />}

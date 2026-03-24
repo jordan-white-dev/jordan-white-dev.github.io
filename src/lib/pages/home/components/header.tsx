@@ -310,6 +310,42 @@ const shortcutGroups: Array<ShortcutGroup> = [
   },
 ];
 
+const mobileShortcutItems: Array<ShortcutItem> = [
+  {
+    keyboardShortcut: "Tap",
+    shortcutName: "Select / Deselect Cell",
+    tooltipText: (
+      <>
+        <Kbd>Tap</Kbd>: &nbsp;Select or deselect a cell.
+      </>
+    ),
+    value: "select-deselect-cell",
+  },
+  {
+    keyboardShortcut: "Touch + Drag",
+    shortcutName: "Select Multiple Cells",
+    tooltipText: (
+      <>
+        <Kbd>Touch&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;Drag</Kbd>: &nbsp;Select
+        multiple cells.
+      </>
+    ),
+    value: "select-multiple-cells",
+  },
+  {
+    keyboardShortcut: "Double Tap",
+    shortcutName: "Highlight Matches",
+    tooltipText: (
+      <>
+        <Kbd>Double&nbsp;&nbsp;&nbsp;&nbsp;Tap</Kbd>: &nbsp;Select all matching,
+        non-empty cells. Strict highlighting selects only cells with identical
+        contents.
+      </>
+    ),
+    value: "highlight-matches",
+  },
+];
+
 const ShortcutCommand = ({
   keyboardShortcut,
 }: {
@@ -349,20 +385,14 @@ const ShortcutMenuItem = ({
 
 const ShortcutsMenu = () => (
   <Menu.Root>
-    <Menu.Trigger
-      asChild
-      alignSelf="center"
-      color="white"
-      cursor="pointer"
-      hideBelow="sm"
-    >
+    <Menu.Trigger asChild alignSelf="center" color="white" cursor="pointer">
       <Button unstyled>
         <ImKeyboard />
       </Button>
     </Menu.Trigger>
     <Portal>
       <Menu.Positioner>
-        <Menu.Content maxHeight="33vh">
+        <Menu.Content hideBelow="sm" maxHeight="33vh">
           {shortcutGroups.map((shortcutGroup, groupIndex) => (
             <Box key={shortcutGroup.label}>
               {groupIndex > 0 && <Menu.Separator />}
@@ -373,6 +403,12 @@ const ShortcutsMenu = () => (
                 ))}
               </Menu.ItemGroup>
             </Box>
+          ))}
+        </Menu.Content>
+
+        <Menu.Content hideFrom="sm">
+          {mobileShortcutItems.map((item) => (
+            <ShortcutMenuItem key={item.value} {...item} />
           ))}
         </Menu.Content>
       </Menu.Positioner>

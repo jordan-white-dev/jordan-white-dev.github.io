@@ -13,6 +13,15 @@ import {
 
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
+  getStartingOrPlayerDigitInCellIfPresent,
+  isArrayOfMarkupColors,
+  isArrayOfSudokuDigits,
+  isMarkupDigitsInCellContent,
+  isPlayerDigitInCellContent,
+  isStartingDigitInCellContent,
+  isStartingOrPlayerDigitInCellContent,
+} from "@/lib/pages/home/model/constants";
+import {
   type BoardState,
   type CellContent,
   type CellNumber,
@@ -25,15 +34,6 @@ import {
   type PuzzleHistory,
   type RowNumber,
 } from "@/lib/pages/home/types";
-import {
-  getStartingOrPlayerDigitInCellIfPresent,
-  isArrayOfMarkupColors,
-  isArrayOfSudokuDigits,
-  isMarkupDigitsInCellContent,
-  isPlayerDigitInCellContent,
-  isStartingDigitInCellContent,
-  isStartingOrPlayerDigitInCellContent,
-} from "@/lib/pages/home/utils/constants";
 
 // #region CSS Properties
 

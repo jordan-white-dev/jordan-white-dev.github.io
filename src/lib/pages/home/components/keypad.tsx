@@ -17,6 +17,14 @@ import { GrCheckbox, GrMultiple } from "react-icons/gr";
 
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
+  exhaustiveGuard,
+  handleCenterMarkupInput,
+  handleClearButton,
+  handleColorPadInput,
+  handleCornerMarkupInput,
+  handleDigitInput,
+} from "@/lib/pages/home/model/constants";
+import {
   brandedSudokuDigits,
   brandedSudokuDigitsForFlippedKeypad,
   flippedColors,
@@ -35,14 +43,6 @@ import {
   type PuzzleHistory,
   type SudokuDigit,
 } from "@/lib/pages/home/types";
-import {
-  exhaustiveGuard,
-  handleCenterMarkupInput,
-  handleClearButton,
-  handleColorPadInput,
-  handleCornerMarkupInput,
-  handleDigitInput,
-} from "@/lib/pages/home/utils/constants";
 
 import { Tooltip } from "./tooltip";
 

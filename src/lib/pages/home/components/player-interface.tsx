@@ -10,6 +10,14 @@ import {
 import useSessionStorageState from "use-session-storage-state";
 
 import {
+  exhaustiveGuard,
+  handleCenterMarkupInput,
+  handleClearButton,
+  handleColorPadInput,
+  handleCornerMarkupInput,
+  handleDigitInput,
+} from "@/lib/pages/home/model/constants";
+import {
   getSudokuDigitFromString,
   isSudokuDigit,
   type KeypadMode,
@@ -17,14 +25,6 @@ import {
   type RawBoardState,
   type SudokuDigit,
 } from "@/lib/pages/home/types";
-import {
-  exhaustiveGuard,
-  handleCenterMarkupInput,
-  handleClearButton,
-  handleColorPadInput,
-  handleCornerMarkupInput,
-  handleDigitInput,
-} from "@/lib/pages/home/utils/constants";
 
 import { Keypad } from "./keypad";
 import { KeypadModeRadioCard } from "./keypad-modes";

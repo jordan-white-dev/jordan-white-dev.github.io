@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { solvepuzzle } from "sudoku";
 
 import Home from "@/lib/pages/home";
+import { getBoardStateFromRawBoardState } from "@/lib/pages/home/model/constants";
 import {
   type EncodedPuzzleString,
   isEncodedPuzzleString,
@@ -10,7 +11,6 @@ import {
   type RawBoardState,
   type RawPuzzleString,
 } from "@/lib/pages/home/types";
-import { getBoardStateFromRawBoardState } from "@/lib/pages/home/utils/constants";
 
 const getRawPuzzleStringFromEncodedPuzzleString = (
   encodedPuzzleString: EncodedPuzzleString,

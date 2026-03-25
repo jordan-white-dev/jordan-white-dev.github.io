@@ -25,26 +25,26 @@ const handleClearAllSelections = (
         previousPuzzleHistory.currentBoardStateIndex
       ];
 
-    const newBoardStateWithClearedCellSelections: BoardState =
+    const nextBoardStateWithClearedCellSelections: BoardState =
       previousBoardState.map((previousCellState) => {
-        const updatedCellState = {
+        const nextCellState = {
           ...previousCellState,
           isSelected: false,
         };
 
-        return updatedCellState;
+        return nextCellState;
       });
 
-    const newBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
-    newBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
-      newBoardStateWithClearedCellSelections;
+    const nextBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
+    nextBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
+      nextBoardStateWithClearedCellSelections;
 
-    const newPuzzleHistory: PuzzleHistory = {
+    const nextPuzzleHistory: PuzzleHistory = {
       currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
-      boardStateHistory: newBoardStateHistory,
+      boardStateHistory: nextBoardStateHistory,
     };
 
-    return newPuzzleHistory;
+    return nextPuzzleHistory;
   });
 };
 

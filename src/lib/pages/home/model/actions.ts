@@ -16,8 +16,8 @@ import {
 } from "@/lib/pages/home/model/types";
 import { isSudokuDigit } from "@/lib/pages/home/model/validators";
 
-// #region Shared Actions
-const handleSetPuzzleHistory = (
+// #region Input Actions
+const addBoardStateToPuzzleHistory = (
   nextBoardState: BoardState,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
@@ -38,7 +38,6 @@ const handleSetPuzzleHistory = (
     return nextPuzzleHistory;
   });
 };
-// #endregion
 
 // #region Digit Input Action
 const areAllSelectedCellsStartingOrContainSudokuDigitAsPlayerDigit = (
@@ -108,7 +107,7 @@ export const handleDigitInput = (
       ),
   );
 
-  handleSetPuzzleHistory(nextBoardState, setPuzzleHistory);
+  addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
 };
 // #endregion
 
@@ -319,7 +318,7 @@ export const handleCenterMarkupInput = (
       ),
   );
 
-  handleSetPuzzleHistory(nextBoardState, setPuzzleHistory);
+  addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
 };
 // #endregion
 
@@ -349,7 +348,7 @@ export const handleCornerMarkupInput = (
       ),
   );
 
-  handleSetPuzzleHistory(nextBoardState, setPuzzleHistory);
+  addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
 };
 // #endregion
 
@@ -441,13 +440,13 @@ const getMarkupColorsCellState = (
 };
 
 export const handleColorPadInput = (
-  colorValue: MarkupColor | SudokuDigit,
   puzzleHistory: PuzzleHistory,
+  markupValue: MarkupColor | SudokuDigit,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
-  const markupColor: MarkupColor = isSudokuDigit(colorValue)
-    ? markupColors[getZeroBasedIndexFromSudokuDigit(colorValue)]
-    : colorValue;
+  const markupColor: MarkupColor = isSudokuDigit(markupValue)
+    ? markupColors[getZeroBasedIndexFromSudokuDigit(markupValue)]
+    : markupValue;
 
   const previousBoardState =
     puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
@@ -466,8 +465,9 @@ export const handleColorPadInput = (
       ),
   );
 
-  handleSetPuzzleHistory(nextBoardState, setPuzzleHistory);
+  addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
 };
+// #endregion
 
 // #endregion
 
@@ -504,6 +504,52 @@ export const handleClearCell = (
     },
   );
 
-  handleSetPuzzleHistory(nextBoardState, setPuzzleHistory);
+  addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
 };
+// #endregion
+
+// #region Undo/Redo Actions
+const canMoveBoardStateIndex = (
+  indexDelta: -1 | 1,
+  puzzleHistory: PuzzleHistory,
+) => {
+  const candidateIndex = puzzleHistory.currentBoardStateIndex + indexDelta;
+
+  return (
+    candidateIndex >= 0 &&
+    candidateIndex < puzzleHistory.boardStateHistory.length
+  );
+};
+
+const getPuzzleHistoryWithUpdatedIndex = (
+  indexDelta: -1 | 1,
+  previousPuzzleHistory: PuzzleHistory,
+): PuzzleHistory => ({
+  ...previousPuzzleHistory,
+  currentBoardStateIndex:
+    previousPuzzleHistory.currentBoardStateIndex + indexDelta,
+});
+
+const updateBoardStateIndex = (
+  indexDelta: -1 | 1,
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) =>
+  setPuzzleHistory((previousPuzzleHistory) =>
+    canMoveBoardStateIndex(indexDelta, previousPuzzleHistory)
+      ? getPuzzleHistoryWithUpdatedIndex(indexDelta, previousPuzzleHistory)
+      : previousPuzzleHistory,
+  );
+
+// #region Undo Move Action
+export const handleUndoMove = (
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => updateBoardStateIndex(-1, setPuzzleHistory);
+// #endregion
+
+// #region Redo Move Action
+export const handleRedoMove = (
+  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
+) => updateBoardStateIndex(1, setPuzzleHistory);
+// #endregion
+
 // #endregion

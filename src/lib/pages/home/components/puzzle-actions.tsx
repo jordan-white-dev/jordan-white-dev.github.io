@@ -25,6 +25,7 @@ import { makepuzzle } from "sudoku";
 import { Tooltip } from "@/lib/pages/home/components/tooltip";
 import { useSudokuStopwatch } from "@/lib/pages/home/hooks/use-sudoku-stopwatch";
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
+import { handleRedoMove, handleUndoMove } from "@/lib/pages/home/model/actions";
 import {
   getBoardStateFromRawBoardState,
   getEncodedPuzzleStringFromRawPuzzleString,
@@ -73,21 +74,6 @@ const BUTTON_ROUNDED: ButtonProps["rounded"] = {
   sm: "md",
 };
 // #endregion
-
-const handleSetPuzzleHistory = (
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-  boardStateIndexChange: number,
-) => {
-  setPuzzleHistory((previousPuzzleHistory) => {
-    const newPuzzleHistory = {
-      ...previousPuzzleHistory,
-      currentBoardStateIndex:
-        previousPuzzleHistory.currentBoardStateIndex + boardStateIndexChange,
-    };
-
-    return newPuzzleHistory;
-  });
-};
 
 // #region Action Button
 interface ActionButtonProps extends PropsWithChildren {
@@ -256,27 +242,16 @@ const NewPuzzleButton = () => {
 // #endregion
 
 // #region Undo Button
-const handleUndoButton = (
-  puzzleHistory: PuzzleHistory,
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-) => {
-  if (
-    puzzleHistory.boardStateHistory.length > 1 &&
-    puzzleHistory.currentBoardStateIndex > 0
-  )
-    handleSetPuzzleHistory(setPuzzleHistory, -1);
-};
-
 type UndoButtonProps = {
   puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const UndoButton = ({ puzzleHistory, setPuzzleHistory }: UndoButtonProps) => (
+const UndoButton = ({ setPuzzleHistory }: UndoButtonProps) => (
   <ActionTooltip tooltipText="Undo the last move">
     <ActionButton
       iconSize={IM_ICON_SIZE}
-      onClick={() => handleUndoButton(puzzleHistory, setPuzzleHistory)}
+      onClick={() => handleUndoMove(setPuzzleHistory)}
     >
       <ImUndo />
     </ActionButton>
@@ -285,27 +260,16 @@ const UndoButton = ({ puzzleHistory, setPuzzleHistory }: UndoButtonProps) => (
 // #endregion
 
 // #region Redo Button
-const handleRedoButton = (
-  puzzleHistory: PuzzleHistory,
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-) => {
-  if (
-    puzzleHistory.currentBoardStateIndex <
-    puzzleHistory.boardStateHistory.length - 1
-  )
-    handleSetPuzzleHistory(setPuzzleHistory, 1);
-};
-
 type RedoButtonProps = {
   puzzleHistory: PuzzleHistory;
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-const RedoButton = ({ puzzleHistory, setPuzzleHistory }: RedoButtonProps) => (
+const RedoButton = ({ setPuzzleHistory }: RedoButtonProps) => (
   <ActionTooltip tooltipText="Redo the last undone move">
     <ActionButton
       iconSize={IM_ICON_SIZE}
-      onClick={() => handleRedoButton(puzzleHistory, setPuzzleHistory)}
+      onClick={() => handleRedoMove(setPuzzleHistory)}
     >
       <ImRedo />
     </ActionButton>
@@ -462,11 +426,13 @@ const handleRestartPuzzleConfirmation = (
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
   const restartedBoardState = getRestartedBoardState(rawBoardState);
-  const newPuzzleHistory = {
+
+  const restartedPuzzleHistory = {
     currentBoardStateIndex: 0,
     boardStateHistory: [restartedBoardState],
   };
-  setPuzzleHistory(newPuzzleHistory);
+
+  setPuzzleHistory(restartedPuzzleHistory);
 };
 
 type RestartPuzzleDialogTriggerProps = {

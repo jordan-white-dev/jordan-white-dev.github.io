@@ -102,7 +102,7 @@ const ColorButton = ({
         value={markupColor}
         width={COLOR_SWATCH_SIZE}
         onClick={() =>
-          handleColorPadInput(markupColor, puzzleHistory, setPuzzleHistory)
+          handleColorPadInput(puzzleHistory, markupColor, setPuzzleHistory)
         }
       />
     </Tooltip>

@@ -18,6 +18,8 @@ import {
   handleColorPadInput,
   handleCornerMarkupInput,
   handleDigitInput,
+  handleRedoMove,
+  handleUndoMove,
 } from "@/lib/pages/home/model/actions";
 import { exhaustiveGuard } from "@/lib/pages/home/model/guards";
 import { getSudokuDigitFromString } from "@/lib/pages/home/model/transforms";
@@ -186,35 +188,6 @@ const getEffectiveKeypadModeForKeyboardEvent = (
   return getEffectiveKeypadMode(baseKeypadMode, modifierKeyDownOrder);
 };
 
-const getPuzzleHistoryWithUpdatedBoardStateIndex = (
-  previousPuzzleHistory: PuzzleHistory,
-  boardStateIndexChange: number,
-): PuzzleHistory => ({
-  ...previousPuzzleHistory,
-  currentBoardStateIndex:
-    previousPuzzleHistory.currentBoardStateIndex + boardStateIndexChange,
-});
-
-const handleRedoShortcut = (
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-) =>
-  setPuzzleHistory((previousPuzzleHistory) =>
-    previousPuzzleHistory.currentBoardStateIndex <
-    previousPuzzleHistory.boardStateHistory.length - 1
-      ? getPuzzleHistoryWithUpdatedBoardStateIndex(previousPuzzleHistory, 1)
-      : previousPuzzleHistory,
-  );
-
-const handleUndoShortcut = (
-  setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
-) =>
-  setPuzzleHistory((previousPuzzleHistory) =>
-    previousPuzzleHistory.boardStateHistory.length > 1 &&
-    previousPuzzleHistory.currentBoardStateIndex > 0
-      ? getPuzzleHistoryWithUpdatedBoardStateIndex(previousPuzzleHistory, -1)
-      : previousPuzzleHistory,
-  );
-
 const getModifierKeyDownOrderWithRemovedModifier = (
   previousModifierKeyDownOrder: Array<ModifierKeyboardKey>,
   modifierKeyboardKeyToRemove: ModifierKeyboardKey,
@@ -339,8 +312,8 @@ export const PlayerInterface = ({
           return;
         case "Color":
           handleColorPadInput(
-            sudokuDigit,
             puzzleHistoryRef.current,
+            sudokuDigit,
             setPuzzleHistory,
           );
           return;
@@ -372,15 +345,15 @@ export const PlayerInterface = ({
         event.preventDefault();
 
         if (modifierKeyDownOrderRef.current.includes("Shift"))
-          handleRedoShortcut(setPuzzleHistory);
-        else handleUndoShortcut(setPuzzleHistory);
+          handleRedoMove(setPuzzleHistory);
+        else handleUndoMove(setPuzzleHistory);
 
         return true;
       }
 
       if (isControlPressed && lowerCaseKey === "y") {
         event.preventDefault();
-        handleRedoShortcut(setPuzzleHistory);
+        handleRedoMove(setPuzzleHistory);
         return true;
       }
 

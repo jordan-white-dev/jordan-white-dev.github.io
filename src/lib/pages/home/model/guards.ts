@@ -1,10 +1,4 @@
-import {
-  type CellContent,
-  type MarkupColor,
-  type MarkupDigits,
-  type SudokuDigit,
-} from "@/lib/pages/home/model/types";
-import { isSudokuDigit } from "@/lib/pages/home/model/validators";
+import { type CellContent } from "@/lib/pages/home/model/types";
 
 // #region Cell Content Guards
 export const isStartingDigitInCellContent = (cellContent: CellContent) =>
@@ -19,17 +13,6 @@ export const isMarkupDigitsInCellContent = (cellContent: CellContent) =>
 export const isStartingOrPlayerDigitInCellContent = (
   cellContent: CellContent,
 ) => "playerDigit" in cellContent || "startingDigit" in cellContent;
-// #endregion
-
-// #region Array Guards
-export const isArrayOfSudokuDigits = (
-  values: MarkupDigits,
-): values is Array<SudokuDigit> =>
-  values.length > 0 && values.every((value) => isSudokuDigit(value));
-
-export const isArrayOfMarkupColors = (
-  values: [""] | Array<MarkupColor>,
-): values is Array<MarkupColor> => values[0] !== "";
 // #endregion
 
 // #region Exhaustive Guard

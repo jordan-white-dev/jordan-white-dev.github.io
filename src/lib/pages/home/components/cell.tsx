@@ -14,8 +14,6 @@ import {
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import { markupColors } from "@/lib/pages/home/model/constants";
 import {
-  isArrayOfMarkupColors,
-  isArrayOfSudokuDigits,
   isMarkupDigitsInCellContent,
   isPlayerDigitInCellContent,
   isStartingDigitInCellContent,
@@ -33,7 +31,9 @@ import {
   type MarkupDigitsCellContent,
   type PuzzleHistory,
   type RowNumber,
+  type SudokuDigit,
 } from "@/lib/pages/home/model/types";
+import { isSudokuDigit } from "@/lib/pages/home/model/validators";
 
 // #region CSS Properties
 
@@ -830,6 +830,18 @@ const getColumnLabelFloat = (columnNumber: ColumnNumber): ReactNode => {
 // #endregion
 
 // #region Handle Double Click
+
+// #region Array Guards
+const isArrayOfSudokuDigits = (
+  values: MarkupDigits,
+): values is Array<SudokuDigit> =>
+  values.length > 0 && values.every((value) => isSudokuDigit(value));
+
+const isArrayOfMarkupColors = (
+  values: [""] | Array<MarkupColor>,
+): values is Array<MarkupColor> => values[0] !== "";
+// #endregion
+
 const isEmptyEditableCellWithoutMarkup = (cellState: CellState) => {
   const { cellContent } = cellState;
 

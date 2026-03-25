@@ -36,7 +36,7 @@ export type RawBoardState = Array<RawCellState>;
 // #region Cell Content Types
 export type SudokuDigit = typeof BrandedSudokuDigit;
 
-export type StartingDigitCellContent = { startingDigit: SudokuDigit };
+type StartingDigitCellContent = { startingDigit: SudokuDigit };
 
 export type PlayerDigitCellContent = { playerDigit: SudokuDigit | "" };
 

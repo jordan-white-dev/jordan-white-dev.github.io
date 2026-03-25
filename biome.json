@@ -55,6 +55,12 @@
           "options": {
             "syntax": "generic"
           }
+        },
+        "useImportType": {
+          "level": "error",
+          "options": {
+            "style": "inlineType"
+          }
         }
       },
       "suspicious": {

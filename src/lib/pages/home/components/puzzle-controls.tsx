@@ -197,7 +197,7 @@ const getModifierKeyDownOrderWithRemovedModifier = (
       modifierKeyboardKey !== modifierKeyboardKeyToRemove,
   );
 
-type PlayerInterfaceProps = {
+type PuzzleControlsProps = {
   isMultiselectMode: boolean;
   puzzleHistory: PuzzleHistory;
   rawBoardState: RawBoardState;
@@ -205,13 +205,13 @@ type PlayerInterfaceProps = {
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>;
 };
 
-export const PlayerInterface = ({
+export const PuzzleControls = ({
   isMultiselectMode,
   puzzleHistory,
   rawBoardState,
   setIsMultiselectMode,
   setPuzzleHistory,
-}: PlayerInterfaceProps) => {
+}: PuzzleControlsProps) => {
   const [baseKeypadMode, setBaseKeypadMode] =
     useSessionStorageState<KeypadMode>("keypad-mode", {
       defaultValue: "Digit",

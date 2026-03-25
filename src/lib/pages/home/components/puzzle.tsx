@@ -9,7 +9,7 @@ import {
 import useSessionStorageState from "use-session-storage-state";
 
 import { Board } from "@/lib/pages/home/components/board";
-import { PlayerInterface } from "@/lib/pages/home/components/player-interface";
+import { PuzzleControls } from "@/lib/pages/home/components/puzzle-controls";
 import {
   type BoardState,
   type PuzzleHistory,
@@ -100,7 +100,7 @@ export const Puzzle = memo(
           puzzleHistory={puzzleHistory}
           setPuzzleHistory={setPuzzleHistory}
         />
-        <PlayerInterface
+        <PuzzleControls
           isMultiselectMode={isMultiselectMode}
           puzzleHistory={puzzleHistory}
           rawBoardState={rawBoardState}

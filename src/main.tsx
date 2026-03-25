@@ -4,7 +4,7 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
 import { Provider } from "@/lib/components/ui/provider";
-import Page404 from "@/lib/pages/404";
+import Page404 from "@/lib/pages/not-found";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";

@@ -10,7 +10,7 @@ import {
 import useSessionStorageState from "use-session-storage-state";
 
 import { Keypad } from "@/lib/pages/home/components/keypad";
-import { KeypadModeRadioCard } from "@/lib/pages/home/components/keypad-modes";
+import { KeypadModeSelector } from "@/lib/pages/home/components/keypad-mode-selector";
 import { PuzzleActions } from "@/lib/pages/home/components/puzzle-actions";
 import {
   handleCenterMarkupInput,
@@ -497,7 +497,7 @@ export const PuzzleControls = ({
         setIsMultiselectMode={setIsMultiselectMode}
         setPuzzleHistory={setPuzzleHistory}
       />
-      <KeypadModeRadioCard
+      <KeypadModeSelector
         keypadMode={effectiveKeypadMode}
         setBaseKeypadMode={setBaseKeypadMode}
       />

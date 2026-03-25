@@ -108,24 +108,19 @@ const CenterSVG = (props: HTMLChakraProps<"svg">) => (
 
 // #endregion
 
-// #region Keypad Mode Radio Card Item
-interface KeypadModeRadioCardItemProps extends PropsWithChildren {
-  keypadModeValue: KeypadMode;
+// #region Keypad Mode Selector Card
+interface KeypadModeSelectorCardProps extends PropsWithChildren {
+  keypadMode: KeypadMode;
   tooltipText: string;
 }
 
-const KeypadModeRadioCardItem = ({
+const KeypadModeSelectorCard = ({
   children,
-  keypadModeValue,
+  keypadMode,
   tooltipText,
   ...props
-}: KeypadModeRadioCardItemProps) => (
-  <RadioCard.Item
-    alignItems="center"
-    padding="0"
-    value={keypadModeValue}
-    {...props}
-  >
+}: KeypadModeSelectorCardProps) => (
+  <RadioCard.Item alignItems="center" padding="0" value={keypadMode} {...props}>
     <RadioCard.ItemHiddenInput />
     <Tooltip content={tooltipText} positioning={{ placement: "right-start" }}>
       <RadioCard.ItemControl padding="0">
@@ -154,15 +149,15 @@ const isKeypadMode = (
   candidateKeypadMode === "Center" ||
   candidateKeypadMode === "Corner";
 
-type KeypadModeRadioCardProps = {
+type KeypadModeSelectorProps = {
   keypadMode: KeypadMode;
   setBaseKeypadMode: Dispatch<SetStateAction<KeypadMode>>;
 };
 
-export const KeypadModeRadioCard = ({
+export const KeypadModeSelector = ({
   keypadMode,
   setBaseKeypadMode,
-}: KeypadModeRadioCardProps) => {
+}: KeypadModeSelectorProps) => {
   return (
     <RadioCard.Root
       align="center"
@@ -196,33 +191,33 @@ export const KeypadModeRadioCard = ({
         gap={{ base: "0.229rem", sm: "1", md: "0.583rem", lg: "3" }}
         minWidth={{ lg: "12.75rem" }}
       >
-        <KeypadModeRadioCardItem
-          keypadModeValue="Digit"
+        <KeypadModeSelectorCard
+          keypadMode="Digit"
           tooltipText="Digit keypad mode"
         >
           <DigitSVG />
-        </KeypadModeRadioCardItem>
+        </KeypadModeSelectorCard>
 
-        <KeypadModeRadioCardItem
-          keypadModeValue="Center"
+        <KeypadModeSelectorCard
+          keypadMode="Center"
           tooltipText="Center markup mode"
         >
           <CenterSVG />
-        </KeypadModeRadioCardItem>
+        </KeypadModeSelectorCard>
 
-        <KeypadModeRadioCardItem
-          keypadModeValue="Corner"
+        <KeypadModeSelectorCard
+          keypadMode="Corner"
           tooltipText="Corner markup mode"
         >
           <CornerSVG />
-        </KeypadModeRadioCardItem>
+        </KeypadModeSelectorCard>
 
-        <KeypadModeRadioCardItem
-          keypadModeValue="Color"
+        <KeypadModeSelectorCard
+          keypadMode="Color"
           tooltipText="Color markup mode"
         >
           <ColorSVG />
-        </KeypadModeRadioCardItem>
+        </KeypadModeSelectorCard>
       </SimpleGrid>
     </RadioCard.Root>
   );

@@ -1,17 +1,21 @@
 import { Stack } from "@chakra-ui/react";
-import type { Dispatch, SetStateAction } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import useSessionStorageState from "use-session-storage-state";
 
-import type {
-  KeypadMode,
-  PuzzleHistory,
-  RawBoardState,
-  SudokuDigit,
-} from "@/lib/pages/home/types";
 import {
   getSudokuDigitFromString,
   isSudokuDigit,
+  type KeypadMode,
+  type PuzzleHistory,
+  type RawBoardState,
+  type SudokuDigit,
 } from "@/lib/pages/home/types";
 import {
   exhaustiveGuard,

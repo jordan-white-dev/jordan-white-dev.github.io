@@ -1,4 +1,4 @@
-import type { Dispatch, SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 
 import {
   type BoardState,
@@ -16,9 +16,9 @@ import {
   isRowNumber,
   isSudokuDigit,
   type MarkupColor,
-  markupColors,
   type MarkupDigits,
   type MarkupDigitsCellContent,
+  markupColors,
   type PlayerDigitCellContent,
   type PuzzleHistory,
   type RawBoardState,

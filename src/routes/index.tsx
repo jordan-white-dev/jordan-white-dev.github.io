@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { makepuzzle } from "sudoku";
 
-import type { RawBoardState } from "@/lib/pages/home/types";
+import { type RawBoardState } from "@/lib/pages/home/types";
 import {
   getEncodedPuzzleStringFromRawPuzzleString,
   getRawPuzzleStringFromRawBoardState,

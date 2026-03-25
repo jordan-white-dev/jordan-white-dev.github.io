@@ -11,7 +11,7 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
-import type { Dispatch, SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
 

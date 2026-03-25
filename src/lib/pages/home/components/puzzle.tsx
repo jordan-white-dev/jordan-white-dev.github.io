@@ -8,10 +8,10 @@ import {
 } from "react";
 import useSessionStorageState from "use-session-storage-state";
 
-import type {
-  BoardState,
-  PuzzleHistory,
-  RawBoardState,
+import {
+  type BoardState,
+  type PuzzleHistory,
+  type RawBoardState,
 } from "@/lib/pages/home/types";
 
 import { Board } from "./board";

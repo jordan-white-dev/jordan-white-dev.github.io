@@ -4,8 +4,12 @@ import {
   Float,
   type SquareProps,
 } from "@chakra-ui/react";
-import type { Dispatch, ReactNode, SetStateAction } from "react";
-import { memo } from "react";
+import {
+  type Dispatch,
+  memo,
+  type ReactNode,
+  type SetStateAction,
+} from "react";
 
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
@@ -15,9 +19,9 @@ import {
   type CellState,
   type ColumnNumber,
   type MarkupColor,
-  markupColors,
   type MarkupDigits,
   type MarkupDigitsCellContent,
+  markupColors,
   type PuzzleHistory,
   type RowNumber,
 } from "@/lib/pages/home/types";

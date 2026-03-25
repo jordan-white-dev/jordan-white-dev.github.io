@@ -1,5 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
-import type { PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 
 import { Footer } from "./components/footer";
 import { Meta } from "./components/meta";

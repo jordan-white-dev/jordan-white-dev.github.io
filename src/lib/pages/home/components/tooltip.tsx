@@ -1,5 +1,5 @@
 import { Tooltip as ChakraTooltip, Portal } from "@chakra-ui/react";
-import type { ReactNode, Ref, RefObject } from "react";
+import { type ReactNode, type Ref, type RefObject } from "react";
 
 interface TooltipProps extends ChakraTooltip.RootProps {
   ref?: Ref<HTMLDivElement>;

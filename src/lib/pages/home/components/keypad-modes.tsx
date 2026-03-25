@@ -5,15 +5,15 @@ import {
   RadioCard,
   SimpleGrid,
 } from "@chakra-ui/react";
-import type {
-  Dispatch,
-  PropsWithChildren,
-  KeyboardEvent as ReactKeyboardEvent,
-  SetStateAction,
+import {
+  type Dispatch,
+  type PropsWithChildren,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type SetStateAction,
 } from "react";
 
-import type { KeypadMode } from "@/lib/pages/home/types";
 import {
+  type KeypadMode,
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_GRAY,
   MARKUP_COLOR_GREEN,

@@ -9,7 +9,7 @@ import {
   Portal,
   VStack,
 } from "@chakra-ui/react";
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 import { ImKeyboard } from "react-icons/im";
 import { MdOutlineSettings } from "react-icons/md";
 

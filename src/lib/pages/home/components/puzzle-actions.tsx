@@ -12,11 +12,11 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { type UseNavigateResult, useNavigate } from "@tanstack/react-router";
-import type {
-  Dispatch,
-  PropsWithChildren,
-  ReactNode,
-  SetStateAction,
+import {
+  type Dispatch,
+  type PropsWithChildren,
+  type ReactNode,
+  type SetStateAction,
 } from "react";
 import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
@@ -24,10 +24,10 @@ import { makepuzzle } from "sudoku";
 
 import { useSudokuStopwatch } from "@/lib/pages/home/hooks/use-sudoku-stopwatch";
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
-import type {
-  BoardState,
-  PuzzleHistory,
-  RawBoardState,
+import {
+  type BoardState,
+  type PuzzleHistory,
+  type RawBoardState,
 } from "@/lib/pages/home/types";
 import {
   getBoardStateFromRawBoardState,

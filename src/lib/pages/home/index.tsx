@@ -1,11 +1,10 @@
 import { Box } from "@chakra-ui/react";
 
+import { Header } from "@/lib/pages/home/components/header";
+import { Puzzle } from "@/lib/pages/home/components/puzzle";
+import { SudokuStopwatchProvider } from "@/lib/pages/home/hooks/use-sudoku-stopwatch";
 import { UserSettingsProvider } from "@/lib/pages/home/hooks/use-user-settings";
 import { Route } from "@/routes/puzzle.$encodedPuzzleString";
-
-import { Header } from "./components/header";
-import { Puzzle } from "./components/puzzle";
-import { SudokuStopwatchProvider } from "./hooks/use-sudoku-stopwatch";
 
 const Home = () => {
   const { boardState, rawBoardState } = Route.useLoaderData();

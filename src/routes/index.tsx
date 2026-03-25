@@ -4,7 +4,7 @@ import { makepuzzle } from "sudoku";
 import {
   getEncodedPuzzleStringFromRawPuzzleString,
   getRawPuzzleStringFromRawBoardState,
-} from "@/lib/pages/home/model/constants";
+} from "@/lib/pages/home/model/transforms";
 import { type RawBoardState } from "@/lib/pages/home/model/types";
 
 export const Route = createFileRoute("/")({

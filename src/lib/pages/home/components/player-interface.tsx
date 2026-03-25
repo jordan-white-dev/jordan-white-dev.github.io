@@ -9,26 +9,25 @@ import {
 } from "react";
 import useSessionStorageState from "use-session-storage-state";
 
+import { Keypad } from "@/lib/pages/home/components/keypad";
+import { KeypadModeRadioCard } from "@/lib/pages/home/components/keypad-modes";
+import { PuzzleActions } from "@/lib/pages/home/components/puzzle-actions";
 import {
-  exhaustiveGuard,
   handleCenterMarkupInput,
-  handleClearButton,
+  handleClearCell,
   handleColorPadInput,
   handleCornerMarkupInput,
   handleDigitInput,
-} from "@/lib/pages/home/model/constants";
+} from "@/lib/pages/home/model/actions";
+import { exhaustiveGuard } from "@/lib/pages/home/model/guards";
+import { getSudokuDigitFromString } from "@/lib/pages/home/model/transforms";
 import {
-  getSudokuDigitFromString,
-  isSudokuDigit,
   type KeypadMode,
   type PuzzleHistory,
   type RawBoardState,
   type SudokuDigit,
 } from "@/lib/pages/home/model/types";
-
-import { Keypad } from "./keypad";
-import { KeypadModeRadioCard } from "./keypad-modes";
-import { PuzzleActions } from "./puzzle-actions";
+import { isSudokuDigit } from "@/lib/pages/home/model/validators";
 
 type ModifierKeyboardKey = "Control" | "Shift" | "Alt";
 const modifierKeyboardKeys = ["Control", "Shift", "Alt"] as const;
@@ -319,22 +318,22 @@ export const PlayerInterface = ({
       switch (effectiveKeypadMode) {
         case "Digit":
           handleDigitInput(
-            sudokuDigit,
             puzzleHistoryRef.current,
+            sudokuDigit,
             setPuzzleHistory,
           );
           return;
         case "Center":
           handleCenterMarkupInput(
-            sudokuDigit,
             puzzleHistoryRef.current,
+            sudokuDigit,
             setPuzzleHistory,
           );
           return;
         case "Corner":
           handleCornerMarkupInput(
-            sudokuDigit,
             puzzleHistoryRef.current,
+            sudokuDigit,
             setPuzzleHistory,
           );
           return;
@@ -414,7 +413,7 @@ export const PlayerInterface = ({
         return false;
 
       event.preventDefault();
-      handleClearButton(puzzleHistoryRef.current, setPuzzleHistory);
+      handleClearCell(puzzleHistoryRef.current, setPuzzleHistory);
       return true;
     };
 

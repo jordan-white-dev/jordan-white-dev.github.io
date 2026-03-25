@@ -12,15 +12,16 @@ import {
 } from "react";
 
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
+import { markupColors } from "@/lib/pages/home/model/constants";
 import {
-  getStartingOrPlayerDigitInCellIfPresent,
   isArrayOfMarkupColors,
   isArrayOfSudokuDigits,
   isMarkupDigitsInCellContent,
   isPlayerDigitInCellContent,
   isStartingDigitInCellContent,
   isStartingOrPlayerDigitInCellContent,
-} from "@/lib/pages/home/model/constants";
+} from "@/lib/pages/home/model/guards";
+import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/pages/home/model/transforms";
 import {
   type BoardState,
   type CellContent,
@@ -30,7 +31,6 @@ import {
   type MarkupColor,
   type MarkupDigits,
   type MarkupDigitsCellContent,
-  markupColors,
   type PuzzleHistory,
   type RowNumber,
 } from "@/lib/pages/home/model/types";

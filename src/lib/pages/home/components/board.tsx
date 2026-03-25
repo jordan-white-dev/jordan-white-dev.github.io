@@ -9,22 +9,23 @@ import {
   useRef,
 } from "react";
 
+import { Cell } from "@/lib/pages/home/components/cell";
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
-import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/pages/home/model/constants";
+import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/pages/home/model/transforms";
 import {
   type BoardState,
   type CellNumber,
   type CellState,
   type ColumnNumber,
-  isCellNumber,
-  isColumnNumber,
-  isRowNumber,
   type PuzzleHistory,
   type RowNumber,
   type SudokuDigit,
 } from "@/lib/pages/home/model/types";
-
-import { Cell } from "./cell";
+import {
+  isCellNumber,
+  isColumnNumber,
+  isRowNumber,
+} from "@/lib/pages/home/model/validators";
 
 // #region Arrow Key Direction
 type ArrowKeyDirection = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";

@@ -8,14 +8,13 @@ import {
 } from "react";
 import useSessionStorageState from "use-session-storage-state";
 
+import { Board } from "@/lib/pages/home/components/board";
+import { PlayerInterface } from "@/lib/pages/home/components/player-interface";
 import {
   type BoardState,
   type PuzzleHistory,
   type RawBoardState,
 } from "@/lib/pages/home/model/types";
-
-import { Board } from "./board";
-import { PlayerInterface } from "./player-interface";
 
 const handleClearAllSelections = (
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,

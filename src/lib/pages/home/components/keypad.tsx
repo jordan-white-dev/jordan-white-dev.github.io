@@ -15,20 +15,18 @@ import { type Dispatch, type SetStateAction } from "react";
 import { FiDelete } from "react-icons/fi";
 import { GrCheckbox, GrMultiple } from "react-icons/gr";
 
+import { Tooltip } from "@/lib/pages/home/components/tooltip";
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
-  exhaustiveGuard,
   handleCenterMarkupInput,
-  handleClearButton,
+  handleClearCell,
   handleColorPadInput,
   handleCornerMarkupInput,
   handleDigitInput,
-} from "@/lib/pages/home/model/constants";
+} from "@/lib/pages/home/model/actions";
 import {
-  brandedSudokuDigits,
-  brandedSudokuDigitsForFlippedKeypad,
   flippedColors,
-  type KeypadMode,
+  flippedDigits,
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_GRAY,
   MARKUP_COLOR_GREEN,
@@ -38,13 +36,17 @@ import {
   MARKUP_COLOR_RED,
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_YELLOW,
-  type MarkupColor,
   markupColors,
+  sudokuDigits,
+} from "@/lib/pages/home/model/constants";
+import { exhaustiveGuard } from "@/lib/pages/home/model/guards";
+import { getSudokuDigitFromString } from "@/lib/pages/home/model/transforms";
+import {
+  type KeypadMode,
+  type MarkupColor,
   type PuzzleHistory,
   type SudokuDigit,
 } from "@/lib/pages/home/model/types";
-
-import { Tooltip } from "./tooltip";
 
 // #region CSS Properties
 const COLOR_SWATCH_SIZE: IconProps["width"] = {
@@ -69,6 +71,12 @@ const ICON_BUTTON_TEXT_STYLE_NONDIGIT: IconButtonProps["textStyle"] = {
   md: "2xl",
 };
 // #endregion
+
+const brandedSudokuDigitsForFlippedKeypad: ReadonlyArray<SudokuDigit> =
+  flippedDigits.map(getSudokuDigitFromString);
+const brandedSudokuDigits: ReadonlyArray<SudokuDigit> = sudokuDigits.map(
+  getSudokuDigitFromString,
+);
 
 // #region Color Pad
 
@@ -228,7 +236,7 @@ const NumberPad = ({
               key={sudokuDigit}
               textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
               onClick={() =>
-                handleDigitInput(sudokuDigit, puzzleHistory, setPuzzleHistory)
+                handleDigitInput(puzzleHistory, sudokuDigit, setPuzzleHistory)
               }
             />
           );
@@ -240,8 +248,8 @@ const NumberPad = ({
               textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
               onClick={() =>
                 handleCenterMarkupInput(
-                  sudokuDigit,
                   puzzleHistory,
+                  sudokuDigit,
                   setPuzzleHistory,
                 )
               }
@@ -260,8 +268,8 @@ const NumberPad = ({
               textStyle={ICON_BUTTON_TEXT_STYLE_NONDIGIT}
               onClick={() =>
                 handleCornerMarkupInput(
-                  sudokuDigit,
                   puzzleHistory,
+                  sudokuDigit,
                   setPuzzleHistory,
                 )
               }
@@ -343,7 +351,7 @@ const ClearButton = ({ puzzleHistory, setPuzzleHistory }: ClearButtonProps) => (
         size={ICON_BUTTON_SIZE}
         textStyle={ICON_BUTTON_TEXT_STYLE_DIGIT}
         width="full"
-        onClick={() => handleClearButton(puzzleHistory, setPuzzleHistory)}
+        onClick={() => handleClearCell(puzzleHistory, setPuzzleHistory)}
       >
         <Icon height={ICON_SIZE} width={ICON_SIZE}>
           <FiDelete />

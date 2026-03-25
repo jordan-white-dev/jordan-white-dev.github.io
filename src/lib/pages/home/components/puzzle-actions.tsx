@@ -22,6 +22,7 @@ import { ImCheckmark, ImRedo, ImStopwatch, ImUndo } from "react-icons/im";
 import { MdOutlineFiberNew, MdRestartAlt } from "react-icons/md";
 import { makepuzzle } from "sudoku";
 
+import { Tooltip } from "@/lib/pages/home/components/tooltip";
 import { useSudokuStopwatch } from "@/lib/pages/home/hooks/use-sudoku-stopwatch";
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
@@ -29,14 +30,12 @@ import {
   getEncodedPuzzleStringFromRawPuzzleString,
   getRawPuzzleStringFromRawBoardState,
   getStartingOrPlayerDigitInCellIfPresent,
-} from "@/lib/pages/home/model/constants";
+} from "@/lib/pages/home/model/transforms";
 import {
   type BoardState,
   type PuzzleHistory,
   type RawBoardState,
 } from "@/lib/pages/home/model/types";
-
-import { Tooltip } from "./tooltip";
 
 // #region CSS Properties
 const ICON_BUTTON_HEIGHT: IconButtonProps["height"] = {

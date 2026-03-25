@@ -12,8 +12,8 @@ import {
   type SetStateAction,
 } from "react";
 
+import { Tooltip } from "@/lib/pages/home/components/tooltip";
 import {
-  type KeypadMode,
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_GRAY,
   MARKUP_COLOR_GREEN,
@@ -23,9 +23,8 @@ import {
   MARKUP_COLOR_RED,
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_YELLOW,
-} from "@/lib/pages/home/model/types";
-
-import { Tooltip } from "./tooltip";
+} from "@/lib/pages/home/model/constants";
+import { type KeypadMode } from "@/lib/pages/home/model/types";
 
 // #region SVG Definitions
 

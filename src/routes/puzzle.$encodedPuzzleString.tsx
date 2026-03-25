@@ -10,7 +10,7 @@ import {
   isRawStartingDigit,
   type RawBoardState,
   type RawPuzzleString,
-} from "@/lib/pages/home/types";
+} from "@/lib/pages/home/model/types";
 
 const getRawPuzzleStringFromEncodedPuzzleString = (
   encodedPuzzleString: EncodedPuzzleString,

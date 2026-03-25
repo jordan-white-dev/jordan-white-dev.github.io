@@ -12,7 +12,7 @@ import {
   type BoardState,
   type PuzzleHistory,
   type RawBoardState,
-} from "@/lib/pages/home/types";
+} from "@/lib/pages/home/model/types";
 
 import { Board } from "./board";
 import { PlayerInterface } from "./player-interface";

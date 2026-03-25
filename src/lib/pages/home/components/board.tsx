@@ -22,7 +22,7 @@ import {
   type PuzzleHistory,
   type RowNumber,
   type SudokuDigit,
-} from "@/lib/pages/home/types";
+} from "@/lib/pages/home/model/types";
 
 import { Cell } from "./cell";
 

@@ -42,7 +42,7 @@ import {
   markupColors,
   type PuzzleHistory,
   type SudokuDigit,
-} from "@/lib/pages/home/types";
+} from "@/lib/pages/home/model/types";
 
 import { Tooltip } from "./tooltip";
 

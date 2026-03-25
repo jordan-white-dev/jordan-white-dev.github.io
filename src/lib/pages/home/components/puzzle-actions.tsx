@@ -34,7 +34,7 @@ import {
   type BoardState,
   type PuzzleHistory,
   type RawBoardState,
-} from "@/lib/pages/home/types";
+} from "@/lib/pages/home/model/types";
 
 import { Tooltip } from "./tooltip";
 

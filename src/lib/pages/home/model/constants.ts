@@ -26,7 +26,7 @@ import {
   type RawStartingDigit,
   type RowNumber,
   type SudokuDigit,
-} from "../types";
+} from "./types";
 
 export const getEncodedPuzzleStringFromRawPuzzleString = (
   rawPuzzleString: RawPuzzleString,

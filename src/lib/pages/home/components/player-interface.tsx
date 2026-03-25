@@ -24,7 +24,7 @@ import {
   type PuzzleHistory,
   type RawBoardState,
   type SudokuDigit,
-} from "@/lib/pages/home/types";
+} from "@/lib/pages/home/model/types";
 
 import { Keypad } from "./keypad";
 import { KeypadModeRadioCard } from "./keypad-modes";

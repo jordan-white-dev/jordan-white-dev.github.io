@@ -33,7 +33,7 @@ import {
   markupColors,
   type PuzzleHistory,
   type RowNumber,
-} from "@/lib/pages/home/types";
+} from "@/lib/pages/home/model/types";
 
 // #region CSS Properties
 

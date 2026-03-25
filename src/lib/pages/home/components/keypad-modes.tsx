@@ -23,7 +23,7 @@ import {
   MARKUP_COLOR_RED,
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_YELLOW,
-} from "@/lib/pages/home/types";
+} from "@/lib/pages/home/model/types";
 
 import { Tooltip } from "./tooltip";
 

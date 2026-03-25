@@ -5,7 +5,7 @@ import {
   getEncodedPuzzleStringFromRawPuzzleString,
   getRawPuzzleStringFromRawBoardState,
 } from "@/lib/pages/home/model/constants";
-import { type RawBoardState } from "@/lib/pages/home/types";
+import { type RawBoardState } from "@/lib/pages/home/model/types";
 
 export const Route = createFileRoute("/")({
   loader: () => {

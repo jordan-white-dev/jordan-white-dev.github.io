@@ -10,7 +10,6 @@ import {
 } from "react";
 
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
-import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/pages/home/utils/constants";
 import {
   type BoardState,
   type CellNumber,
@@ -22,7 +21,8 @@ import {
   type PuzzleHistory,
   type RowNumber,
   type SudokuDigit,
-} from "@/lib/pages/home/utils/types";
+} from "@/lib/pages/home/types";
+import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/pages/home/utils/constants";
 
 import { Cell } from "./cell";
 

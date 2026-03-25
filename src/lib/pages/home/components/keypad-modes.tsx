@@ -12,7 +12,7 @@ import type {
   SetStateAction,
 } from "react";
 
-import type { KeypadMode } from "@/lib/pages/home/utils/types";
+import type { KeypadMode } from "@/lib/pages/home/types";
 import {
   MARKUP_COLOR_BLUE,
   MARKUP_COLOR_GRAY,
@@ -23,7 +23,7 @@ import {
   MARKUP_COLOR_RED,
   MARKUP_COLOR_WHITE,
   MARKUP_COLOR_YELLOW,
-} from "@/lib/pages/home/utils/types";
+} from "@/lib/pages/home/types";
 
 import { Tooltip } from "./tooltip";
 

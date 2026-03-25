@@ -1,6 +1,6 @@
 import SuperExpressive from "super-expressive";
 
-import { branded } from "./branding";
+import { branded } from "./utils/branding";
 
 type Prettify<TypeIntersectionToPrettify> = {
   [Property in keyof TypeIntersectionToPrettify]: TypeIntersectionToPrettify[Property];

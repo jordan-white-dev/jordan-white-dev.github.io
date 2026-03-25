@@ -3,6 +3,16 @@ import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useSessionStorageState from "use-session-storage-state";
 
+import type {
+  KeypadMode,
+  PuzzleHistory,
+  RawBoardState,
+  SudokuDigit,
+} from "@/lib/pages/home/types";
+import {
+  getSudokuDigitFromString,
+  isSudokuDigit,
+} from "@/lib/pages/home/types";
 import {
   exhaustiveGuard,
   handleCenterMarkupInput,
@@ -11,16 +21,6 @@ import {
   handleCornerMarkupInput,
   handleDigitInput,
 } from "@/lib/pages/home/utils/constants";
-import type {
-  KeypadMode,
-  PuzzleHistory,
-  RawBoardState,
-  SudokuDigit,
-} from "@/lib/pages/home/utils/types";
-import {
-  getSudokuDigitFromString,
-  isSudokuDigit,
-} from "@/lib/pages/home/utils/types";
 
 import { Keypad } from "./keypad";
 import { KeypadModeRadioCard } from "./keypad-modes";

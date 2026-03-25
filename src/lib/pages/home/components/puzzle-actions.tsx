@@ -24,17 +24,17 @@ import { makepuzzle } from "sudoku";
 
 import { useSudokuStopwatch } from "@/lib/pages/home/hooks/use-sudoku-stopwatch";
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
+import type {
+  BoardState,
+  PuzzleHistory,
+  RawBoardState,
+} from "@/lib/pages/home/types";
 import {
   getBoardStateFromRawBoardState,
   getEncodedPuzzleStringFromRawPuzzleString,
   getRawPuzzleStringFromRawBoardState,
   getStartingOrPlayerDigitInCellIfPresent,
 } from "@/lib/pages/home/utils/constants";
-import type {
-  BoardState,
-  PuzzleHistory,
-  RawBoardState,
-} from "@/lib/pages/home/utils/types";
 
 import { Tooltip } from "./tooltip";
 

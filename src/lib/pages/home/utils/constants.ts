@@ -16,9 +16,9 @@ import {
   isRowNumber,
   isSudokuDigit,
   type MarkupColor,
+  markupColors,
   type MarkupDigits,
   type MarkupDigitsCellContent,
-  markupColors,
   type PlayerDigitCellContent,
   type PuzzleHistory,
   type RawBoardState,
@@ -26,7 +26,7 @@ import {
   type RawStartingDigit,
   type RowNumber,
   type SudokuDigit,
-} from "./types";
+} from "../types";
 
 export const getEncodedPuzzleStringFromRawPuzzleString = (
   rawPuzzleString: RawPuzzleString,

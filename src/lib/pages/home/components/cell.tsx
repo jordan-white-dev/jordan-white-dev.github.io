@@ -9,6 +9,19 @@ import { memo } from "react";
 
 import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import {
+  type BoardState,
+  type CellContent,
+  type CellNumber,
+  type CellState,
+  type ColumnNumber,
+  type MarkupColor,
+  markupColors,
+  type MarkupDigits,
+  type MarkupDigitsCellContent,
+  type PuzzleHistory,
+  type RowNumber,
+} from "@/lib/pages/home/types";
+import {
   getStartingOrPlayerDigitInCellIfPresent,
   isArrayOfMarkupColors,
   isArrayOfSudokuDigits,
@@ -17,19 +30,6 @@ import {
   isStartingDigitInCellContent,
   isStartingOrPlayerDigitInCellContent,
 } from "@/lib/pages/home/utils/constants";
-import {
-  type BoardState,
-  type CellContent,
-  type CellNumber,
-  type CellState,
-  type ColumnNumber,
-  type MarkupColor,
-  type MarkupDigits,
-  type MarkupDigitsCellContent,
-  markupColors,
-  type PuzzleHistory,
-  type RowNumber,
-} from "@/lib/pages/home/utils/types";
 
 // #region CSS Properties
 

@@ -23,21 +23,20 @@ import {
 const handleClearAllSelections = (
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
-  setPuzzleHistory((previousPuzzleHistory) => {
-    const currentBoardState = getCurrentBoardStateFromPuzzleHistory(
-      previousPuzzleHistory,
-    );
+  setPuzzleHistory((currentPuzzleHistory) => {
+    const currentBoardState =
+      getCurrentBoardStateFromPuzzleHistory(currentPuzzleHistory);
 
     const nextBoardStateWithNoCellsSelected =
       getBoardStateWithNoCellsSelected(currentBoardState);
 
-    const nextBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
+    const nextBoardStateHistory = [...currentPuzzleHistory.boardStateHistory];
 
-    nextBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
+    nextBoardStateHistory[currentPuzzleHistory.currentBoardStateIndex] =
       nextBoardStateWithNoCellsSelected;
 
     const nextPuzzleHistory: PuzzleHistory = {
-      currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
+      currentBoardStateIndex: currentPuzzleHistory.currentBoardStateIndex,
       boardStateHistory: nextBoardStateHistory,
     };
 

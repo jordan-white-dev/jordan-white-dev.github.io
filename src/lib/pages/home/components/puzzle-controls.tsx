@@ -75,11 +75,11 @@ const shiftedNumpadKeyToDigit: Partial<Record<string, SudokuDigit>> = {
 
 const getModifierKeyDownOrderWithAddedModifier = (
   modifierKeyboardKeyToAdd: ModifierKeyboardKey,
-  previousModifierKeyDownOrder: Array<ModifierKeyboardKey>,
+  currentModifierKeyDownOrder: Array<ModifierKeyboardKey>,
 ): Array<ModifierKeyboardKey> =>
-  previousModifierKeyDownOrder.includes(modifierKeyboardKeyToAdd)
-    ? previousModifierKeyDownOrder
-    : [...previousModifierKeyDownOrder, modifierKeyboardKeyToAdd];
+  currentModifierKeyDownOrder.includes(modifierKeyboardKeyToAdd)
+    ? currentModifierKeyDownOrder
+    : [...currentModifierKeyDownOrder, modifierKeyboardKeyToAdd];
 
 const doModifierKeyDownOrdersMatch = (
   firstModifierKeyDownOrder: Array<ModifierKeyboardKey>,
@@ -189,10 +189,10 @@ const getEffectiveKeypadModeForKeyboardEvent = (
 };
 
 const getModifierKeyDownOrderWithRemovedModifier = (
-  previousModifierKeyDownOrder: Array<ModifierKeyboardKey>,
+  currentModifierKeyDownOrder: Array<ModifierKeyboardKey>,
   modifierKeyboardKeyToRemove: ModifierKeyboardKey,
 ): Array<ModifierKeyboardKey> =>
-  previousModifierKeyDownOrder.filter(
+  currentModifierKeyDownOrder.filter(
     (modifierKeyboardKey) =>
       modifierKeyboardKey !== modifierKeyboardKeyToRemove,
   );
@@ -399,7 +399,7 @@ export const PuzzleControls = ({
 
       event.preventDefault();
       setIsMultiselectMode(
-        (previousIsMultiselectMode) => !previousIsMultiselectMode,
+        (currentIsMultiselectMode) => !currentIsMultiselectMode,
       );
       return true;
     };

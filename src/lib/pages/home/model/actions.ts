@@ -22,12 +22,11 @@ const addBoardStateToPuzzleHistory = (
   nextBoardState: BoardState,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
-  setPuzzleHistory((previousPuzzleHistory) => {
-    const nextBoardStateIndex =
-      previousPuzzleHistory.currentBoardStateIndex + 1;
+  setPuzzleHistory((currentPuzzleHistory) => {
+    const nextBoardStateIndex = currentPuzzleHistory.currentBoardStateIndex + 1;
 
     const nextBoardStateHistory = [
-      ...previousPuzzleHistory.boardStateHistory.slice(0, nextBoardStateIndex),
+      ...currentPuzzleHistory.boardStateHistory.slice(0, nextBoardStateIndex),
       nextBoardState,
     ];
 
@@ -54,19 +53,19 @@ const areAllSelectedCellsStartingOrContainSudokuDigitAsPlayerDigit = (
   );
 
 const getPlayerDigitCellState = (
-  previousCellState: CellState,
+  currentCellState: CellState,
   shouldPlayerDigitBeRemoved: boolean,
   sudokuDigit: SudokuDigit,
 ): CellState => {
   const isValidInputCell =
-    previousCellState.isSelected &&
-    !isStartingDigitInCellContent(previousCellState.cellContent);
+    currentCellState.isSelected &&
+    !isStartingDigitInCellContent(currentCellState.cellContent);
 
-  if (!isValidInputCell) return previousCellState;
+  if (!isValidInputCell) return currentCellState;
 
   if (shouldPlayerDigitBeRemoved) {
     const emptyPlayerDigitCellState: CellState = {
-      ...previousCellState,
+      ...currentCellState,
       cellContent: {
         playerDigit: "",
       },
@@ -76,7 +75,7 @@ const getPlayerDigitCellState = (
   }
 
   const addedPlayerDigitCellState: CellState = {
-    ...previousCellState,
+    ...currentCellState,
     cellContent: {
       playerDigit: sudokuDigit,
     },
@@ -99,13 +98,12 @@ export const handleDigitInput = (
       sudokuDigit,
     );
 
-  const nextBoardState: BoardState = currentBoardState.map(
-    (previousCellState) =>
-      getPlayerDigitCellState(
-        previousCellState,
-        shouldPlayerDigitBeRemoved,
-        sudokuDigit,
-      ),
+  const nextBoardState: BoardState = currentBoardState.map((currentCellState) =>
+    getPlayerDigitCellState(
+      currentCellState,
+      shouldPlayerDigitBeRemoved,
+      sudokuDigit,
+    ),
   );
 
   addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
@@ -118,10 +116,10 @@ const areAllSelectedCellsStartingPlayerOrContainSudokuDigitAsMarkup = (
   markupType: "Center" | "Corner",
   sudokuDigit: SudokuDigit,
 ): boolean =>
-  currentBoardState.every((previousCellState) => {
-    const cellContent = previousCellState.cellContent;
+  currentBoardState.every((currentCellState) => {
+    const cellContent = currentCellState.cellContent;
 
-    if (!previousCellState.isSelected) return true;
+    if (!currentCellState.isSelected) return true;
 
     if (isStartingDigitInCellContent(cellContent)) return true;
 
@@ -144,30 +142,29 @@ const areAllSelectedCellsStartingPlayerOrContainSudokuDigitAsMarkup = (
   });
 
 const getCellStateWithRemovedMarkupDigit = (
+  currentCellState: CellState,
+  currentMarkups: Array<SudokuDigit>,
   markupType: "Center" | "Corner",
-  previousCellState: CellState,
-  previousMarkups: Array<SudokuDigit>,
   sudokuDigit: SudokuDigit,
 ): CellState => {
-  const previousCellContent = previousCellState.cellContent;
+  const currentCellContent = currentCellState.cellContent;
 
-  if (!isMarkupDigitsInCellContent(previousCellContent))
-    return previousCellState;
+  if (!isMarkupDigitsInCellContent(currentCellContent)) return currentCellState;
 
-  const previousMarkupsNotMatchingTheSudokuDigit = previousMarkups.filter(
-    (previousMarkup) => previousMarkup !== sudokuDigit,
+  const currentMarkupsNotMatchingTheSudokuDigit = currentMarkups.filter(
+    (currentMarkup) => currentMarkup !== sudokuDigit,
   );
 
   const nextMarkups: [""] | Array<SudokuDigit> =
-    previousMarkupsNotMatchingTheSudokuDigit.length > 0
-      ? previousMarkupsNotMatchingTheSudokuDigit
+    currentMarkupsNotMatchingTheSudokuDigit.length > 0
+      ? currentMarkupsNotMatchingTheSudokuDigit
       : [""];
 
   const centerMarkups =
-    markupType === "Center" ? nextMarkups : previousCellContent.centerMarkups;
+    markupType === "Center" ? nextMarkups : currentCellContent.centerMarkups;
 
   const cornerMarkups =
-    markupType === "Corner" ? nextMarkups : previousCellContent.cornerMarkups;
+    markupType === "Corner" ? nextMarkups : currentCellContent.cornerMarkups;
 
   const cellContentAfterRemoveCheck: MarkupDigitsCellContent = {
     centerMarkups,
@@ -175,7 +172,7 @@ const getCellStateWithRemovedMarkupDigit = (
   };
 
   const nextCellState: CellState = {
-    ...previousCellState,
+    ...currentCellState,
     cellContent: cellContentAfterRemoveCheck,
   };
 
@@ -183,25 +180,24 @@ const getCellStateWithRemovedMarkupDigit = (
 };
 
 const getCellStateWithAddedMarkupDigit = (
+  currentCellState: CellState,
+  currentMarkups: Array<SudokuDigit>,
   markupType: "Center" | "Corner",
-  previousCellState: CellState,
-  previousMarkups: Array<SudokuDigit>,
   sudokuDigit: SudokuDigit,
 ): CellState => {
-  const previousCellContent = previousCellState.cellContent;
+  const currentCellContent = currentCellState.cellContent;
 
-  if (!isMarkupDigitsInCellContent(previousCellContent))
-    return previousCellState;
+  if (!isMarkupDigitsInCellContent(currentCellContent)) return currentCellState;
 
-  const nextMarkups = previousMarkups.includes(sudokuDigit)
-    ? previousMarkups
-    : [...previousMarkups, sudokuDigit];
+  const nextMarkups = currentMarkups.includes(sudokuDigit)
+    ? currentMarkups
+    : [...currentMarkups, sudokuDigit];
 
   const centerMarkups =
-    markupType === "Center" ? nextMarkups : previousCellContent.centerMarkups;
+    markupType === "Center" ? nextMarkups : currentCellContent.centerMarkups;
 
   const cornerMarkups =
-    markupType === "Corner" ? nextMarkups : previousCellContent.cornerMarkups;
+    markupType === "Corner" ? nextMarkups : currentCellContent.cornerMarkups;
 
   const cellContentAfterAddCheck: MarkupDigitsCellContent = {
     centerMarkups,
@@ -209,7 +205,7 @@ const getCellStateWithAddedMarkupDigit = (
   };
 
   const nextCellState: CellState = {
-    ...previousCellState,
+    ...currentCellState,
     cellContent: cellContentAfterAddCheck,
   };
 
@@ -217,8 +213,8 @@ const getCellStateWithAddedMarkupDigit = (
 };
 
 const getCellStateWithAnEmptyMarkupType = (
+  currentCellState: CellState,
   markupType: "Center" | "Corner",
-  previousCellState: CellState,
   sudokuDigit: SudokuDigit,
 ): CellState => {
   const nextMarkupDigitsCellContent: MarkupDigitsCellContent =
@@ -233,7 +229,7 @@ const getCellStateWithAnEmptyMarkupType = (
         };
 
   const nextMarkupDigitsCellState: CellState = {
-    ...previousCellState,
+    ...currentCellState,
     cellContent: nextMarkupDigitsCellContent,
   };
 
@@ -242,55 +238,54 @@ const getCellStateWithAnEmptyMarkupType = (
 
 const getMarkupDigitsCellState = (
   markupType: "Center" | "Corner",
-  previousCellState: CellState,
+  currentCellState: CellState,
   shouldMarkupDigitBeRemoved: boolean,
   sudokuDigit: SudokuDigit,
 ): CellState => {
-  if (!previousCellState.isSelected) return previousCellState;
+  if (!currentCellState.isSelected) return currentCellState;
 
-  const previousCellContent = previousCellState.cellContent;
+  const currentCellContent = currentCellState.cellContent;
 
-  const isNotAStartingDigit =
-    !isStartingDigitInCellContent(previousCellContent);
+  const isNotAStartingDigit = !isStartingDigitInCellContent(currentCellContent);
 
   const isAnEmptyPlayerDigit =
-    isPlayerDigitInCellContent(previousCellContent) &&
-    previousCellContent.playerDigit === "";
+    isPlayerDigitInCellContent(currentCellContent) &&
+    currentCellContent.playerDigit === "";
 
   const isValidInputCell =
     isNotAStartingDigit &&
-    (isAnEmptyPlayerDigit || isMarkupDigitsInCellContent(previousCellContent));
+    (isAnEmptyPlayerDigit || isMarkupDigitsInCellContent(currentCellContent));
 
-  if (!isValidInputCell) return previousCellState;
+  if (!isValidInputCell) return currentCellState;
 
-  if (isMarkupDigitsInCellContent(previousCellContent)) {
-    const previousMarkups =
+  if (isMarkupDigitsInCellContent(currentCellContent)) {
+    const currentMarkups =
       markupType === "Center"
-        ? previousCellContent.centerMarkups.filter(isSudokuDigit)
-        : previousCellContent.cornerMarkups.filter(isSudokuDigit);
+        ? currentCellContent.centerMarkups.filter(isSudokuDigit)
+        : currentCellContent.cornerMarkups.filter(isSudokuDigit);
 
     if (shouldMarkupDigitBeRemoved)
       return getCellStateWithRemovedMarkupDigit(
+        currentCellState,
+        currentMarkups,
         markupType,
-        previousCellState,
-        previousMarkups,
         sudokuDigit,
       );
 
     return getCellStateWithAddedMarkupDigit(
+      currentCellState,
+      currentMarkups,
       markupType,
-      previousCellState,
-      previousMarkups,
       sudokuDigit,
     );
-  } else if (isPlayerDigitInCellContent(previousCellContent))
+  } else if (isPlayerDigitInCellContent(currentCellContent))
     return getCellStateWithAnEmptyMarkupType(
+      currentCellState,
       markupType,
-      previousCellState,
       sudokuDigit,
     );
 
-  return previousCellState;
+  return currentCellState;
 };
 
 // #region Center Markup Input Action
@@ -309,14 +304,13 @@ export const handleCenterMarkupInput = (
       sudokuDigit,
     );
 
-  const nextBoardState: BoardState = currentBoardState.map(
-    (previousCellState) =>
-      getMarkupDigitsCellState(
-        "Center",
-        previousCellState,
-        shouldMarkupDigitBeRemoved,
-        sudokuDigit,
-      ),
+  const nextBoardState: BoardState = currentBoardState.map((currentCellState) =>
+    getMarkupDigitsCellState(
+      "Center",
+      currentCellState,
+      shouldMarkupDigitBeRemoved,
+      sudokuDigit,
+    ),
   );
 
   addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
@@ -339,14 +333,13 @@ export const handleCornerMarkupInput = (
       sudokuDigit,
     );
 
-  const nextBoardState: BoardState = currentBoardState.map(
-    (previousCellState) =>
-      getMarkupDigitsCellState(
-        "Corner",
-        previousCellState,
-        shouldMarkupDigitBeRemoved,
-        sudokuDigit,
-      ),
+  const nextBoardState: BoardState = currentBoardState.map((currentCellState) =>
+    getMarkupDigitsCellState(
+      "Corner",
+      currentCellState,
+      shouldMarkupDigitBeRemoved,
+      sudokuDigit,
+    ),
   );
 
   addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
@@ -364,26 +357,26 @@ const doAllSelectedCellsHaveTheMarkupColor = (
   markupColor: MarkupColor,
 ): boolean =>
   currentBoardState
-    .filter((previousCellState) => previousCellState.isSelected)
-    .every((previousCellState) =>
-      previousCellState.markupColors
-        .filter((previousMarkupColor) => previousMarkupColor !== "")
+    .filter((currentCellState) => currentCellState.isSelected)
+    .every((currentCellState) =>
+      currentCellState.markupColors
+        .filter((currentMarkupColor) => currentMarkupColor !== "")
         .includes(markupColor),
     );
 
 const getCellStateWithRemovedMarkupColor = (
+  currentCellState: CellState,
+  currentMarkupColors: Array<MarkupColor>,
   markupColor: MarkupColor,
-  previousCellState: CellState,
-  previousMarkupColors: Array<MarkupColor>,
 ): CellState => {
   const cellContentAfterRemoveCheck: Array<MarkupColor> =
-    previousMarkupColors.filter(
-      (previousMarkupColor) => previousMarkupColor !== markupColor,
+    currentMarkupColors.filter(
+      (currentMarkupColor) => currentMarkupColor !== markupColor,
     );
 
   if (cellContentAfterRemoveCheck.length > 0) {
     const nextCellState: CellState = {
-      ...previousCellState,
+      ...currentCellState,
       markupColors: cellContentAfterRemoveCheck,
     };
 
@@ -391,7 +384,7 @@ const getCellStateWithRemovedMarkupColor = (
   }
 
   const nextCellState: CellState = {
-    ...previousCellState,
+    ...currentCellState,
     markupColors: [""],
   };
 
@@ -399,17 +392,17 @@ const getCellStateWithRemovedMarkupColor = (
 };
 
 const getCellStateWithAddedMarkupColor = (
+  currentCellState: CellState,
+  currentMarkupColors: Array<MarkupColor>,
   markupColor: MarkupColor,
-  previousCellState: CellState,
-  previousMarkupColors: Array<MarkupColor>,
 ): CellState => {
   const cellContentAfterAddCheck: Array<MarkupColor> =
-    previousMarkupColors.includes(markupColor)
-      ? previousMarkupColors
-      : [...previousMarkupColors, markupColor];
+    currentMarkupColors.includes(markupColor)
+      ? currentMarkupColors
+      : [...currentMarkupColors, markupColor];
 
   const nextCellState: CellState = {
-    ...previousCellState,
+    ...currentCellState,
     markupColors: cellContentAfterAddCheck,
   };
 
@@ -417,26 +410,26 @@ const getCellStateWithAddedMarkupColor = (
 };
 
 const getMarkupColorsCellState = (
+  currentCellState: CellState,
   markupColor: MarkupColor,
-  previousCellState: CellState,
   shouldMarkupColorBeRemoved: boolean,
 ): CellState => {
-  if (!previousCellState.isSelected) return previousCellState;
+  if (!currentCellState.isSelected) return currentCellState;
 
-  const previousMarkupColors = previousCellState.markupColors.filter(
-    (previousMarkupColor) => previousMarkupColor !== "",
+  const currentMarkupColors = currentCellState.markupColors.filter(
+    (currentMarkupColor) => currentMarkupColor !== "",
   );
 
   return shouldMarkupColorBeRemoved
     ? getCellStateWithRemovedMarkupColor(
+        currentCellState,
+        currentMarkupColors,
         markupColor,
-        previousCellState,
-        previousMarkupColors,
       )
     : getCellStateWithAddedMarkupColor(
+        currentCellState,
+        currentMarkupColors,
         markupColor,
-        previousCellState,
-        previousMarkupColors,
       );
 };
 
@@ -457,13 +450,12 @@ export const handleColorPadInput = (
     markupColor,
   );
 
-  const nextBoardState: BoardState = currentBoardState.map(
-    (previousCellState) =>
-      getMarkupColorsCellState(
-        markupColor,
-        previousCellState,
-        shouldMarkupColorBeRemoved,
-      ),
+  const nextBoardState: BoardState = currentBoardState.map((currentCellState) =>
+    getMarkupColorsCellState(
+      currentCellState,
+      markupColor,
+      shouldMarkupColorBeRemoved,
+    ),
   );
 
   addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
@@ -481,12 +473,12 @@ export const handleClearCell = (
     getCurrentBoardStateFromPuzzleHistory(puzzleHistory);
 
   const nextBoardState: BoardState = currentBoardState.map(
-    (previousCellState) => {
-      if (!previousCellState.isSelected) return previousCellState;
+    (currentCellState) => {
+      if (!currentCellState.isSelected) return currentCellState;
 
-      if (isStartingDigitInCellContent(previousCellState.cellContent)) {
+      if (isStartingDigitInCellContent(currentCellState.cellContent)) {
         const nextCellState: CellState = {
-          ...previousCellState,
+          ...currentCellState,
           markupColors: [""],
         };
 
@@ -494,7 +486,7 @@ export const handleClearCell = (
       }
 
       const nextCellState: CellState = {
-        ...previousCellState,
+        ...currentCellState,
         cellContent: {
           playerDigit: "",
         },
@@ -516,30 +508,36 @@ const canMoveBoardStateIndex = (
 ) => {
   const candidateIndex = puzzleHistory.currentBoardStateIndex + indexDelta;
 
-  return (
+  const canMoveIndex =
     candidateIndex >= 0 &&
-    candidateIndex < puzzleHistory.boardStateHistory.length
-  );
+    candidateIndex < puzzleHistory.boardStateHistory.length;
+
+  return canMoveIndex;
 };
 
 const getPuzzleHistoryWithUpdatedIndex = (
+  currentPuzzleHistory: PuzzleHistory,
   indexDelta: -1 | 1,
-  previousPuzzleHistory: PuzzleHistory,
 ): PuzzleHistory => ({
-  ...previousPuzzleHistory,
+  ...currentPuzzleHistory,
   currentBoardStateIndex:
-    previousPuzzleHistory.currentBoardStateIndex + indexDelta,
+    currentPuzzleHistory.currentBoardStateIndex + indexDelta,
 });
 
 const updateBoardStateIndex = (
   indexDelta: -1 | 1,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) =>
-  setPuzzleHistory((previousPuzzleHistory) =>
-    canMoveBoardStateIndex(indexDelta, previousPuzzleHistory)
-      ? getPuzzleHistoryWithUpdatedIndex(indexDelta, previousPuzzleHistory)
-      : previousPuzzleHistory,
-  );
+  setPuzzleHistory((currentPuzzleHistory) => {
+    const nextPuzzleHistory = canMoveBoardStateIndex(
+      indexDelta,
+      currentPuzzleHistory,
+    )
+      ? getPuzzleHistoryWithUpdatedIndex(currentPuzzleHistory, indexDelta)
+      : currentPuzzleHistory;
+
+    return nextPuzzleHistory;
+  });
 
 // #region Undo Move Action
 export const handleUndoMove = (

@@ -172,8 +172,8 @@ export const SudokuStopwatchProvider = ({
 
   const pauseStopwatchAndDisable = useCallback(() => {
     pauseStopwatch();
-    setUserSettings((previousUserSettings) => ({
-      ...previousUserSettings,
+    setUserSettings((currentUserSettings) => ({
+      ...currentUserSettings,
       isStopwatchDisabled: true,
     }));
   }, [pauseStopwatch, setUserSettings]);
@@ -185,8 +185,8 @@ export const SudokuStopwatchProvider = ({
 
   const resumeStopwatchAndEnable = useCallback(() => {
     start();
-    setUserSettings((previousUserSettings) => ({
-      ...previousUserSettings,
+    setUserSettings((currentUserSettings) => ({
+      ...currentUserSettings,
       isStopwatchDisabled: false,
     }));
   }, [setUserSettings, start]);

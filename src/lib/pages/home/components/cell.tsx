@@ -1175,10 +1175,9 @@ const handleCellDoubleClick = (
   isStrictHighlightsEnabled: boolean,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
-  setPuzzleHistory((previousPuzzleHistory) => {
-    const currentBoardState = getCurrentBoardStateFromPuzzleHistory(
-      previousPuzzleHistory,
-    );
+  setPuzzleHistory((currentPuzzleHistory) => {
+    const currentBoardState =
+      getCurrentBoardStateFromPuzzleHistory(currentPuzzleHistory);
 
     const boardStateWithNoCellsSelected: BoardState = currentBoardState.map(
       (cellState) => ({
@@ -1196,12 +1195,12 @@ const handleCellDoubleClick = (
             getSelectedCellStateWithPartialMatching(sourceCellState, cellState),
           );
 
-    const nextBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
-    nextBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
+    const nextBoardStateHistory = [...currentPuzzleHistory.boardStateHistory];
+    nextBoardStateHistory[currentPuzzleHistory.currentBoardStateIndex] =
       boardStateWithMatchingCellsSelected;
 
     const nextPuzzleHistory = {
-      currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,
+      currentBoardStateIndex: currentPuzzleHistory.currentBoardStateIndex,
       boardStateHistory: nextBoardStateHistory,
     };
 

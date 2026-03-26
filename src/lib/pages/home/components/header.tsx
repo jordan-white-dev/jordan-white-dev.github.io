@@ -466,10 +466,10 @@ const SettingsMenu = () => {
                 settingLabel="Conflict Checker"
                 userSettings={userSettings}
                 onCheckedChange={() =>
-                  setUserSettings((previousUserSettings) => ({
-                    ...previousUserSettings,
+                  setUserSettings((currentUserSettings) => ({
+                    ...currentUserSettings,
                     isConflictCheckerEnabled:
-                      !previousUserSettings.isConflictCheckerEnabled,
+                      !currentUserSettings.isConflictCheckerEnabled,
                   }))
                 }
               />
@@ -479,10 +479,10 @@ const SettingsMenu = () => {
                 settingLabel="Show Seen Cells"
                 userSettings={userSettings}
                 onCheckedChange={() =>
-                  setUserSettings((previousUserSettings) => ({
-                    ...previousUserSettings,
+                  setUserSettings((currentUserSettings) => ({
+                    ...currentUserSettings,
                     isShowSeenCellsEnabled:
-                      !previousUserSettings.isShowSeenCellsEnabled,
+                      !currentUserSettings.isShowSeenCellsEnabled,
                   }))
                 }
               />
@@ -492,10 +492,10 @@ const SettingsMenu = () => {
                 settingLabel="Strict Highlights"
                 userSettings={userSettings}
                 onCheckedChange={() =>
-                  setUserSettings((previousUserSettings) => ({
-                    ...previousUserSettings,
+                  setUserSettings((currentUserSettings) => ({
+                    ...currentUserSettings,
                     isStrictHighlightsEnabled:
-                      !previousUserSettings.isStrictHighlightsEnabled,
+                      !currentUserSettings.isStrictHighlightsEnabled,
                   }))
                 }
               />
@@ -508,10 +508,10 @@ const SettingsMenu = () => {
                 settingLabel="Flip Keypad"
                 userSettings={userSettings}
                 onCheckedChange={() =>
-                  setUserSettings((previousUserSettings) => ({
-                    ...previousUserSettings,
+                  setUserSettings((currentUserSettings) => ({
+                    ...currentUserSettings,
                     isFlipKeypadEnabled:
-                      !previousUserSettings.isFlipKeypadEnabled,
+                      !currentUserSettings.isFlipKeypadEnabled,
                   }))
                 }
               />
@@ -521,10 +521,10 @@ const SettingsMenu = () => {
                 settingLabel="Dashed Grid"
                 userSettings={userSettings}
                 onCheckedChange={() =>
-                  setUserSettings((previousUserSettings) => ({
-                    ...previousUserSettings,
+                  setUserSettings((currentUserSettings) => ({
+                    ...currentUserSettings,
                     isDashedGridEnabled:
-                      !previousUserSettings.isDashedGridEnabled,
+                      !currentUserSettings.isDashedGridEnabled,
                   }))
                 }
               />
@@ -537,10 +537,10 @@ const SettingsMenu = () => {
                   if (!userSettings.isStopwatchDisabled) pauseStopwatch();
                   else startStopwatch();
 
-                  setUserSettings((previousUserSettings) => ({
-                    ...previousUserSettings,
+                  setUserSettings((currentUserSettings) => ({
+                    ...currentUserSettings,
                     isStopwatchDisabled:
-                      !previousUserSettings.isStopwatchDisabled,
+                      !currentUserSettings.isStopwatchDisabled,
                   }));
                 }}
               />
@@ -554,10 +554,10 @@ const SettingsMenu = () => {
                   closeOnSelect={false}
                   value={"isHideStopwatchEnabled"}
                   onCheckedChange={() => {
-                    setUserSettings((previousUserSettings) => ({
-                      ...previousUserSettings,
+                    setUserSettings((currentUserSettings) => ({
+                      ...currentUserSettings,
                       isHideStopwatchEnabled:
-                        !previousUserSettings.isHideStopwatchEnabled,
+                        !currentUserSettings.isHideStopwatchEnabled,
                     }));
                   }}
                 >
@@ -571,10 +571,10 @@ const SettingsMenu = () => {
                 settingLabel="Show Row + Column Labels"
                 userSettings={userSettings}
                 onCheckedChange={() =>
-                  setUserSettings((previousUserSettings) => ({
-                    ...previousUserSettings,
+                  setUserSettings((currentUserSettings) => ({
+                    ...currentUserSettings,
                     isShowRowAndColumnLabelsEnabled:
-                      !previousUserSettings.isShowRowAndColumnLabelsEnabled,
+                      !currentUserSettings.isShowRowAndColumnLabelsEnabled,
                   }))
                 }
               />

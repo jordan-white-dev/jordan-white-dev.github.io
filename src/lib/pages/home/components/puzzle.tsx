@@ -11,6 +11,10 @@ import useSessionStorageState from "use-session-storage-state";
 import { Board } from "@/lib/pages/home/components/board";
 import { PuzzleControls } from "@/lib/pages/home/components/puzzle-controls";
 import {
+  getBoardStateWithNoCellsSelected,
+  getCurrentBoardStateFromPuzzleHistory,
+} from "@/lib/pages/home/model/transforms";
+import {
   type BoardState,
   type PuzzleHistory,
   type RawBoardState,
@@ -20,24 +24,17 @@ const handleClearAllSelections = (
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
   setPuzzleHistory((previousPuzzleHistory) => {
-    const previousBoardState =
-      previousPuzzleHistory.boardStateHistory[
-        previousPuzzleHistory.currentBoardStateIndex
-      ];
+    const currentBoardState = getCurrentBoardStateFromPuzzleHistory(
+      previousPuzzleHistory,
+    );
 
-    const nextBoardStateWithClearedCellSelections: BoardState =
-      previousBoardState.map((previousCellState) => {
-        const nextCellState = {
-          ...previousCellState,
-          isSelected: false,
-        };
-
-        return nextCellState;
-      });
+    const nextBoardStateWithNoCellsSelected =
+      getBoardStateWithNoCellsSelected(currentBoardState);
 
     const nextBoardStateHistory = [...previousPuzzleHistory.boardStateHistory];
+
     nextBoardStateHistory[previousPuzzleHistory.currentBoardStateIndex] =
-      nextBoardStateWithClearedCellSelections;
+      nextBoardStateWithNoCellsSelected;
 
     const nextPuzzleHistory: PuzzleHistory = {
       currentBoardStateIndex: previousPuzzleHistory.currentBoardStateIndex,

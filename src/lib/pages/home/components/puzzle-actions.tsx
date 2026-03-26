@@ -28,6 +28,7 @@ import { useUserSettings } from "@/lib/pages/home/hooks/use-user-settings";
 import { handleRedoMove, handleUndoMove } from "@/lib/pages/home/model/actions";
 import {
   getBoardStateFromRawBoardState,
+  getCurrentBoardStateFromPuzzleHistory,
   getEncodedPuzzleStringFromRawPuzzleString,
   getRawPuzzleStringFromRawBoardState,
   getStartingOrPlayerDigitInCellIfPresent,
@@ -386,9 +387,11 @@ const CheckSolutionButton = ({ puzzleHistory }: CheckSolutionButtonProps) => {
   const { userSettings } = useUserSettings();
   const { isStopwatchDisabled } = userSettings;
 
-  const isPuzzleSolved = getIsPuzzleSolved(
-    puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex],
-  );
+  const currentBoardState =
+    getCurrentBoardStateFromPuzzleHistory(puzzleHistory);
+
+  const isPuzzleSolved = getIsPuzzleSolved(currentBoardState);
+
   const dialogBodyText = getDialogBodyText(
     isPuzzleSolved,
     isStopwatchDisabled,

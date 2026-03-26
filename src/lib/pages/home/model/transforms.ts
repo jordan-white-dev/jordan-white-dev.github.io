@@ -11,6 +11,7 @@ import {
   type ColumnNumber,
   type EncodedPuzzleString,
   type PlayerDigitCellContent,
+  type PuzzleHistory,
   type RawBoardState,
   type RawPuzzleString,
   type RawStartingDigit,
@@ -179,6 +180,32 @@ export const getBoardStateFromRawBoardState = (
   }
 
   return boardState;
+};
+
+export const getCurrentBoardStateFromPuzzleHistory = (
+  puzzleHistory: PuzzleHistory,
+): BoardState => {
+  const currentBoardState =
+    puzzleHistory.boardStateHistory[puzzleHistory.currentBoardStateIndex];
+
+  return currentBoardState;
+};
+
+export const getBoardStateWithNoCellsSelected = (
+  boardState: BoardState,
+): BoardState => {
+  const nextBoardState = boardState.map((cellState) => {
+    const nextCellState = cellState.isSelected
+      ? {
+          ...cellState,
+          isSelected: false,
+        }
+      : cellState;
+
+    return nextCellState;
+  });
+
+  return nextBoardState;
 };
 // #endregion
 

@@ -19,7 +19,10 @@ import {
   isStartingDigitInCellContent,
   isStartingOrPlayerDigitInCellContent,
 } from "@/lib/pages/home/model/guards";
-import { getStartingOrPlayerDigitInCellIfPresent } from "@/lib/pages/home/model/transforms";
+import {
+  getCurrentBoardStateFromPuzzleHistory,
+  getStartingOrPlayerDigitInCellIfPresent,
+} from "@/lib/pages/home/model/transforms";
 import {
   type BoardState,
   type CellContent,
@@ -1173,10 +1176,9 @@ const handleCellDoubleClick = (
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
   setPuzzleHistory((previousPuzzleHistory) => {
-    const currentBoardState =
-      previousPuzzleHistory.boardStateHistory[
-        previousPuzzleHistory.currentBoardStateIndex
-      ];
+    const currentBoardState = getCurrentBoardStateFromPuzzleHistory(
+      previousPuzzleHistory,
+    );
 
     const boardStateWithNoCellsSelected: BoardState = currentBoardState.map(
       (cellState) => ({

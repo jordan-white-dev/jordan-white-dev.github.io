@@ -19,9 +19,15 @@ import { isSudokuDigit } from "@/lib/pages/home/model/validators";
 
 // #region Input Actions
 const addBoardStateToPuzzleHistory = (
+  currentBoardState: BoardState,
   nextBoardState: BoardState,
   setPuzzleHistory: Dispatch<SetStateAction<PuzzleHistory>>,
 ) => {
+  const didBoardStateChange =
+    JSON.stringify(nextBoardState) !== JSON.stringify(currentBoardState);
+
+  if (!didBoardStateChange) return;
+
   setPuzzleHistory((currentPuzzleHistory) => {
     const nextBoardStateIndex = currentPuzzleHistory.currentBoardStateIndex + 1;
 
@@ -106,7 +112,11 @@ export const handleDigitInput = (
     ),
   );
 
-  addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
+  addBoardStateToPuzzleHistory(
+    currentBoardState,
+    nextBoardState,
+    setPuzzleHistory,
+  );
 };
 // #endregion
 
@@ -313,7 +323,11 @@ export const handleCenterMarkupInput = (
     ),
   );
 
-  addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
+  addBoardStateToPuzzleHistory(
+    currentBoardState,
+    nextBoardState,
+    setPuzzleHistory,
+  );
 };
 // #endregion
 
@@ -342,7 +356,11 @@ export const handleCornerMarkupInput = (
     ),
   );
 
-  addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
+  addBoardStateToPuzzleHistory(
+    currentBoardState,
+    nextBoardState,
+    setPuzzleHistory,
+  );
 };
 // #endregion
 
@@ -458,7 +476,11 @@ export const handleColorPadInput = (
     ),
   );
 
-  addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
+  addBoardStateToPuzzleHistory(
+    currentBoardState,
+    nextBoardState,
+    setPuzzleHistory,
+  );
 };
 // #endregion
 
@@ -497,7 +519,11 @@ export const handleClearCell = (
     },
   );
 
-  addBoardStateToPuzzleHistory(nextBoardState, setPuzzleHistory);
+  addBoardStateToPuzzleHistory(
+    currentBoardState,
+    nextBoardState,
+    setPuzzleHistory,
+  );
 };
 // #endregion
 

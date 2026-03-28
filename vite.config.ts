@@ -62,7 +62,7 @@ export default defineConfig(({ mode }) => {
     test: {
       coverage: {
         provider: "v8",
-        include: ["src/lib/utils/**/*.{ts,tsx,js,jsx}"],
+        include: ["**/*test.{ts,tsx,js,jsx}"],
       },
     },
   };

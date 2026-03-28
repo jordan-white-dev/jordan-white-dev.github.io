@@ -22,7 +22,7 @@ import {
   handleUndoMove,
 } from "@/lib/pages/home/model/actions";
 import { exhaustiveGuard } from "@/lib/pages/home/model/guards";
-import { getSudokuDigitFromString } from "@/lib/pages/home/model/transforms";
+import { getBrandedSudokuDigit } from "@/lib/pages/home/model/transforms";
 import {
   type KeypadMode,
   type PuzzleHistory,
@@ -62,15 +62,15 @@ const isKeypadModeShortcutKey = (
   keyboardKey in keypadModeByShortcutKey;
 
 const shiftedNumpadKeyToDigit: Partial<Record<string, SudokuDigit>> = {
-  End: getSudokuDigitFromString("1"),
-  ArrowDown: getSudokuDigitFromString("2"),
-  PageDown: getSudokuDigitFromString("3"),
-  ArrowLeft: getSudokuDigitFromString("4"),
-  Clear: getSudokuDigitFromString("5"),
-  ArrowRight: getSudokuDigitFromString("6"),
-  Home: getSudokuDigitFromString("7"),
-  ArrowUp: getSudokuDigitFromString("8"),
-  PageUp: getSudokuDigitFromString("9"),
+  End: getBrandedSudokuDigit("1"),
+  ArrowDown: getBrandedSudokuDigit("2"),
+  PageDown: getBrandedSudokuDigit("3"),
+  ArrowLeft: getBrandedSudokuDigit("4"),
+  Clear: getBrandedSudokuDigit("5"),
+  ArrowRight: getBrandedSudokuDigit("6"),
+  Home: getBrandedSudokuDigit("7"),
+  ArrowUp: getBrandedSudokuDigit("8"),
+  PageUp: getBrandedSudokuDigit("9"),
 };
 
 const getModifierKeyDownOrderWithAddedModifier = (

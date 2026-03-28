@@ -28,8 +28,8 @@ import {
 } from "@/lib/pages/home/model/guards";
 import {
   getBoardStateFromRawBoardState,
+  getBrandedSudokuDigit,
   getCurrentBoardStateFromPuzzleHistory,
-  getSudokuDigitFromString,
 } from "@/lib/pages/home/model/transforms";
 import {
   type BoardState,
@@ -130,9 +130,7 @@ const getTargetCellStateFromBoardState = (
   return candidateCellState;
 };
 
-const d = (
-  candidateString: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9",
-) => getSudokuDigitFromString(candidateString);
+const bsd = (candidateString: string) => getBrandedSudokuDigit(candidateString);
 
 const getBoardStateWithStartingDigitInTargetCell = (
   boardState: BoardState,
@@ -145,7 +143,7 @@ const getBoardStateWithStartingDigitInTargetCell = (
         ? {
             ...cellState,
             cellContent: {
-              startingDigit: d(startingDigit),
+              startingDigit: bsd(startingDigit),
             },
           }
         : cellState;
@@ -167,7 +165,7 @@ const getBoardStateWithPlayerDigitInTargetCell = (
         ? {
             ...cellState,
             cellContent: {
-              playerDigit: playerDigit === "" ? "" : d(playerDigit),
+              playerDigit: playerDigit === "" ? "" : bsd(playerDigit),
             },
           }
         : cellState;
@@ -210,7 +208,7 @@ const getBoardStateWithCenterMarkupsInTargetCell = (
             ...cellState,
             cellContent: {
               centerMarkups:
-                centerMarkups.length > 0 ? centerMarkups.map(d) : [""],
+                centerMarkups.length > 0 ? centerMarkups.map(bsd) : [""],
               cornerMarkups: [""],
             },
           }
@@ -235,7 +233,7 @@ const getBoardStateWithCornerMarkupsInTargetCell = (
             cellContent: {
               centerMarkups: [""],
               cornerMarkups:
-                cornerMarkups.length > 0 ? cornerMarkups.map(d) : [""],
+                cornerMarkups.length > 0 ? cornerMarkups.map(bsd) : [""],
             },
           }
         : cellState;
@@ -259,9 +257,9 @@ const getBoardStateWithMarkupDigitsInTargetCell = (
             ...cellState,
             cellContent: {
               centerMarkups:
-                centerMarkups.length > 0 ? centerMarkups.map(d) : [""],
+                centerMarkups.length > 0 ? centerMarkups.map(bsd) : [""],
               cornerMarkups:
-                cornerMarkups.length > 0 ? cornerMarkups.map(d) : [""],
+                cornerMarkups.length > 0 ? cornerMarkups.map(bsd) : [""],
             },
           }
         : cellState;
@@ -295,7 +293,7 @@ const getPuzzleHistoryAfterDigitInput = (
   const nextPuzzleHistory = getPuzzleHistoryAfterStateUpdate(
     puzzleHistory,
     (setPuzzleHistory) => {
-      handleDigitInput(puzzleHistory, d(sudokuDigit), setPuzzleHistory);
+      handleDigitInput(puzzleHistory, bsd(sudokuDigit), setPuzzleHistory);
     },
   );
 
@@ -309,7 +307,11 @@ const getPuzzleHistoryAfterCenterMarkupInput = (
   const nextPuzzleHistory = getPuzzleHistoryAfterStateUpdate(
     puzzleHistory,
     (setPuzzleHistory) => {
-      handleCenterMarkupInput(puzzleHistory, d(sudokuDigit), setPuzzleHistory);
+      handleCenterMarkupInput(
+        puzzleHistory,
+        bsd(sudokuDigit),
+        setPuzzleHistory,
+      );
     },
   );
 
@@ -323,7 +325,11 @@ const getPuzzleHistoryAfterCornerMarkupInput = (
   const nextPuzzleHistory = getPuzzleHistoryAfterStateUpdate(
     puzzleHistory,
     (setPuzzleHistory) => {
-      handleCornerMarkupInput(puzzleHistory, d(sudokuDigit), setPuzzleHistory);
+      handleCornerMarkupInput(
+        puzzleHistory,
+        bsd(sudokuDigit),
+        setPuzzleHistory,
+      );
     },
   );
 
@@ -358,7 +364,7 @@ const getColorPadInputValueFromMarkupValue = (
   markupValue: MarkupColor | ColorShortcutDigit,
 ) => {
   if (isDigitStringAColorShortcutDigit(markupValue)) {
-    const sudokuDigit = d(markupValue);
+    const sudokuDigit = bsd(markupValue);
 
     return sudokuDigit;
   }
@@ -1019,7 +1025,7 @@ describe("Center markup entry", () => {
                   ? {
                       ...cellState,
                       cellContent: {
-                        centerMarkups: [d("7")],
+                        centerMarkups: [bsd("7")],
                         cornerMarkups: [""],
                       },
                     }
@@ -1463,7 +1469,7 @@ describe("Corner markup entry", () => {
                       ...cellState,
                       cellContent: {
                         centerMarkups: [""],
-                        cornerMarkups: [d("3")],
+                        cornerMarkups: [bsd("3")],
                       },
                     }
                   : cellState;

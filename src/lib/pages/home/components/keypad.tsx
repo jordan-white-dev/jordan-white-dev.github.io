@@ -40,7 +40,7 @@ import {
   sudokuDigits,
 } from "@/lib/pages/home/model/constants";
 import { exhaustiveGuard } from "@/lib/pages/home/model/guards";
-import { getSudokuDigitFromString } from "@/lib/pages/home/model/transforms";
+import { getBrandedSudokuDigit } from "@/lib/pages/home/model/transforms";
 import {
   type KeypadMode,
   type MarkupColor,
@@ -73,9 +73,9 @@ const ICON_BUTTON_TEXT_STYLE_NONDIGIT: IconButtonProps["textStyle"] = {
 // #endregion
 
 const brandedSudokuDigitsForFlippedKeypad: ReadonlyArray<SudokuDigit> =
-  flippedDigits.map(getSudokuDigitFromString);
+  flippedDigits.map(getBrandedSudokuDigit);
 const brandedSudokuDigits: ReadonlyArray<SudokuDigit> = sudokuDigits.map(
-  getSudokuDigitFromString,
+  getBrandedSudokuDigit,
 );
 
 // #region Color Pad

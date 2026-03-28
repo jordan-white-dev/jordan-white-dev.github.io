@@ -61,7 +61,7 @@ export const getRawPuzzleStringFromRawBoardState = (
 // #endregion
 
 // #region Sudoku Digit Transform
-export const getSudokuDigitFromString = (
+export const getBrandedSudokuDigit = (
   candidateSudokuDigit: string,
 ): SudokuDigit => {
   if (!isSudokuDigit(candidateSudokuDigit))
@@ -76,7 +76,7 @@ export const getSudokuDigitFromString = (
 // #region Board State Transform
 
 // #region Branded Transforms
-const getBrandedBoxNumber = (candidateBoxNumber: number): BoxNumber => {
+export const getBrandedBoxNumber = (candidateBoxNumber: number): BoxNumber => {
   if (!isBoxNumber(candidateBoxNumber))
     throw Error(
       `Encountered an invalid BoxNumber "${candidateBoxNumber}" while getting a BoardState from RawBoardState.`,
@@ -85,7 +85,9 @@ const getBrandedBoxNumber = (candidateBoxNumber: number): BoxNumber => {
   return candidateBoxNumber;
 };
 
-const getBrandedCellNumber = (candidateCellNumber: number): CellNumber => {
+export const getBrandedCellNumber = (
+  candidateCellNumber: number,
+): CellNumber => {
   if (!isCellNumber(candidateCellNumber))
     throw Error(
       `Encountered an invalid CellNumber "${candidateCellNumber}" while getting a BoardState from RawBoardState.`,
@@ -94,7 +96,7 @@ const getBrandedCellNumber = (candidateCellNumber: number): CellNumber => {
   return candidateCellNumber;
 };
 
-const getBrandedColumnNumber = (
+export const getBrandedColumnNumber = (
   candidateColumnNumber: number,
 ): ColumnNumber => {
   if (!isColumnNumber(candidateColumnNumber))
@@ -105,7 +107,7 @@ const getBrandedColumnNumber = (
   return candidateColumnNumber;
 };
 
-const getBrandedRowNumber = (candidateRowNumber: number): RowNumber => {
+export const getBrandedRowNumber = (candidateRowNumber: number): RowNumber => {
   if (!isRowNumber(candidateRowNumber))
     throw Error(
       `Encountered an invalid RowNumber "${candidateRowNumber}" while getting a BoardState from RawBoardState.`,
